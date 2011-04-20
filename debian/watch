@@ -1,0 +1,5 @@
+# format version number, currently 2; this line is compulsory!
+version=2
+
+# Line continuations are performed with \
+http://www.manucornet.net/Informatique/Progs/texturize_gimp_plugin_version_(.*).tgz

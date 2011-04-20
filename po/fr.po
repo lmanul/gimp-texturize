@@ -1,0 +1,63 @@
+# This is the French locale definition for the Texturize GIMP Plug-In 
+# Emmanuel Cornet <Emmanuel.Cornet@Ens.fr>, 2004
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gimp-plugin-template 1.2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-12-29 16:41+0100\n"
+"PO-Revision-Date: 2001-10-20 12:33+0200\n"
+"Last-Translator: Emmanuel Cornet <Emmanuel.Cornet@Ens.fr>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/interface.c:85
+msgid "Texturize Plug-in for GIMP"
+msgstr "Greffon Texturize pour GIMP"
+
+msgid "Please set the size of the new image\nand the maximum overlap between patches."
+msgstr "Veuillez régler la taille de la nouvelle image et le\nrecouvrement maximal entre les morceaux de texture."
+
+msgid "Set the new image's width"
+msgstr "Réglez la largeur de la nouvelle image"
+
+msgid "Set the new image's height"
+msgstr "Réglez la hauteur de la nouvelle image"
+
+msgid "Set the overlap between patches (larger values make better but longer texturizing and tend to make periodic results)"
+msgstr "Réglez le degré de chevauchement entre les morceaux de texture (plus cette valeur est élevée, meilleure sera la texture, mais plus le calcul sera long et le résultat aura tendance à être périodique)"
+
+msgid "Width :"
+msgstr "Largeur :"
+
+msgid "Height :"
+msgstr "Hauteur :"
+
+msgid "Overlap (pixels) :"
+msgstr "Recouvrement (pixels) :"
+
+msgid "Tileable"
+msgstr "Auto-similaire"
+
+msgid "Texturizing image..."
+msgstr "Calcul de la texture..."
+
+msgid "Sorry, the Texturize plugin only supports RGB and grayscale images. Please convert your image to RGB mode first."
+msgstr "Désolé, le plugin Texturize ne fonctionne que sur les images en RVB ou en niveaux de gris. Veuillez convertir votre image en mode RVB avant d'appliquer le filtre."
+
+msgid "Sorry, the Texturize plugin doesn't support images with an alpha (ie transparency) channel yet. Please flatten your image first."
+msgstr "Désolé, le plugin Texturize ne fonctionne pas encore avec les images pourvues d'une couche alpha (images transparentes). Veuillez commencer par aplatir l'image."
+
+msgid "There was a problem when opening the new image."
+msgstr "Il y a eu un problème au moment d'ouvrir la nouvelle image."
+
+msgid "There was a problem when filling the new image"
+msgstr "Il y a eu un problème pendant le remplissage de l'image"
+
+#~ msgid "OK"
+#~ msgstr "Valider"
+
+#~ msgid "Cancel"
+#~ msgstr "Annuler"

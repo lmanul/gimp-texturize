@@ -1,0 +1,17 @@
+Improve the progress bar.
+
+Be compatible with images that have an alpha channel.
+
+Erase the very low frequency of luminosity before applying the plugin. Or advise
+to the homogenizer plugin (http://www.logarithmic.net/pfh/resynthesizer).
+
+Translate comments to English.
+
+Output the position of the cuts on a image, for checking purposes.
+Optionnaly, don't take into account the old cuts to check for bugs in this feature.
+
+Add http://adn.diwi.org/debian/ on the home page.
+
+Add GPL headers.
+
+Be even closer to Gimp and Debian standards.

@@ -1,0 +1,3 @@
+	../src/interface.c \
+	../src/main.c \
+	../src/render.c

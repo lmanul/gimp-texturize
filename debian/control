@@ -1,0 +1,20 @@
+Source: gimp-texturize
+Section: graphics
+Priority: optional
+Maintainer: Mohammed Adnène Trojette <adn+deb@diwi.org>
+Build-Depends: debhelper (>= 4.0.0), libgimp2.0-dev, libxml-parser-perl
+Standards-Version: 3.6.1
+
+Package: gimp-texturize
+Architecture: any
+Depends: ${shlibs:Depends}, gimp (>= 2.0)
+Description: generates large textures from a small sample
+ Gimp-texturize is a GIMP plug-in.
+ .
+ A few images are designed to be copy-pasted one next to another and
+ still look natural, but the result is usually periodic and very
+ monotonous. The Texturize plugin allows you to have a realistic
+ periodicity.
+ .
+ Have a look at http://www.manucornet.net/Informatique/Texturize.php to
+ see how it looks like.

@@ -1,0 +1,26 @@
+GIMP Plug-In Texturize
+=====================
+
+This plugin takes a small image and creates a texture out of it.
+The idea is to put several copies (patches) of the small image on the big
+canvas. The copies aren't complete: we cut the border so that the transition is
+invisible, and the the texture seems natural.
+
+
+To build and install it, just ...
+
+	./configure
+	make
+	make install
+
+ ... then (close and) reopen the Gimp. Texturize will be in the "map" menu.
+
+
+
+This plugin is based on the article "Graphcut Textures: Image and Video Synthesis Using
+Graph Cuts" by Vivek Kwatra, Arno Schödl, Irfan Essa, Greg Turk and Aaron
+Bobick, available from www.cc.gatech.edu/cpl/projects/graphcuttextures.
+
+
+Copyright (C) 2004-2005  Manu Cornet            <Manu@ManuCornet.net>
+                         Jean-Baptiste Rouquier <firstname.lastname@ens-lyon.org>
