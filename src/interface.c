@@ -84,14 +84,14 @@ dialog (gint32              image_ID,
 
   row = 0;
 
-  // Largeur de la nouvelle image ?
+  // Width of the new image?
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Width :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
                               image_vals->width_i, image_vals->width_p,20*image_vals->width_p, 1, 10, 0, TRUE, 0, 0,
                               _("Set the new image's width"), NULL);
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (gimp_int_adjustment_update), &image_vals->width_i);
 
-  // Hauteur de la nouvelle image ?
+  // Height of the new image?
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Height :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
                               image_vals->height_i, image_vals->height_p,20*image_vals->height_p, 1, 10, 0, TRUE, 0, 0,
                               _("Set the new image's height"), NULL);
@@ -99,7 +99,7 @@ dialog (gint32              image_ID,
                     G_CALLBACK (gimp_int_adjustment_update),
                     &image_vals->height_i);
 
-  // Recouvrement des patchs ?
+  // Patch overlap?
   adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++, _("Overlap (pixels) :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
                               vals->overlap,
                               MIN(25, MIN(image_vals->width_p - 1 ,image_vals->height_p - 1)),
@@ -115,7 +115,7 @@ dialog (gint32              image_ID,
                     &vals->overlap);
 
 
-  // Tileable texture ?
+  // Tileable texture?
 
   tileable_checkbox = gtk_check_button_new_with_mnemonic (_("_Tileable"));
   gtk_box_pack_start (GTK_BOX (main_vbox), tileable_checkbox, FALSE, FALSE, 0);
@@ -127,7 +127,7 @@ dialog (gint32              image_ID,
                     G_CALLBACK (gimp_toggle_button_update),
                     &vals->make_tileable);
 
-  //  Show the main containers
+  // Show the main containers
 
   gtk_widget_show (main_vbox);
   gtk_widget_show (dlg);

@@ -15,7 +15,7 @@ extern "C" {
 }
 #include "graph.h"
 
-#define MAX_CAPACITY 16383 //la moitié du plus grand short, (captype est short dans graph.h)
+#define MAX_CAPACITY 16383 // Half of the largest short, (captype is short in graph.h)
 #define REMPLI    1
 #define CUT_NORTH 2
 #define CUT_WEST  4
@@ -23,7 +23,7 @@ extern "C" {
 #define HAS_CUT_WEST(r)  (r) & CUT_WEST
 
 // ||pixel1 - pixel2||^2
-// Expérimentalement, le carré semble mieux marcher que la norme 2.
+// From experience, squares seem to work better than another type of norm.
 inline Graph::captype
 cost (guchar * pixel1, guchar * pixel2, int channels)
 {
@@ -33,7 +33,8 @@ cost (guchar * pixel1, guchar * pixel2, int channels)
     result += diff*diff;
   }
   return (result/24);
-  // Il faut diviser au moins par 24 sinon on risque de renvoyer plus que MAX_CAPACITY.
+  // We need to divide at least by 24, or we might return more than
+  // MAX_CAPACITY.
 }
 
 inline Graph::captype
@@ -47,9 +48,8 @@ gradient (guchar * pixel1, guchar * pixel2, int channels)
   return ((Graph::captype) sqrt(result));
 }
 
-//si les quatre arguments de edge_weight sont écrits dans le code sur deux lignes
-//alors les mêmes coordonnées de pixels sont sur une même ligne,
-//les mêmes images d'origine du pixel sur une même colonne.
+// When we write the four arguments to edge_weight on two lines of code,
+// we try to always align things (pixel VS image) so that it makes sense.
 inline Graph::captype
 edge_weight (int channels,
              guchar * im1_pix1, guchar * im2_pix1,
@@ -66,18 +66,9 @@ paste_patch_pixel_to_image(int width_i, int height_i, int width_p, int height_p,
                            guchar * image, guchar * patch) {   //,
                            //guchar * coupe_h_here, guchar * coupe_v_here){
   int k;
-  for (k = 0; k < channels; k++)
+  for (k = 0; k < channels; k++) {
     image[(y_i * width_i + x_i) * channels + k] = patch[(y_p * width_p + x_p) * channels + k];
-  /*
-  if (y_i < height_i - 1 && y_p < height_p - 1){
-    for(k = 0; k < channels; k++)
-      coupe_v_here[((y_i + 1) * width_i + x_i) * channels + k] = patch[((y_p + 1) * width_p + x_p) * channels + k];
   }
-  if (x_i < width_i - 1 && x_p < width_p - 1) {
-    for(k = 0; k < channels; k++)
-      coupe_h_here[(y_i * width_i + x_i + 1) * channels + k] = patch[(y_p * width_p + x_p + 1) * channels + k];
-  }
-  */
 }
 
 void
@@ -91,7 +82,7 @@ decoupe_graphe (int* patch_posn,
                 gboolean  make_tileable, gboolean invert)
 {
 ////////////////////////////////////////////////////////////////////////////////
-// Déclaration des variables
+// Variable declaration.
   gint k, x_p, y_p, x_i, y_i;// nb_sommets, sommet_courant; // Compteurs
   gint real_x_i, real_y_i;
   gint x_inf, y_inf, x_sup, y_sup;
@@ -106,9 +97,10 @@ decoupe_graphe (int* patch_posn,
   guchar new_r;
 
 ////////////////////////////////////////////////////////////////////////////////
-// Création du graphe
+// Graph creation.
 
-  // Définition de l'espace à visiter selon si on veut une texture "tileable"
+  // Let's define how much space we need to visit, depending on whether we want
+  // a tileable texture.
 
   if (make_tileable) {
     x_inf = patch_posn[0];
@@ -137,8 +129,8 @@ decoupe_graphe (int* patch_posn,
    *                 ______________________
    */
 
-  // On compte le nombre de sommets en parcourant
-  // la région commune au patch et à l'image remplie.
+  // We count the number of nodes by visiting the intersection between the
+  // patch and the filled in image.
 
 //   nb_sommets = 0;
 
@@ -149,15 +141,15 @@ decoupe_graphe (int* patch_posn,
 //       r = rempli[x_i][y_i];
 //       if (r) {
 //         nb_sommets++;
-// sera décommenté quand on prendra à nouveau en compte les anciennes coupes
+// We'll uncomment this when we start taking previous cuts into account again.
 //         if (HAS_CUT_NORTH(r)) nb_sommets++;
 //         if (HAS_CUT_WEST(r))  nb_sommets++;
 //       }
 //     }
 //   }
 
-  // On commence par parcourir tout le patch une première fois pour créer les noeuds
-  // et faire les liens dans node_of_pixel
+  // Start by visiting the whole patch to create nodes and create links in
+  // node_of_pixel.
 
   for (real_x_i = x_inf;
        real_x_i < x_sup;
@@ -178,32 +170,38 @@ decoupe_graphe (int* patch_posn,
     }
   }
 
-  // On crée les arcs.
+  // Create the edges.
   /*
-  On relie à la source les pixels à la fois remplis et au bord du patch
-    (et, dans le cas sans make_tileable, qui de plus ne sont pas au bord de l'image).
-  On relie au puits les pixels remplis dont un voisin n'est pas rempli.
+  We link to the source the pixels that are at the same time filled and also
+  on the edges of the patch (and, for a non tileable texture, that are also
+  not on the edge of the image).
+  We link to the sink the pixels that have at least one neighbor that isn't
+  filled yet.
 
   **********************************************
 
-  Synopsis de la boucle :
+  Loop summary:
 
-  Pour chaque x du patch (intersection avec l'image dans le cas !make_tileable)
-   Pour chaque y du patch (même remarque)
-    Si je suis rempli
-     Créer les arcs avec mes voisins nord et ouest (s'ils existent dans le patch)
-     (plus tard en gérant les anciennes coupes)
-     Si je suis au bord du patch (ie personne dans le patch au nord OU au sud OU à l'est OU à l'ouest)
-     Et dans le cas !make_tileable, si de plus je ne suis pas au bord de l'image (1)
-      Me relier à la source
-     Si l'un de mes voisins (nord, sud, est, ouest) existe (dans le patch ET dans l'image) et n'est pas rempli
-      Me relier au puits
-    Si je ne suis pas rempli
-     Ne rien faire
+  For each x of the patch (intersection with the image if !make_tileable).
+    For each y of the patch (same note)
+    If I am already filled
+     Create the edges with my North and West neighbord (if they exist in the
+         patch) (later we'll need to take previous cuts into account)
+     If I am on the edge of the patch (i.e. there's no other pixel in the patch
+         to the North OR South OR East OR West)
+     And in the !make_tileable case, if I am also not on the edge of the image
+        (1)
+       Then link me to the source
+     If one of my neighbords (North, South, East, West) exists (in the patch
+         AND in the image) and hasn't been filled yet
+       Then link me to the sink
+    If I haven't been filled yet
+      Don't do anything.
 
-  //Le test (1) ci dessus peut faire en sorte qu'il n'y ait aucun pixel relié à la source;
-  //la ligne suivante pallie ce pb.
-  Si !make_tileable, relier le pixel haut gauche de l'intersection (le premier créé) à la source.
+  // The test (1) above might cause the source to not be linked to any pixel.
+  // The following line fixes that problem.
+  If !make_tileable, link the top left pixel of the intersection (the first one
+  that was created) to the source.
   */
 
   for (real_x_i = x_inf;
@@ -218,15 +216,16 @@ decoupe_graphe (int* patch_posn,
       y_p = real_y_i - patch_posn[1];
       y_i = modulo (real_y_i, height_i);
 
-      // Si le pixel de l'image n'est pas rempli, on ne fait rien et on passe au suivant
+      // If the pixel in the image hasn't been filled, we do nothing and skip
+      // to the next one.
       if (!rempli[x_i][y_i]) {
         continue;
       } else {
-        // Création du noeud et liens
+        // Create the nodes and edges.
         node_sommet_courant = node_of_pixel[x_p * height_p + y_p];
 
-        // Si le voisin nord existe dans le patch et si le pixel nord
-        // est rempli dans l'image, on crée un lien vers lui
+        // If the neighbord exists in the patch and if the pixel to the North
+        // is filled in the image, create a link to it.
         if ((!make_tileable && y_p != 0 && y_i != 0 && rempli[x_i][y_i - 1])
           || (make_tileable && y_p != 0 && rempli[x_i][modulo (y_i - 1, height_i)])) {
           poids = edge_weight (channels,
@@ -239,8 +238,8 @@ decoupe_graphe (int* patch_posn,
                             poids, poids);
         }
 
-        // Si le voisin ouest existe dans le patch et si le pixel ouest
-        // est rempli dans l'image, on crée un lien avec lui
+        // If the West neighbor exists in the patch and if the West pixel is
+        // filled in the image, we create a link to it.
         if ((!make_tileable && x_p != 0 && x_i != 0 && rempli[x_i - 1][y_i])
           || (make_tileable && x_p != 0 && rempli[modulo (x_i - 1, width_i)][y_i])) {
           poids = edge_weight (channels,
@@ -253,45 +252,45 @@ decoupe_graphe (int* patch_posn,
                             poids, poids);
         }
 
-        // Si je suis au bord du patch et si en plus, dans le cas !make_tileable,
-        // je ne suis pas au bord de l'image, me relier à la source
-        if (    (make_tileable && (x_p == 0 || y_p == 0 || x_p == width_p - 1 || y_p == height_p - 1))
+        // If I am on the edge of the patch and, if !make_tileable, I am not on
+        // the edge of the image, link me to the source.
+       if (    (make_tileable && (x_p == 0 || y_p == 0 || x_p == width_p - 1 || y_p == height_p - 1))
             || (!make_tileable && (x_p == 0 || y_p == 0 || x_p == width_p - 1 || y_p == height_p - 1)
 		               &&  x_i != 0 && y_i != 0 && x_i != width_i - 1 && y_i != height_i - 1)) {
           graphe->add_tweights (node_sommet_courant, MAX_CAPACITY, 0);
 	}
 
-        // Si l'un de mes voisins existe et n'est pas rempli, me relier au puits
+        // If one of my neighbords exists and isn't filled, link me to the sink.
         if (((!make_tileable)
-              && (  (y_p != 0            && y_i != 0            && !rempli[x_i][y_i - 1])      // Nord
-                 || (y_p != height_p - 1 && y_i != height_i - 1 && !rempli[x_i][y_i + 1])      // Sud
-                 || (x_p != width_p - 1  && x_i != width_i - 1  && !rempli[x_i + 1][y_i])      // Est
-                 || (x_p != 0            && x_i != 0            && !rempli[x_i - 1][y_i])))    // Ouest
+              && (  (y_p != 0            && y_i != 0            && !rempli[x_i][y_i - 1])      // North
+                 || (y_p != height_p - 1 && y_i != height_i - 1 && !rempli[x_i][y_i + 1])      // South
+                 || (x_p != width_p - 1  && x_i != width_i - 1  && !rempli[x_i + 1][y_i])      // East
+                 || (x_p != 0            && x_i != 0            && !rempli[x_i - 1][y_i])))    // West
             || ((make_tileable)
-              && (  (y_p != 0            && !rempli[x_i][modulo (y_i - 1, height_i)])          // Nord
-                 || (y_p != height_p - 1 && !rempli[x_i][modulo (y_i + 1, height_i)])          // Sud
-                 || (x_p != width_p - 1  && !rempli[modulo (x_i + 1, width_i)][y_i])           // Est
-                 || (x_p != 0            && !rempli[modulo (x_i - 1, width_i)][y_i])))) {      // Ouest
-	  //	  printf ("Connecting %i, %i to Sink\n", x_p, y_p);
+              && (  (y_p != 0            && !rempli[x_i][modulo (y_i - 1, height_i)])          // North
+                 || (y_p != height_p - 1 && !rempli[x_i][modulo (y_i + 1, height_i)])          // South
+                 || (x_p != width_p - 1  && !rempli[modulo (x_i + 1, width_i)][y_i])           // East
+                 || (x_p != 0            && !rempli[modulo (x_i - 1, width_i)][y_i])))) {      // West
           graphe->add_tweights (node_sommet_courant, 0, MAX_CAPACITY);
 	}
       }
     }
   }
 
-  // Si !make_tileable, on relie à la source le pixel haut gauche de patch \cap image
+  // If !make_tileable, link the top left pixel in patch \cap image to the
+  // source.
   if (!make_tileable) {
     graphe->add_tweights (first_node, MAX_CAPACITY, 0);
   }
 
 
 ////////////////////////////////////////////////////////////////////////////////
-// Calcul de la coupe
+// Compute the cut.
 
   graphe->maxflow ();
 
 ////////////////////////////////////////////////////////////////////////////////
-// Mise_a_jour de l'image
+// Update the image.
 
   for (real_x_i = x_inf; real_x_i < x_sup; real_x_i++) {
     x_p = real_x_i - patch_posn[0];
@@ -316,7 +315,7 @@ decoupe_graphe (int* patch_posn,
   }
 
 ////////////////////////////////////////////////////////////////////////////////
-//On nettoie tout
+// Clean up.
 
   delete graphe;
   free (node_of_pixel);
