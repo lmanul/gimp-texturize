@@ -68,6 +68,17 @@ paste_patch_pixel_to_image(int width_i, int height_i, int width_p, int height_p,
   int k;
   for (k = 0; k < channels; k++) {
     image[(y_i * width_i + x_i) * channels + k] = patch[(y_p * width_p + x_p) * channels + k];
+/*
+  Might become useful again if we start taking old cuts into account again.
+  if (y_i < height_i - 1 && y_p < height_p - 1){
+    for(k = 0; k < channels; k++)
+      coupe_v_here[((y_i + 1) * width_i + x_i) * channels + k] = patch[((y_p + 1) * width_p + x_p) * channels + k];
+  }
+  if (x_i < width_i - 1 && x_p < width_p - 1) {
+    for(k = 0; k < channels; k++)
+      coupe_h_here[(y_i * width_i + x_i + 1) * channels + k] = patch[(y_p * width_p + x_p + 1) * channels + k];
+   }
+  */
   }
 }
 
