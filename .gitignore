@@ -1,0 +1,16 @@
+Makefile
+config.h
+config.log
+config.status
+help/Makefile
+help/en/Makefile
+help/images/Makefile
+intltool-extract
+intltool-merge
+intltool-update
+po/Makefile
+po/Makefile.in
+po/POTFILES
+src/.deps/
+src/Makefile
+stamp-h1
