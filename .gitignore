@@ -11,6 +11,9 @@ intltool-update
 po/Makefile
 po/Makefile.in
 po/POTFILES
+po/*.gmo
 src/.deps/
+src/*.o
 src/Makefile
+src/texturize
 stamp-h1
