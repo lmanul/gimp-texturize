@@ -24,7 +24,7 @@ render (gint32        image_ID,
 {
 
 /////////////////////                               ////////////////////
-/////////////////////   Déclarations de variables   ////////////////////
+/////////////////////      Variable declaration     ////////////////////
 /////////////////////                               ////////////////////
 
   gint32 new_image_id = 0;
@@ -36,40 +36,42 @@ render (gint32        image_ID,
 
   GimpPixelRgn rgn_in, rgn_out;
   gint width_i, height_i, width_p, height_p;
-  gint channels; // 3 pour RVB, 1 pour grayscale
+  gint channels; // 3 for RVB, 1 for grayscale
 
-  gint k, x_i, y_i; // Moult compteurs
+  gint k, x_i, y_i; // Many counters
 
-  guchar * patch; // Stockage de l'image originale
-  guchar * image; // Zone qui permet de transférer l'image actuelle dans un tableau 3d
+  guchar * patch; // To store the original image
+  guchar * image; // Buffer to store the current image in a 3d array
 
-  // Pour stocker les pixels qu'on a jetés le long des coupes.
-  guchar * coupe_h_here;  // pixel (x,y) du patch auquel appartient le
-                          // pixel de gauche (on n'utilisera donc pas la
-                          // 1ere colonne de ce tableau)
+  // These are for storing the pixels we have discarded along the cuts.
+  guchar * coupe_h_here;  // pixel (x,y) of the patch to which belongs the pixel
+                          // on the left (we will thus not use the first
+                          // column of this array).
 
-  guchar * coupe_h_west;  // pixel de gauche du patch auquel appartient
-                          // le pixel (x,y) (id pr la 1ere colonne)
-  guchar * coupe_v_here;  // pixel (x,y) du patch auquel appartient le
-                          // pixel d'au dessus (on n'utilisera pas la
-                          // 1ere ligne de ce tableau)
-  guchar * coupe_v_north; // pixel d'au dessus du patch auquel appartient
-			  // le pixel (x,y) (id pr la 1ere ligne)
+  guchar * coupe_h_west;  // Pixel to the left of the patch to which belongs the
+                          // pixel (x,y) (same for the first column).
 
-  guchar ** rempli; // Pour savoir quels sont les pixels déjà remplis
-  //0 ssi le pixel n'est pas rempli
-  //1 si le pixel est rempli et sans coupes
-  //3 s'il y a une coupe vers le haut
-  //5 si vers la gauche
-  //7 si les deux
-  //C'est-à-dire que le bit de poids faible est "rempli?", le précédent est "coupe_haut?".
+  guchar * coupe_v_here;  // pixel (x,y) of the patch to which belongs the pixel
+                          // to the top (we will thus not use the first
+                          // line of this array).
 
-  int cur_posn[2];          // La position du pixel à remplir
-  int patch_posn[2];        // La position où l'on va coller le patch pour remplir ce pixel
-  int x_off_min, y_off_min; // Valeurs max et min de l'offset,
-  int x_off_max, y_off_max; // ie vecteur retranché à cur_posn pour obtenir patch_posn
+  guchar * coupe_v_north; // Pixel to the top of the patch to which belongs the
+                          // pixel (x,y) (same for the first line).
 
-  float progress; // barre de progression affichée pendant le traitement
+  guchar ** rempli; // To keep track of which pixels have been filled.
+  // 0 iff the pixel isn't filled
+  // 1 if the pixel is filled and wihout any cuts
+  // 3 if there is an upwards cut
+  // 5 if there is a cut towards the left
+  // 7 if both
+  // I.e. the weak bit is "filled?", the previous bit is "upwards_cut?".
+
+  int cur_posn[2];          // The position of the pixel to be filled.
+  int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
+  int x_off_min, y_off_min; // Max and min values of the offset, i.e. the vector
+  int x_off_max, y_off_max; // substracted from cur_posn to get patch_posn.
+
+  float progress; // Progress bar displayed during computation.
   gimp_progress_init ("Texturizing image...");
 
 ///////////////////////                           //////////////////////
@@ -84,8 +86,7 @@ render (gint32        image_ID,
 
   //g_warning ("Tileable : %i\n", vals->make_tileable);
 
-  /* On détermine le type de l'image et on choisit celui de la
-   * nouvelle image en conséquence */
+  /* Figure out the type of the new image according to the original image */
   switch (gimp_drawable_type (drawable_id)) {
   case GIMP_RGB_IMAGE:
   case GIMP_RGBA_IMAGE:
@@ -115,24 +116,22 @@ render (gint32        image_ID,
 ////////////////////////////   Recouvrement   ///////////////////////////
 ////////////////////////////                  ///////////////////////////
 
-  /* ATTENTION : ici les conventions ne sont pas forcément intuitives.
-   * Avec la façon dont on détecte à chaque fois le prochain pixel à
-   * remplir, les offsets sont toujours des valeurs négatives (on pose
-   * le patch vers le haut et la gauche). En revanche, {x,y}_off_* sont
-   * positifs, avec x_off_max < x_off_min. */
+  /* WARNING: our conventions here aren't necessarily intuitive. Given the way
+     that we detect the next pixel to fill, offsets are always negative values
+     (we paste the patch a little above and to the left). However, {x,y}_off_*
+     are positive values, and x_off_max < x_off_min. */
 
-
-  // Valeurs heuristiques à affiner quand on aura de l'expérience.
+  // Heuristic values, to refine when we get more experience.
   x_off_min = MIN (vals->overlap, width_p - 1);
   y_off_min = MIN (vals->overlap, height_p - 1);
-  x_off_max = CLAMP (20, x_off_min/3, width_p -1); /* On sait x_off_min/5 < width_p -1 */
-  y_off_max = CLAMP (20, y_off_min/3, height_p - 1); /* On sait y_off_min/5 < height_p-1 */
+  x_off_max = CLAMP (20, x_off_min/3, width_p -1); /* We know that x_off_min/5 < width_p -1 */
+  y_off_max = CLAMP (20, y_off_min/3, height_p - 1); /* We know that y_off_min/5 < height_p-1 */
 
 //////////////////                                     /////////////////
-//////////////////   Nouvelle image, initialisations   /////////////////
+//////////////////      New image, initializations     /////////////////
 //////////////////                                     /////////////////
 
-  // On crée une nouvelle image avec un seul calque
+  // Create a new image with only one layer.
   new_image_id = gimp_image_new (width_i,height_i,image_type);
   new_layer_id = gimp_layer_new (new_image_id, "Texture",
 				 width_i, height_i,
@@ -140,11 +139,11 @@ render (gint32        image_ID,
   gimp_image_add_layer (new_image_id, new_layer_id, 0);
   new_drawable = gimp_drawable_get (new_layer_id);
 
-  // On initialise les régions de destination et de départ
+  // Initialize in and out regions.
   gimp_pixel_rgn_init (&rgn_out, new_drawable, 0, 0, width_i, height_i, TRUE, TRUE);
   gimp_pixel_rgn_init (&rgn_in, drawable, 0, 0, width_p, height_p, FALSE, FALSE);
 
-  // On alloue de la mémoire pour tout le monde
+  // Allocate some memory for everyone.
   patch = g_new (guchar,width_p * height_p * channels);
   image = g_new (guchar,width_i * height_i * channels);
   rempli = init_guchar_tab_2d (width_i, height_i);
@@ -154,7 +153,7 @@ render (gint32        image_ID,
   coupe_v_here  = g_new (guchar, width_i * height_i * channels);
   coupe_v_north = g_new (guchar, width_i * height_i * channels);
 
-  // Par sécurité, on initialise à 0.
+  // For security, initialize everything to 0.
   for (k = 0; k < width_i * height_i * channels; k++)
     coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
 
@@ -163,32 +162,31 @@ render (gint32        image_ID,
 //////////////////                                    /////////////////
 
 
-  // On récupère l'image de départ dans la variable patch
+  // Retrieve the initial image into the patch.
   gimp_pixel_rgn_get_rect (&rgn_in, patch, 0, 0, width_p, height_p);
 
- // Puis on colle un premier patch en (0,0) de l'image d'arrivée
+  // Then paste a first patch at position (0,0) of the out image.
   gimp_pixel_rgn_set_rect (&rgn_out, patch, 0, 0, width_p, height_p);
 
-  // On dit qu'on a déjà rempli les pixels correspondants
+  // And declare we have already filled in the corresponding pixels.
   for (x_i = 0; x_i < width_p; x_i++) {
     for (y_i = 0; y_i < height_p; y_i++) rempli[x_i][y_i] = 1;
   }
 
-  // On récupère toute l'image courante dans image
+  // Retrieve all of the current image into image.
   gimp_pixel_rgn_get_rect (&rgn_out, image, 0, 0, width_i, height_i);
 
 
 /////////////////////////                      ////////////////////////
-/////////////////////////   La grande boucle   ////////////////////////
+/////////////////////////     The big loop     ////////////////////////
 /////////////////////////                      ////////////////////////
 
 
-  // La position courante : (0,0)
+  // The current position : (0,0)
   cur_posn[0] = 0; cur_posn[1] = 0;
 
   while (compter_remplis (rempli,width_i,height_i) < (width_i * height_i)) {
-    /* On met à jour la position courante : c'est le prochain pixel
-     * à remplir. */
+    /* Update the current position: it's the next pixel to fill. */
     if (pixel_a_remplir (rempli, width_i, height_i, cur_posn) == NULL) {
       g_message (_("There was a problem when filling the new image."));
       exit(-1);
@@ -215,19 +213,19 @@ render (gint32        image_ID,
 		    vals->make_tileable,
 		    FALSE);
 
-    // On affiche la progression du traitement
+    // Display progress to the user.
     progress = ((float) compter_remplis (rempli, width_i, height_i)) / ((float)(width_i * height_i));
     gimp_progress_update(progress);
   }
 
 
 //////////////////////                             /////////////////////
-//////////////////////   Derniers coups de balai   /////////////////////
+//////////////////////        Last clean up        /////////////////////
 //////////////////////                             /////////////////////
 
 
 /*
-  //Pour voir où passent les coupes
+  // To see where cuts are.
   guchar * image_coupes;
   image_coupes = g_new(guchar, width_i*height_i*channels);
   for (k=0;k<width_i*height_i*channels;k++) image_coupes[k] = 255;
@@ -260,8 +258,7 @@ render (gint32        image_ID,
   g_free (coupe_v_here);
   g_free (coupe_v_north);
 
-  /* Enfin, on retourne l'identifiant de la nouvelle image pour
-   * que la fonction main puisse ouvrir une nouvelle fenêtre et
-   * l'afficher */
+  /* Finally return the ID of the new image, for the main function to display
+     it */
   return new_image_id;
 }
