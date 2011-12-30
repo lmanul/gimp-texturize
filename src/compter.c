@@ -14,6 +14,7 @@
 #include "plugin-intl.h"
 
 
+// Counts the number of pixels that are already filled.
 int
 compter_remplis (guchar **rempli, int width_i, int height_i) {
   int x_i, y_i;
@@ -27,6 +28,7 @@ compter_remplis (guchar **rempli, int width_i, int height_i) {
   return somme;
 }
 
+// Finds the next pixel that needs to be filled.
 int *
 pixel_a_remplir (guchar **rempli, int width_i, int height_i, int *resultat) {
   int x_i, y_i;
