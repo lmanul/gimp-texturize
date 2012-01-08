@@ -6,8 +6,8 @@ dnl Name your plug-in here
 m4_define([plugin_name], [gimp-texturize])
 
 dnl These three define the plug-in version number
-m4_define([plugin_major_version], [1])
-m4_define([plugin_minor_version], [0])
+m4_define([plugin_major_version], [2])
+m4_define([plugin_minor_version], [2])
 
 m4_define([plugin_version],
           [plugin_major_version.plugin_minor_version])
