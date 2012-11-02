@@ -8,9 +8,10 @@ m4_define([plugin_name], [gimp-texturize])
 dnl These three define the plug-in version number
 m4_define([plugin_major_version], [2])
 m4_define([plugin_minor_version], [2])
+m4_define([plugin_micro_version], [0])
 
 m4_define([plugin_version],
-          [plugin_major_version.plugin_minor_version])
+          [plugin_major_version.plugin_minor_version.plugin_micro_version])
 
 AC_INIT([plugin_name], [plugin_version])
 
@@ -19,6 +20,7 @@ AC_DEFINE(PLUGIN_VERSION, PACKAGE_VERSION, [Plug-In version])
 
 AC_DEFINE(PLUGIN_MAJOR_VERSION, plugin_major_version, [Plug-In major version])
 AC_DEFINE(PLUGIN_MINOR_VERSION, plugin_minor_version, [Plug-In minor version])
+AC_DEFINE(PLUGIN_MICRO_VERSION, plugin_micro_version, [Plug-In micro version])
 
 AC_CONFIG_SRCDIR([src/main.c])
 AM_CONFIG_HEADER(config.h)

@@ -22,103 +22,10 @@ test -z "$srcdir" && srcdir=.
 ORIGDIR=`pwd`
 cd $srcdir
 
-check_version ()
-{
-    if expr $1 \>= $2 > /dev/null; then
-	echo "yes (version $1)"
-    else
-	echo "Too old (found version $1)!"
-	DIE=1
-    fi
-}
-
-echo
-echo "I am testing that you have the required versions of autoconf," 
-echo "automake, glib-gettextize and intltoolize..."
-echo
-
 DIE=0
 
-echo -n "checking for autoconf >= $AUTOCONF_REQUIRED_VERSION ... "
-if (autoconf --version) < /dev/null > /dev/null 2>&1; then
-    VER=`autoconf --version \
-         | grep -iw autoconf | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
-    check_version $VER $AUTOCONF_REQUIRED_VERSION
-else
-    echo
-    echo "  You must have autoconf installed to compile $PROJECT."
-    echo "  Download the appropriate package for your distribution,"
-    echo "  or get the source tarball at ftp://ftp.gnu.org/pub/gnu/"
-    DIE=1;
-fi
-
-echo -n "checking for automake >= $AUTOMAKE_REQUIRED_VERSION ... "
-if (automake-1.7 --version) < /dev/null > /dev/null 2>&1; then
-   AUTOMAKE=automake-1.7
-   ACLOCAL=aclocal-1.7
-elif (automake-1.8 --version) < /dev/null > /dev/null 2>&1; then
-   AUTOMAKE=automake-1.8
-   ACLOCAL=aclocal-1.8
-elif (automake-1.9 --version) < /dev/null > /dev/null 2>&1; then
-   AUTOMAKE=automake-1.9
-   ACLOCAL=aclocal-1.9
-elif (automake-1.6 --version) < /dev/null > /dev/null 2>&1; then
-   AUTOMAKE=automake-1.6
-   ACLOCAL=aclocal-1.6
-else
-    echo
-    echo "  You must have automake 1.6 or newer installed to compile $PROJECT."
-    echo "  Download the appropriate package for your distribution,"
-    echo "  or get the source tarball at ftp://ftp.gnu.org/pub/gnu/automake/"
-    DIE=1
-fi
-
-if test x$AUTOMAKE != x; then
-    VER=`$AUTOMAKE --version \
-         | grep automake | sed "s/.* \([0-9.]*\)[-a-z0-9]*$/\1/"`
-    check_version $VER $AUTOMAKE_REQUIRED_VERSION
-fi
-
-echo -n "checking for glib-gettextize >= $GLIB_REQUIRED_VERSION ... "
-if (glib-gettextize --version) < /dev/null > /dev/null 2>&1; then
-    VER=`glib-gettextize --version \
-         | grep glib-gettextize | sed "s/.* \([0-9.]*\)/\1/"`
-    check_version $VER $GLIB_REQUIRED_VERSION
-else
-    echo
-    echo "  You must have glib-gettextize installed to compile $PROJECT."
-    echo "  glib-gettextize is part of glib-2.0, so you should already"
-    echo "  have it. Make sure it is in your PATH."
-    DIE=1
-fi
-
-echo -n "checking for intltool >= $INTLTOOL_REQUIRED_VERSION ... "
-if (intltoolize --version) < /dev/null > /dev/null 2>&1; then
-    VER=`intltoolize --version \
-         | grep intltoolize | sed "s/.* \([0-9.]*\)/\1/"`
-    check_version $VER $INTLTOOL_REQUIRED_VERSION
-else
-    echo
-    echo "  You must have intltool installed to compile $PROJECT."
-    echo "  Get the latest version from"
-    echo "  ftp://ftp.gnome.org/pub/GNOME/sources/intltool/"
-    DIE=1
-fi
-
-if test "$DIE" -eq 1; then
-    echo
-    echo "Please install/upgrade the missing tools and call me again."
-    echo	
-    exit 1
-fi
-
-
-#test $TEST_TYPE $FILE || {
-#    echo
-#    echo "You must run this script in the top-level $PROJECT directory."
-#    echo
-#    exit 1
-#}
+AUTOMAKE=automake
+ACLOCAL=aclocal
 
 
 echo

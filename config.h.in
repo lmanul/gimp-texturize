@@ -69,6 +69,9 @@
 /* Plug-In major version */
 #undef PLUGIN_MAJOR_VERSION
 
+/* Plug-In micro version */
+#undef PLUGIN_MICRO_VERSION
+
 /* Plug-In minor version */
 #undef PLUGIN_MINOR_VERSION
 
