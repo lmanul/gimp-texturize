@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The Texturize plugin for The GIMP</title>
+	<link rel="stylesheet" href="texturize.css" />
+</head>
+
+<body>
+
+<a href="index.html">&lt;&lt; Back to the main page</a>
+
+<h2>Known limitations (work to do for 
+next versions)</h2>
+
+<ul>
+
+<li>A refinement step isn't yet implemented. It would improve some 
+of the discontinuities in the texturized images, and decrease the 
+periodicity.</li>
+
+<li>When the image's brightness is not uniform, the resulting 
+texture doesn't look good. This could be solved by removing the 
+very low frequency brightness variations before applying the 
+algorithm. Here are a few examples of this problem :</li>
+
+</ul>
+
+<center>
+<table cols="2" border="2">
+<tr><th>Title</th><th>Original</th><th>Texturized</th></tr>
+<tr>
+<td>Clouds</td>
+<td>
+<a href="Images/Clouds_base.jpg">
+<img src="Images/Clouds_base_thumbnail.jpg">
+</a>
+</td>
+<td>
+<a href="Images/Clouds.jpg">
+<img src="Images/Clouds_thumbnail.jpg">
+</a>
+</td>
+</tr>
+
+<tr>
+<td>Drops</td>
+<td>
+<a href="Images/Drops_base.jpg">
+<img src="Images/Drops_base_thumbnail.jpg">
+</a>
+</td>
+<td>
+<a href="Images/Drops.jpg">
+<img src="Images/Drops_thumbnail.jpg">
+</a>
+</td>
+</tr>
+
+<tr>
+<td>Wood</td>
+<td>
+<a href="Images/Wood_base.jpg">
+<img src="Images/Wood_base_thumbnail.jpg">
+</a>
+</td>
+<td>
+<a href="Images/Wood.jpg">
+<img src="Images/Wood_thumbnail.jpg">
+</a>
+</td>
+</tr>
+</center>
+
+
+<!--
+<tr>
+<td></td>
+<td>
+<a href="Images/_base.jpg">
+<img src="Images/_base_thumbnail.jpg">
+</a>
+</td>
+<td>
+<a href="Images/.jpg">
+<img src="Images/_thumbnail.jpg">
+</a>
+</td>
+</tr>
+-->
+
+</table>
+
+</body>
+</html>

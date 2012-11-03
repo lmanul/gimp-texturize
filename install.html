@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The Texturize plugin for The GIMP</title>
+	<link rel="stylesheet" href="texturize.css" />
+</head>
+
+<body>
+
+<a href="index.html"><< Back to the main page</a>
+
+<h2>Installation</h2>
+
+For all systems, you should already have The GIMP
+installed on your computer. It seems that the plugin doesn't work with Gimp version 2.3, reports welcome. You can get The GIMP <a href="http://gimp-win.sourceforge.net/stable.html" onClick="javascript:urchinTracker('/out/gimp-win.sourceforge.net/stable.html');">here</a>
+for Windows, 
+<a href="http://gimp-app.sourceforge.net/">here</a> for Mac OS X and <a 
+href="http://www.gimp.org/unix/">here</a> for Unix/Linux.
+
+<h3>Windows</h3>
+
+After downloading the Windows version of the 
+plugin, just unzip the file and put it into your GIMP plugins directory. 
+The plugins directory should be located at <tt>C:\Program 
+Files\GIMP-2.2\lib\gimp\2.0\plugins</tt> (replace the beginning of this 
+path by wherever you installed the GIMP program).
+
+<br>
+<br>
+
+Then quit The GIMP if it was open, and launch it again to let it load 
+the new plugin.
+
+<h3>Linux</h3>
+<h4>Debian package</h4>
+If you're using Debian or (K,X)ubuntu, just install the package gimp-texturize,
+with a package manager like synaptic or with the command line:<br>
+<code>sudo apt-get install gimp-texturize</code> .
+
+<h4>Gentoo ebuild</h4>
+Thanks to Dennis Lichtenth&auml;ler, there is an
+<a href="http://bugs.gentoo.org/show_bug.cgi?id=213837">ebuild for Gentoo Linux</a> and its package management system, Portage.
+Here is a howto about <a href="http://gentoo-wiki.com/HOWTO_Installing_3rd_Party_Ebuilds">Installing 3rd party ebuilds</a>.
+
+<h4>From source</h4> 
+
+<ul>
+
+<li>Expand the archive :</li>
+<br>
+<tt>tar xvzf texturize_gimp_plugin_version_1.0.tgz</tt>
+<br>
+<br>
+
+<li>Move to the <tt>texturize</tt> directory :</li>
+<br>
+<tt>cd texturize</tt>
+<br>
+<br>
+
+<li>Run the configure script, compile and install the plugin :</li>
+<br>
+<tt>./configure && make && make install</tt>
+<br>
+<br>
+This last command (<tt>make install</tt>) needs to be run 
+with root privileges (make it <tt>sudo make install</tt>
+if you have <tt>sudo</tt> installed). Once installed, restart Gimp.
+
+</ul>
+
+If the <tt>configure</tt> script tells you that it needs libraries that 
+are not yet installed (the GIMP development environment for instance), 
+install them first with your usual package manager then run 
+<tt>./configure</tt> again.
+
+<h3>Mac</h3>
+
+<ul>
+<li>Download and unzip the binary.</li> 
+<li>Make it executable, with something like:<br /><br />
+<code>chmod a+x texturize_mac</code><br /><br /></li>
+<li>Copy this file to either
+  ~/.gimp-2.2/plug-ins or
+  /Application/Gimp.app/Contents/Resources/lib/gimp/2.0/plug-ins</li>
+
+<li>Restart The Gimp.</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<style type="text/css">
+<!-- 
+
+/*  */
+/*  */
+/*  */
+
+body {
+}
+
+
+body h1 {
+	color: black;
+	text-align: center;
+}
+
+body h2 {
+	color: darkred;
+	font-size: 170%;
+	text-align: center;
+}
+
+body h3 {
+	color: darkgreen;
+	font-size: 150%;
+	text-align: left;
+}
+
+#presentation {
+	float: left;
+	width: 45%;
+}
+
+#shortcuts {
+	text-align: center;
+	background-color: aliceblue;
+	font-weight: bold;
+	font-size: 120%;
+	border: 1px solid lightblue;
+	float: left;
+	width: 45%;
+}
+
+#shortcuts img {
+	border: 0;
+	text-align: center;
+}
+
+#shortcuts a {
+	text-decoration: none;
+}
+
+
+#shortcuts a:hover {
+	color: red;
+}
+-->

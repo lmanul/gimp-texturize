@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>The Texturize plugin for The GIMP</title>
+	<link rel="stylesheet" href="texturize.css" />
+</head>
+
+<body>
+
+<a href="index.html">&lt;&lt; Back to the main page</a>
+
+<h2>What is the texturize plugin ?</h2>
+
+<h3>What is it good for ?</h3>
+
+Imagine that you have an image with a small sample of a texture, like a
+few strawberries (out of a plate full of them), a few square inches of
+grass (from a large grassy field), or a few dozens of your cat's hairs
+(your cat really has more than that). If you want to <b>generate a
+larger texture</b> with this small image, you could just copy-paste it,
+and put the copies (or "patches") one next to another, but that wouldn't
+produce a very good result, since the right (or top) part of the image
+usually doesn't correspond to its left (or bottom) part, when two copies
+of the image are assembled.
+
+<br>
+<br>
+
+<center><img src="Images/Bad.png"></center>
+
+<br>
+<br>
+
+A few images are indeed designed to be copy-pasted one next to another
+and still look natural, but the result is usually periodic and very
+monotonous (it looks like wallpaper -- the one on your walls, not the
+one on your computer desktop!).
+
+<br>
+<br>
+
+The Texturize plugin allows you to get all the strawberries, the whole
+grass field, or your whole cat (well, it doesn't guess you cat's shape,
+but you can at least get a lot of his hairs!). Moreover, Texturize
+lets you actually create tileable textures (which is great for game
+design). Have a look at the <a
+href="examples.html">examples section</a> to see what it looks like.
+
+<h3>A program named "The GIMP" ? Is that a joke ?</h3>
+
+It sure isn't! GIMP stands for "GNU Image Manipulation Program". You
+probably already know Photoshop, the leader image program by Adobe. 
+Well, GIMP does pretty much the same as Photoshop (if you are a
+Photoshop power user, you'll find that it still lacks some functions,
+though). With a small difference: Photoshop costs several hundreds of
+dollars, whereas GIMP costs absolutely nothing (it is "open source"
+software, just like <a
+href="http://www.mozilla.org/products/firefox/">Firefox</a>, <a
+href="http://www.linux.org/">Linux</a>, or <a
+href="http://www.openoffice.org">OpenOffice.org</a>). You can download
+it for free from <a href="http://www.gimp.org">www.gimp.org</a>, for
+Windows, Mac OS X or Linux. And our plugin is designed for The GIMP.
+
+<h3>Similar software</h3> 
+
+<a href="http://www.logarithmic.net/pfh/resynthesizer">Resynthesizer</a>
+and <a href="http://www.logarithmic.net/pfh/textureops">Textureops</a>
+are two gimp plugins from the same author that do a similar job with
+different algorithms.
+
+<h3>Who wrote the plugin ?</h3>
+
+The two authors of the first version are <a
+href="http://www.manucornet.net">Emmanuel Cornet</a> and <a
+href="http://perso.ens-lyon.fr/jean-baptiste.rouquier/">Jean-Baptiste
+Rouquier</a>, students in the "Ecole normale supérieure" (ENS) in
+France. This plugin is the result of a school project in a Computer
+Vision class, for <a href="http://cermics.enpc.fr/~keriven/">Renaud
+Keriven</a> (teacher). However, its development continues even after
+the class is finished.
+
+<br>
+<br>
+
+The Texturize plugin is based on a theoretical computer science article,
+called <a 
+href="http://www.cc.gatech.edu/cpl/projects/graphcuttextures">"Graphcut 
+Textures: Image and Video Synthesis Using Graph Cuts"</a>,
+written by <a href="http://www.cc.gatech.edu/%7Ekwatra/">Vivek
+Kwatra</a>, <a href="http://www.schoedl.org">Arno
+Schödl</a>, <a href="http://www.cc.gatech.edu/%7Eirfan/">Irfan Essa</a>,
+<a href="http://www.cc.gatech.edu/%7Eturk">Greg Turk</a> and <a
+href="http://www.cc.gatech.edu/%7Eafb">Aaron Bobick</a>. 
+
+<br>
+<br>
+
+We also borrowed a little part of our code (the graph cut part) from <a
+href="http://www.csd.uwo.ca/faculty/yuri/index.html">Yuri
+Boykov</a> and <a href="http://www.cs.cornell.edu/People/vnk/">Vladimir
+Kolmogorov</a>. <a
+href="http://www.csd.uwo.ca/faculty/yuri/Abstracts/pami04-abs.html">Here</a>
+is the webpage of their article (with a link to the code).
+
+<br>
+<br>
+
+The plugin is fully translated into French.
+
+</body>
+</html>
