@@ -7,13 +7,20 @@ canvas. The copies aren't complete: we cut the border so that the transition is
 invisible, and the the texture seems natural.
 
 
-To build and install it, just ...
+If you're under Debian or Ubuntu, before compiling, execute this command:
+  sudo apt-get install gimp libgimp2.0-dev intltool
+Under a different OS, install
+- gimp (you probably already have it...)
+- libgimp2.0-dev (libraries for developping with gimp)
+- intltool (an internationalization tool).
+
+Now to build and install it, just run:
 
 	./configure
 	make
 	make install
 
- ... then (close and) reopen the Gimp. Texturize will be in the "map" menu.
+Then (close and) reopen the Gimp. Texturize will be in the "map" menu.
 
 
 
