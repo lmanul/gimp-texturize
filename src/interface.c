@@ -71,7 +71,6 @@ dialog (gint32              image_ID,
 
 
   // Size of the new image ?
-
   frame = gimp_frame_new (_("Please set the size of the new image\nand the maximum overlap between patches."));
   gtk_box_pack_start (GTK_BOX (main_vbox), frame, FALSE, FALSE, 0);
   gtk_widget_show (frame);
@@ -116,7 +115,6 @@ dialog (gint32              image_ID,
 
 
   // Tileable texture?
-
   tileable_checkbox = gtk_check_button_new_with_mnemonic (_("_Tileable"));
   gtk_box_pack_start (GTK_BOX (main_vbox), tileable_checkbox, FALSE, FALSE, 0);
   gtk_widget_show (tileable_checkbox);
@@ -127,8 +125,7 @@ dialog (gint32              image_ID,
                     G_CALLBACK (gimp_toggle_button_update),
                     &vals->make_tileable);
 
-  // Show the main containers
-
+  // Show the main containers.
   gtk_widget_show (main_vbox);
   gtk_widget_show (dlg);
 

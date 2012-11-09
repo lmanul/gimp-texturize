@@ -3,6 +3,8 @@
 #include <libgimp/gimp.h>
 #include "texturize.h"
 
+// Allocates enough memory for a 2-dimensional table of guchars and
+// initializes all elements to zero.
 guchar **
 init_guchar_tab_2d (gint x, gint y) {
   guchar ** tab;

@@ -45,6 +45,8 @@ pixel_a_remplir (guchar **rempli, int width_i, int height_i, int *resultat) {
   return NULL;
 }
 
+// Quick and dirty implementation of x mod m assuming x isn't greater than
+// 2 m.
 gint
 modulo (gint x, gint m) {
   if (x >= m)   return x - m;

@@ -15,11 +15,10 @@
 
 #include "plugin-intl.h"
 
-/* Computes the distance between image_tab and patch_tab for the zone that's
-   been filled in:
- * (x_min,y_min) -> (x_max,y_max) in image_tab
- * (x_min,y_min)-posn -> (x_max,y_max) - posn in patch_tab */
-
+// Computes the distance between image_tab and patch_tab for the zone that's
+//   been filled in:
+// (x_min,y_min) -> (x_max,y_max) in image_tab
+// (x_min,y_min)-posn -> (x_max,y_max) - posn in patch_tab
 float
 difference (gint width_i, gint height_i, gint width_p, gint height_p,
             guchar * image, guchar * patch,
