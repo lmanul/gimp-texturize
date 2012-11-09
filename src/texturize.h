@@ -1,12 +1,12 @@
-// Counts number of cells != 0 in rempli.
-int compter_remplis (guchar ** rempli, int width_i, int height_i);
+// Counts number of cells != 0 in filled.
+int count_filled_pixels (guchar ** filled, int width_i, int height_i);
 
 // Compute the graph, cuts it and updates the image.
 void decoupe_graphe (
     int* patch_posn, // Where to put the patch.
     int width_i, int height_i, int width_p, int height_p,
     int channels,
-    guchar **rempli, //see render.c. Tells whether the the pixel is filled and if there is a cut here.
+    guchar **filled, //see render.c. Tells whether the the pixel is filled and if there is a cut here.
     guchar  *image, guchar * patch,
     guchar  *coupe_h_here, guchar * coupe_h_west,   // Pixels lost along an old horizontal cut
     guchar  *coupe_v_here, guchar * coupe_v_north,  // idem for vertical cuts
@@ -28,10 +28,10 @@ void offset_optimal (
     gint x_patch_posn_min, gint y_patch_posn_min, gint x_patch_posn_max, gint y_patch_posn_max,
     // Admissible positions for the patch, this function determines the best one.
     gint channels,
-    guchar ** rempli,
+    guchar ** filled,
     gboolean make_tileable);
 
 // Returns the minimal unfilled pixel under lexicographical order (y,x).
-int * pixel_a_remplir (guchar ** rempli, int width_i, int height_i, int* resultat);
+int * pixel_to_fill (guchar ** filled, int width_i, int height_i, int* resultat);
 
 gint modulo (gint x, gint m);

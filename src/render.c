@@ -58,7 +58,7 @@ render (gint32        image_ID,
   guchar * coupe_v_north; // Pixel to the top of the patch to which belongs the
                           // pixel (x,y) (same for the first line).
 
-  guchar ** rempli; // To keep track of which pixels have been filled.
+  guchar ** filled; // To keep track of which pixels have been filled.
   // 0 iff the pixel isn't filled
   // 1 if the pixel is filled and wihout any cuts
   // 3 if there is an upwards cut
@@ -146,7 +146,7 @@ render (gint32        image_ID,
   // Allocate some memory for everyone.
   patch = g_new (guchar,width_p * height_p * channels);
   image = g_new (guchar,width_i * height_i * channels);
-  rempli = init_guchar_tab_2d (width_i, height_i);
+  filled = init_guchar_tab_2d (width_i, height_i);
 
   coupe_h_here  = g_new (guchar, width_i * height_i * channels);
   coupe_h_west  = g_new (guchar, width_i * height_i * channels);
@@ -170,7 +170,7 @@ render (gint32        image_ID,
 
   // And declare we have already filled in the corresponding pixels.
   for (x_i = 0; x_i < width_p; x_i++) {
-    for (y_i = 0; y_i < height_p; y_i++) rempli[x_i][y_i] = 1;
+    for (y_i = 0; y_i < height_p; y_i++) filled[x_i][y_i] = 1;
   }
 
   // Retrieve all of the current image into image.
@@ -185,9 +185,9 @@ render (gint32        image_ID,
   // The current position : (0,0)
   cur_posn[0] = 0; cur_posn[1] = 0;
 
-  while (compter_remplis (rempli,width_i,height_i) < (width_i * height_i)) {
+  while (count_filled_pixels (filled,width_i,height_i) < (width_i * height_i)) {
     /* Update the current position: it's the next pixel to fill. */
-    if (pixel_a_remplir (rempli, width_i, height_i, cur_posn) == NULL) {
+    if (pixel_to_fill (filled, width_i, height_i, cur_posn) == NULL) {
       g_message (_("There was a problem when filling the new image."));
       exit(-1);
     };
@@ -200,13 +200,13 @@ render (gint32        image_ID,
 		    cur_posn[0] - x_off_max,
 		    cur_posn[1] - y_off_max,
 		    channels,
-		    rempli,
+		    filled,
 		    vals->make_tileable);
 
     decoupe_graphe (patch_posn,
 		    width_i, height_i, width_p, height_p,
 		    channels,
-		    rempli,
+		    filled,
 		    image,
 		    patch,
 		    coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
@@ -214,7 +214,7 @@ render (gint32        image_ID,
 		    FALSE);
 
     // Display progress to the user.
-    progress = ((float) compter_remplis (rempli, width_i, height_i)) / ((float)(width_i * height_i));
+    progress = ((float) count_filled_pixels (filled, width_i, height_i)) / ((float)(width_i * height_i));
     gimp_progress_update(progress);
   }
 
@@ -232,7 +232,7 @@ render (gint32        image_ID,
 
   for(x_i=1; x_i<width_i; x_i++){
     for(y_i=1; y_i<height_i; y_i++){
-      guchar r = rempli[x_i][y_i];
+      guchar r = filled[x_i][y_i];
       if (HAS_CUT_NORTH(r) || HAS_CUT_WEST(r)){
         for (k=0; k<channels; k++)
           image_coupes[(y_i*width_i +x_i)*channels +k] = 0;
