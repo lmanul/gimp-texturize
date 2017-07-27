@@ -12,6 +12,7 @@ po/Makefile
 po/Makefile.in
 po/POTFILES
 po/*.gmo
+po/stamp-it
 src/.deps/
 src/*.o
 src/Makefile
