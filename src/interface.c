@@ -2,7 +2,6 @@
 
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
-#include <libgimp/gimpimage_pdb.h>
 #include <libgimpwidgets/gimpwidgets.h>
 
 #include "main.h"

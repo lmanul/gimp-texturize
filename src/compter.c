@@ -5,7 +5,6 @@
 
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
-#include <libgimp/gimpimage_pdb.h>
 
 #include "main.h"
 #include "render.h"

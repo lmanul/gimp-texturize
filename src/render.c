@@ -6,7 +6,6 @@
 #include <gtk/gtk.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
-#include <libgimp/gimpimage_pdb.h>
 #include "plugin-intl.h"
 
 #include "main.h"
