@@ -74,7 +74,7 @@ render (gint32        image_ID,
   gimp_progress_init ("Texturizing image...");
 
 ///////////////////////                           //////////////////////
-///////////////////////   Dimensions de l'image   //////////////////////
+///////////////////////      Image dimensions     //////////////////////
 ///////////////////////                           //////////////////////
 
   width_i  = image_vals->width_i;
@@ -157,7 +157,7 @@ render (gint32        image_ID,
     coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
 
 //////////////////                                    /////////////////
-//////////////////   Nettoyage de la nouvelle image   /////////////////
+//////////////////    Cleaning up of the new image    /////////////////
 //////////////////                                    /////////////////
 
 
