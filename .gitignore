@@ -5,8 +5,10 @@ aclocal.m4
 autom4te.cache/
 compile
 config.h
+config.h.in
 config.log
 config.status
+configure
 help/Makefile
 help/en/Makefile
 help/images/Makefile
