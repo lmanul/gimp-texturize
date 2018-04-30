@@ -1,6 +1,7 @@
 *~
 Makefile
 Makefile.in
+aclocal.m4
 autom4te.cache/
 compile
 config.h
@@ -14,6 +15,7 @@ intltool-merge
 intltool-update
 po/Makefile
 po/Makefile.in
+po/Makefile.in.in
 po/POTFILES
 po/*.gmo
 po/stamp-it
