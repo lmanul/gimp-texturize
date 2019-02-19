@@ -62,7 +62,7 @@ offset_optimal (gint    *resultat,
                 gint     channels, guchar **filled,
                 gboolean tileable) {
   gint x_i, y_i;
-  float best_difference = HUGE, tmp_difference;
+  float best_difference = INFINITY, tmp_difference;
 
   for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
     for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
