@@ -24,33 +24,66 @@ difference (gint width_i, gint height_i, gint width_p, gint height_p,
             gint posn_x, gint posn_y,
             gint x_min, gint y_min, gint x_max, gint y_max,
             gint channels, guchar ** filled) {
-  gint    somme = 0, zone=0, x_i, y_i, k;
+
+  gint    somme = 0, zone=0;
+  gint    x_i, y_i, k;
   guchar *image_ptr, *patch_ptr;
-  gint    real_y_i, real_x_i;
 
-  for (y_i = y_min; y_i < y_max; y_i++) {
-    real_y_i = modulo (y_i, height_i);
+  gint x_p, y_p;
+  gint x_i_start, x_p_start;
+  gint xcount, ycount;
+  gint iy, ix;
+  guchar *image_ptr_x, *patch_ptr_x;
+  gint image_add_y, patch_add_y;
 
-    image_ptr = image + (real_y_i * width_i
-			 + modulo (x_min, width_i)) * channels;
-    patch_ptr = patch + ((real_y_i - posn_y) * width_p
-			 + modulo (x_min, width_i) - posn_x) * channels;
+  // source image edges is looping
 
-    for (x_i = x_min; x_i < x_max; x_i++) {
-      real_x_i = modulo (x_i, width_i);
+  ycount = y_max - y_min;
+  xcount = x_max - x_min;
 
-      if (filled[real_x_i][real_y_i]) {
+  y_i = modulo(y_min, height_i);
+  x_i_start = modulo(x_min, width_i);
+
+  y_p = modulo(y_i - posn_y, height_p);
+  x_p_start = modulo(x_i_start - posn_x, width_p);
+
+  image_add_y = width_i * channels;
+  patch_add_y = width_p * channels;
+  image_ptr_x = image + y_i * image_add_y;
+  patch_ptr_x = patch + y_p * patch_add_y;
+
+  for(iy = 0; iy < ycount; iy++) {
+
+    x_i = x_i_start;
+    x_p = x_p_start;
+    image_ptr = image_ptr_x + x_i * channels;
+    patch_ptr = patch_ptr_x + x_p * channels;
+
+    for (ix = 0; ix < xcount; ix++) {
+      if (filled[x_i][y_i]) {
         for (k = 0 ; k < channels; k++) {
-          somme += abs (*image_ptr++ - *patch_ptr++);
-          zone ++;
+          somme += abs (*image_ptr - *patch_ptr);
+          image_ptr++;
+          patch_ptr++;
+          zone++;
         }
       } else {
         image_ptr += channels;
         patch_ptr += channels;
       }
+
+      if (++x_i >= width_i) { x_i = 0; image_ptr = image_ptr_x; }
+      if (++x_p >= width_p) { x_p = 0; patch_ptr = patch_ptr_x; }
     }
+
+    image_ptr_x += image_add_y;
+    patch_ptr_x += patch_add_y;
+
+    if (++y_i >= height_i) { y_i = 0; image_ptr_x = image; }
+    if (++y_p >= height_p) { y_p = 0; patch_ptr_x = patch; }
   }
-  if (zone == 0) {printf("Bug: Zone = 0\n"); exit(-1);}
+
+  if (zone == 0) {g_message(_("Bug: Zone = 0")); exit(-1);}
   return (((float) somme) / ((float) zone));
 }
 
@@ -64,28 +97,38 @@ offset_optimal (gint    *resultat,
   gint x_i, y_i;
   float best_difference = INFINITY, tmp_difference;
 
-  for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
-    for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
-      if (tileable) { /* Move this test outside the loops? */
+  if (tileable) {
+    for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
+      for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
+        
         tmp_difference = difference (
-          width_i, height_i,
-          width_p, height_p,
-          image, patch,
+          width_i, height_i, width_p, height_p, image, patch,
           x_i, y_i,
-          MAX (0, x_i), MAX (0, y_i), x_i + width_p, y_i + height_p,
+          MAX (0, x_i), MAX (0, y_i),
+          x_i + width_p, y_i + height_p,
           channels, filled);
-      } else {
-        tmp_difference = difference (
-          width_i, height_i,
-          width_p, height_p,
-          image, patch,
-          x_i, y_i,
-          MAX (0,x_i), MAX (0,y_i), MIN (x_i + width_p, width_i), MIN (y_i + height_p, height_i),
-          channels, filled);
+        
+        if (tmp_difference < best_difference) {
+          best_difference = tmp_difference;
+          resultat[0] = x_i; resultat[1] = y_i;
+        }
       }
-      if (tmp_difference < best_difference) {
-        best_difference = tmp_difference;
-        resultat[0] = x_i; resultat[1] = y_i;
+    }
+  } else {
+    for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
+      for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
+        
+        tmp_difference = difference (
+          width_i, height_i, width_p, height_p, image, patch,
+          x_i, y_i,
+          MAX (0,x_i), MAX (0,y_i),
+          MIN (x_i + width_p, width_i), MIN (y_i + height_p, height_i),
+          channels, filled);
+        
+        if (tmp_difference < best_difference) {
+          best_difference = tmp_difference;
+          resultat[0] = x_i; resultat[1] = y_i;
+        }
       }
     }
   }
