@@ -77,11 +77,19 @@ render (gint32        image_ID,
 ///////////////////////      Image dimensions     //////////////////////
 ///////////////////////                           //////////////////////
 
-  width_i  = image_vals->width_i;
-  height_i = image_vals->height_i;
+  width_i  = vals->width_i;
+  height_i = vals->height_i;
   width_p  = image_vals->width_p;
   height_p = image_vals->height_p;
   channels = gimp_drawable_bpp (drawable->drawable_id);
+
+  if (width_i == width_p && height_i == height_p) {
+    g_message(_("New image size and original image size are the same."));
+    return -1;
+  } else if (width_i <= width_p || height_i <= height_p) {
+    g_message(_("New image size is too small."));
+    return -1;
+  }
 
   //g_warning ("Tileable : %i\n", vals->make_tileable);
 
@@ -183,8 +191,12 @@ render (gint32        image_ID,
 
   // The current position : (0,0)
   cur_posn[0] = 0; cur_posn[1] = 0;
+  int count = count_filled_pixels (filled,width_i,height_i);
+  int count_max = width_i * height_i;
 
-  while (count_filled_pixels (filled,width_i,height_i) < (width_i * height_i)) {
+  while (1) {
+    if (count >= count_max) break;
+
     /* Update the current position: it's the next pixel to fill. */
     if (pixel_to_fill (filled, width_i, height_i, cur_posn) == NULL) {
       g_message (_("There was a problem when filling the new image."));
@@ -213,7 +225,9 @@ render (gint32        image_ID,
 		    FALSE);
 
     // Display progress to the user.
-    progress = ((float) count_filled_pixels (filled, width_i, height_i)) / ((float)(width_i * height_i));
+    count = count_filled_pixels (filled, width_i, height_i);
+    progress = ((float) count) / ((float) count_max);
+    progress = (progress > 1.0f)? 1.0f : ((progress < 0.0f)? 0.0f : progress);
     gimp_progress_update(progress);
   }
 

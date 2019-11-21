@@ -4,10 +4,10 @@
 
 typedef struct
 {
+  gint     width_i;
+  gint     height_i;
   gint     overlap;
   gboolean make_tileable;
-  guint    seed;
-  gboolean random_seed;
 } PlugInVals;
 
 typedef struct
@@ -15,8 +15,6 @@ typedef struct
   gint32 image_id;
   gint width_p;
   gint height_p;
-  gint width_i;
-  gint height_i;
 } PlugInImageVals;
 
 typedef struct
