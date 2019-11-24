@@ -46,8 +46,12 @@ dialog (gint32              image_ID,
   image_vals->width_p  = gimp_image_width(image_ID);
   image_vals->height_p = gimp_image_height(image_ID);
   // Here are the default values of the dialog box
-  image_vals->width_i  = 2 * image_vals->width_p;
-  image_vals->height_i = 2 * image_vals->height_p;
+  if (vals->width_i < image_vals->width_p
+      || vals->height_i < image_vals->height_p) {
+    vals->width_i  = 2 * image_vals->width_p;
+    vals->height_i = 2 * image_vals->height_p;
+  }
+
   vals->overlap = 100;
   vals->make_tileable = FALSE;
 
@@ -83,22 +87,35 @@ dialog (gint32              image_ID,
   row = 0;
 
   // Width of the new image?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Width :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-                              image_vals->width_i, image_vals->width_p,20*image_vals->width_p, 1, 10, 0, TRUE, 0, 0,
+  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Width :"),
+                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              vals->width_i,
+                              image_vals->width_p,
+                              20 * image_vals->width_p,
+                              1, 10, 0, TRUE, 0, 0,
                               _("Set the new image's width"), NULL);
-  g_signal_connect (adj, "value_changed",
-                    G_CALLBACK (gimp_int_adjustment_update), &image_vals->width_i);
 
-  // Height of the new image?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Height :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-                              image_vals->height_i, image_vals->height_p,20*image_vals->height_p, 1, 10, 0, TRUE, 0, 0,
-                              _("Set the new image's height"), NULL);
   g_signal_connect (adj, "value_changed",
                     G_CALLBACK (gimp_int_adjustment_update),
-                    &image_vals->height_i);
+                    &vals->width_i);
+
+  // Height of the new image?
+  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Height :"),
+                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                              vals->height_i,
+                              image_vals->height_p,
+                              20*image_vals->height_p,
+                              1, 10, 0, TRUE, 0, 0,
+                              _("Set the new image's height"), NULL);
+
+  g_signal_connect (adj, "value_changed",
+                    G_CALLBACK (gimp_int_adjustment_update),
+                    &vals->height_i);
 
   // Patch overlap?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++, _("Overlap (pixels) :"), SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,
+                              _("Overlap (pixels) :"),
+                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
                               vals->overlap,
                               MIN(25, MIN(image_vals->width_p - 1 ,image_vals->height_p - 1)),
                               MIN(image_vals->width_p, image_vals->height_p),
@@ -107,8 +124,8 @@ dialog (gint32              image_ID,
                                 "but longer texturizing "
                                 "and tend to make periodic results)"),
                               NULL);
-  g_signal_connect (adj,
-                    "value_changed",
+  
+  g_signal_connect (adj, "value_changed",
                     G_CALLBACK (gimp_int_adjustment_update),
                     &vals->overlap);
 
@@ -120,6 +137,7 @@ dialog (gint32              image_ID,
   gimp_help_set_help_data (tileable_checkbox,
                            _("Selects if to create a tileable texture"),
                            NULL);
+  
   g_signal_connect (GTK_WIDGET (tileable_checkbox), "toggled",
                     G_CALLBACK (gimp_toggle_button_update),
                     &vals->make_tileable);

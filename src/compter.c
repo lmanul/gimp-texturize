@@ -48,9 +48,6 @@ pixel_to_fill (guchar **filled, int width_i, int height_i, int *resultat) {
 // 2 m.
 gint
 modulo (gint x, gint m) {
-  if (x >= m)   return x - m;
-  else {
-    if (x >= 0) return x;
-    else        return x + m;
-  }
+  int v = (x - (m * (x / m)));
+  return (v >= 0)? v : v + m;
 }

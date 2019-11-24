@@ -29,17 +29,17 @@ static void run (const gchar      *name,
 /*  Local variables  */
 const PlugInVals default_vals =
 {
-  5,
-  FALSE,
-  0,
-  FALSE
+  0,      // width_i
+  0,      // height_i
+  5,      // overlap
+  FALSE,  // tileable
 };
 
 const PlugInImageVals default_image_vals =
 {
-  0,
-  500,
-  500
+  0,        // image_id
+  500,      // width_p
+  500       // height_p
 };
 
 const PlugInDrawableVals default_drawable_vals =
@@ -78,11 +78,10 @@ query (void) {
     { GIMP_PDB_INT32,    "run_mode",   "Interactive, non-interactive"    },
     { GIMP_PDB_IMAGE,    "image",      "Input image"                     },
     { GIMP_PDB_DRAWABLE, "drawable",   "Input drawable"                  },
-    { GIMP_PDB_INT32,    "dummy",      "dummy1"                          },
-    { GIMP_PDB_INT32,    "dummy",      "dummy2"                          },
-    { GIMP_PDB_INT32,    "dummy",      "dummy3"                          },
-    { GIMP_PDB_INT32,    "seed",       "Seed value (used only if randomize is FALSE)" },
-    { GIMP_PDB_INT32,    "randomize",  "Use a random seed (TRUE, FALSE)" }
+    { GIMP_PDB_INT32,    "width_i",    "New image width"                 },
+    { GIMP_PDB_INT32,    "height_i",   "New image height"                },
+    { GIMP_PDB_INT32,    "overlap",    "Overlap"                         },
+    { GIMP_PDB_INT32,    "tileable",   "Tileable"                        },
   };
 
   gimp_plugin_domain_register (PLUGIN_NAME, LOCALEDIR);
@@ -143,15 +142,23 @@ run (const gchar      *name,
   drawable_vals = default_drawable_vals;
   ui_vals       = default_ui_vals;
 
+  image_vals.width_p  = gimp_image_width(image_ID);
+  image_vals.height_p = gimp_image_height(image_ID);
+
   if (strcmp (name, PROCEDURE_NAME) == 0) {
     switch (run_mode) {
     case GIMP_RUN_NONINTERACTIVE:
-      if (n_params != 8) {
+      if (n_params != 7) {
         status = GIMP_PDB_CALLING_ERROR;
       } else {
-        vals.random_seed = param[7].data.d_int32;
-        if (vals.random_seed)
-          vals.seed = g_random_int ();
+        vals.width_i       = param[3].data.d_int32;
+        vals.height_i      = param[4].data.d_int32;
+        vals.overlap       = param[5].data.d_int32;
+        vals.make_tileable = param[6].data.d_int32;
+
+        // vals.random_seed = param[7].data.d_int32;
+        // if (vals.random_seed)
+        //   vals.seed = g_random_int ();
       }
       break;
 
@@ -170,8 +177,8 @@ run (const gchar      *name,
       /*  Possibly retrieve data  */
       gimp_get_data (DATA_KEY_VALS, &vals);
 
-      if (vals.random_seed)
-        vals.seed = g_random_int ();
+      // if (vals.random_seed)
+      //   vals.seed = g_random_int ();
       break;
 
     default:
@@ -182,7 +189,8 @@ run (const gchar      *name,
   }
 
   if (status == GIMP_PDB_SUCCESS) {
-    new_image_id = render (image_ID, drawable, &vals, &image_vals, &drawable_vals);
+    new_image_id = render (image_ID, drawable,
+                           &vals, &image_vals, &drawable_vals);
 
     if (run_mode != GIMP_RUN_NONINTERACTIVE)
       gimp_displays_flush ();
@@ -193,15 +201,15 @@ run (const gchar      *name,
     }
 
     gimp_drawable_detach (drawable);
-  }
+
+    // If new_image_id = -1, there has been an error (indexed colors ?).
+    if (new_image_id != -1)
+      gimp_display_new(new_image_id);
+    else {
+      g_message(_("There was a problem when opening the new image."));
+    }
+ }
 
   values[0].type = GIMP_PDB_STATUS;
   values[0].data.d_status = status;
-
-  // If new_image_id = -1, there has been an error (indexed colors ?).
-  if (new_image_id != -1)
-    gimp_display_new(new_image_id);
-  else {
-    g_message(_("There was a problem when opening the new image."));
-  }
 }
