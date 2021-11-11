@@ -7,12 +7,16 @@ FILES_TO_DELETE = [
   "configure",
   "config.h",
   "config.h.in",
+  "config.log",
   "config.status",
+  "Makefile",
   "Makefile.in",
   "help/Makefile",
   "help/en/Makefile",
   "help/images/Makefile",
   "src/*.o",
+  "src/.deps",
+  "src/Makefile",
 ]
 
 os.system("rm -rf " + " ".join(FILES_TO_DELETE))

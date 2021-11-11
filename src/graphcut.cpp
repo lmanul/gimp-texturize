@@ -1,4 +1,3 @@
-extern "C" {
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +7,8 @@ extern "C" {
 #include <libgimp/gimpui.h>
 #include "plugin-intl.h"
 
+extern "C" {
+#include "compter.h"
 #include "main.h"
 #include "render.h"
 #include "texturize.h"
