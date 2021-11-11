@@ -12,6 +12,7 @@ FILES_TO_DELETE = [
   "help/Makefile",
   "help/en/Makefile",
   "help/images/Makefile",
+  "src/*.o",
 ]
 
 os.system("rm -rf " + " ".join(FILES_TO_DELETE))
