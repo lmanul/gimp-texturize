@@ -1,0 +1,14 @@
+#!/usr/bin/python3
+
+import os
+
+FILES_TO_DELETE = [
+  "autom4te.cache",
+  "configure",
+  "config.h",
+  "config.h.in",
+  "config.status",
+  "Makefile.in",
+]
+
+os.system("rm -rf " + " ".join(FILES_TO_DELETE))
