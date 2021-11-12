@@ -14,13 +14,11 @@
 
 /*  Public functions  */
 
-gint32
-render (gint32        image_ID,
-	GimpDrawable       *drawable,
-	PlugInVals         *vals,
-	PlugInImageVals    *image_vals,
-	PlugInDrawableVals *drawable_vals)
-{
+gint32 render(gint32        image_ID,
+              GimpDrawable       *drawable,
+              PlugInVals         *vals,
+              PlugInImageVals    *image_vals,
+              PlugInDrawableVals *drawable_vals) {
 
 /////////////////////                               ////////////////////
 /////////////////////      Variable declaration     ////////////////////
@@ -139,26 +137,26 @@ render (gint32        image_ID,
 //////////////////                                     /////////////////
 
   // Create a new image with only one layer.
-  new_image_id = gimp_image_new (width_i,height_i,image_type);
-  new_layer_id = gimp_layer_new (new_image_id, "Texture",
-				 width_i, height_i,
-				 drawable_type, 100, GIMP_NORMAL_MODE);
-  gimp_image_add_layer (new_image_id, new_layer_id, 0);
-  new_drawable = gimp_drawable_get (new_layer_id);
+  new_image_id = gimp_image_new(width_i,height_i,image_type);
+  new_layer_id = gimp_layer_new(new_image_id, "Texture",
+                                width_i, height_i,
+                                drawable_type, 100, GIMP_NORMAL_MODE);
+  gimp_image_add_layer(new_image_id, new_layer_id, 0);
+  new_drawable = gimp_drawable_get(new_layer_id);
 
   // Initialize in and out regions.
-  gimp_pixel_rgn_init (&rgn_out, new_drawable, 0, 0, width_i, height_i, TRUE, TRUE);
-  gimp_pixel_rgn_init (&rgn_in, drawable, 0, 0, width_p, height_p, FALSE, FALSE);
+  gimp_pixel_rgn_init(&rgn_out, new_drawable, 0, 0, width_i, height_i, TRUE, TRUE);
+  gimp_pixel_rgn_init(&rgn_in, drawable, 0, 0, width_p, height_p, FALSE, FALSE);
 
   // Allocate some memory for everyone.
-  patch = g_new (guchar,width_p * height_p * channels);
-  image = g_new (guchar,width_i * height_i * channels);
+  patch = g_new(guchar,width_p * height_p * channels);
+  image = g_new(guchar,width_i * height_i * channels);
   filled = init_guchar_tab_2d (width_i, height_i);
 
-  coupe_h_here  = g_new (guchar, width_i * height_i * channels);
-  coupe_h_west  = g_new (guchar, width_i * height_i * channels);
-  coupe_v_here  = g_new (guchar, width_i * height_i * channels);
-  coupe_v_north = g_new (guchar, width_i * height_i * channels);
+  coupe_h_here  = g_new(guchar, width_i * height_i * channels);
+  coupe_h_west  = g_new(guchar, width_i * height_i * channels);
+  coupe_v_here  = g_new(guchar, width_i * height_i * channels);
+  coupe_v_north = g_new(guchar, width_i * height_i * channels);
 
   // For security, initialize everything to 0.
   for (k = 0; k < width_i * height_i * channels; k++)
@@ -167,7 +165,6 @@ render (gint32        image_ID,
 //////////////////                                    /////////////////
 //////////////////    Cleaning up of the new image    /////////////////
 //////////////////                                    /////////////////
-
 
   // Retrieve the initial image into the patch.
   gimp_pixel_rgn_get_rect (&rgn_in, patch, 0, 0, width_p, height_p);
@@ -203,26 +200,26 @@ render (gint32        image_ID,
       exit(-1);
     };
 
-    offset_optimal (patch_posn,
-		    image, patch,
-		    width_p, height_p, width_i, height_i,
-		    cur_posn[0] - x_off_min,
-		    cur_posn[1] - y_off_min,
-		    cur_posn[0] - x_off_max,
-		    cur_posn[1] - y_off_max,
-		    channels,
-		    filled,
-		    vals->make_tileable);
+    offset_optimal(patch_posn,
+                   image, patch,
+                   width_p, height_p, width_i, height_i,
+                   cur_posn[0] - x_off_min,
+                   cur_posn[1] - y_off_min,
+                   cur_posn[0] - x_off_max,
+                   cur_posn[1] - y_off_max,
+                   channels,
+                   filled,
+                   vals->make_tileable);
 
-    decoupe_graphe (patch_posn,
-		    width_i, height_i, width_p, height_p,
-		    channels,
-		    filled,
-		    image,
-		    patch,
-		    coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
-		    vals->make_tileable,
-		    FALSE);
+    decoupe_graphe(patch_posn,
+                   width_i, height_i, width_p, height_p,
+                   channels,
+                   filled,
+                   image,
+                   patch,
+                   coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
+                   vals->make_tileable,
+                   FALSE);
 
     // Display progress to the user.
     count = count_filled_pixels (filled, width_i, height_i);
@@ -257,19 +254,19 @@ render (gint32        image_ID,
 */
 
 
-  gimp_pixel_rgn_set_rect (&rgn_out, image, 0, 0, width_i, height_i);
+  gimp_pixel_rgn_set_rect(&rgn_out, image, 0, 0, width_i, height_i);
 
-  gimp_drawable_flush (new_drawable);
+  gimp_drawable_flush(new_drawable);
   gimp_drawable_merge_shadow (new_drawable->drawable_id, TRUE);
-  gimp_drawable_update (new_drawable->drawable_id, 0, 0, width_i, height_i);
-  gimp_drawable_detach (new_drawable);
-  gimp_displays_flush ();
+  gimp_drawable_update(new_drawable->drawable_id, 0, 0, width_i, height_i);
+  gimp_drawable_detach(new_drawable);
+  gimp_displays_flush();
 
-  g_free (patch);
-  g_free (coupe_h_here);
-  g_free (coupe_h_west);
-  g_free (coupe_v_here);
-  g_free (coupe_v_north);
+  g_free(patch);
+  g_free(coupe_h_here);
+  g_free(coupe_h_west);
+  g_free(coupe_v_here);
+  g_free(coupe_v_north);
 
   /* Finally return the ID of the new image, for the main function to display
      it */

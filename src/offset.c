@@ -18,12 +18,11 @@
 //   been filled in:
 // (x_min,y_min) -> (x_max,y_max) in image_tab
 // (x_min,y_min)-posn -> (x_max,y_max) - posn in patch_tab
-float
-difference (gint width_i, gint height_i, gint width_p, gint height_p,
-            guchar * image, guchar * patch,
-            gint posn_x, gint posn_y,
-            gint x_min, gint y_min, gint x_max, gint y_max,
-            gint channels, guchar ** filled) {
+float difference(gint width_i, gint height_i, gint width_p, gint height_p,
+                 guchar * image, guchar * patch,
+                 gint posn_x, gint posn_y,
+                 gint x_min, gint y_min, gint x_max, gint y_max,
+                 gint channels, guchar ** filled) {
 
   gint    somme = 0, zone=0;
   gint    x_i, y_i, k;
@@ -52,7 +51,7 @@ difference (gint width_i, gint height_i, gint width_p, gint height_p,
   image_ptr_x = image + y_i * image_add_y;
   patch_ptr_x = patch + y_p * patch_add_y;
 
-  for(iy = 0; iy < ycount; iy++) {
+  for (iy = 0; iy < ycount; iy++) {
 
     x_i = x_i_start;
     x_p = x_p_start;
@@ -87,27 +86,26 @@ difference (gint width_i, gint height_i, gint width_p, gint height_p,
   return (((float) somme) / ((float) zone));
 }
 
-void
-offset_optimal (gint    *resultat,
-                guchar  *image, guchar *patch,
-                gint     width_p, gint height_p, gint width_i, gint height_i,
-                gint     x_patch_posn_min, gint y_patch_posn_min, gint x_patch_posn_max, gint y_patch_posn_max,
-                gint     channels, guchar **filled,
-                gboolean tileable) {
+void offset_optimal(gint    *resultat,
+                    guchar  *image, guchar *patch,
+                    gint     width_p, gint height_p, gint width_i, gint height_i,
+                    gint     x_patch_posn_min, gint y_patch_posn_min, gint x_patch_posn_max, gint y_patch_posn_max,
+                    gint     channels, guchar **filled,
+                    gboolean tileable) {
   gint x_i, y_i;
   float best_difference = INFINITY, tmp_difference;
 
   if (tileable) {
     for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
       for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
-        
+
         tmp_difference = difference (
           width_i, height_i, width_p, height_p, image, patch,
           x_i, y_i,
           MAX (0, x_i), MAX (0, y_i),
           x_i + width_p, y_i + height_p,
           channels, filled);
-        
+
         if (tmp_difference < best_difference) {
           best_difference = tmp_difference;
           resultat[0] = x_i; resultat[1] = y_i;
@@ -117,14 +115,14 @@ offset_optimal (gint    *resultat,
   } else {
     for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
       for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
-        
+
         tmp_difference = difference (
           width_i, height_i, width_p, height_p, image, patch,
           x_i, y_i,
           MAX (0,x_i), MAX (0,y_i),
           MIN (x_i + width_p, width_i), MIN (y_i + height_p, height_i),
           channels, filled);
-        
+
         if (tmp_difference < best_difference) {
           best_difference = tmp_difference;
           resultat[0] = x_i; resultat[1] = y_i;
