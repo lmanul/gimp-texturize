@@ -27,13 +27,12 @@ static PlugInUIVals *ui_state = NULL;
 
 /*  Public functions  */
 
-gboolean
-dialog (gint32              image_ID,
-        GimpDrawable       *drawable,
-        PlugInVals         *vals,
-        PlugInImageVals    *image_vals,
-        PlugInDrawableVals *drawable_vals,
-        PlugInUIVals       *ui_vals) {
+gboolean dialog (gint32              image_ID,
+                 GimpDrawable       *drawable,
+                 PlugInVals         *vals,
+                 PlugInImageVals    *image_vals,
+                 PlugInDrawableVals *drawable_vals,
+                 PlugInUIVals       *ui_vals) {
   GtkWidget *dlg;
   GtkWidget *main_vbox;
   GtkWidget *frame;
@@ -59,7 +58,7 @@ dialog (gint32              image_ID,
 
   gimp_ui_init (PLUGIN_NAME, TRUE);
 
-  dlg = gimp_dialog_new (
+  dlg = gimp_dialog_new(
     _("Texturize Plug-in for GIMP"),
     PLUGIN_NAME,
     NULL, GTK_DIALOG_MODAL,
@@ -71,7 +70,6 @@ dialog (gint32              image_ID,
   main_vbox = gtk_vbox_new (FALSE, 12);
   gtk_container_set_border_width (GTK_CONTAINER (main_vbox), 12);
   gtk_container_add (GTK_CONTAINER (GTK_DIALOG (dlg)->vbox), main_vbox);
-
 
   // Size of the new image ?
   frame = gimp_frame_new (_("Please set the size of the new image\nand the maximum overlap between patches."));
@@ -87,64 +85,64 @@ dialog (gint32              image_ID,
   row = 0;
 
   // Width of the new image?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Width :"),
-                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-                              vals->width_i,
-                              image_vals->width_p,
-                              20 * image_vals->width_p,
-                              1, 10, 0, TRUE, 0, 0,
-                              _("Set the new image's width"), NULL);
+  adj = gimp_scale_entry_new(GTK_TABLE (table), 0, row++,_("Width :"),
+                             SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                             vals->width_i,
+                             image_vals->width_p,
+                             20 * image_vals->width_p,
+                             1, 10, 0, TRUE, 0, 0,
+                             _("Set the new image's width"), NULL);
 
-  g_signal_connect (adj, "value_changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &vals->width_i);
+  g_signal_connect(adj, "value_changed",
+                   G_CALLBACK (gimp_int_adjustment_update),
+                   &vals->width_i);
 
   // Height of the new image?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,_("Height :"),
-                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-                              vals->height_i,
-                              image_vals->height_p,
-                              20*image_vals->height_p,
-                              1, 10, 0, TRUE, 0, 0,
-                              _("Set the new image's height"), NULL);
+  adj = gimp_scale_entry_new(GTK_TABLE (table), 0, row++,_("Height :"),
+                             SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                             vals->height_i,
+                             image_vals->height_p,
+                             20*image_vals->height_p,
+                             1, 10, 0, TRUE, 0, 0,
+                             _("Set the new image's height"), NULL);
 
-  g_signal_connect (adj, "value_changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &vals->height_i);
+  g_signal_connect(adj, "value_changed",
+                   G_CALLBACK (gimp_int_adjustment_update),
+                   &vals->height_i);
 
   // Patch overlap?
-  adj = gimp_scale_entry_new (GTK_TABLE (table), 0, row++,
-                              _("Overlap (pixels) :"),
-                              SCALE_WIDTH, SPIN_BUTTON_WIDTH,
-                              vals->overlap,
-                              MIN(25, MIN(image_vals->width_p - 1 ,image_vals->height_p - 1)),
-                              MIN(image_vals->width_p, image_vals->height_p),
-                              5, 10, 0, TRUE, 0, 0,
-                              _("Set the overlap between patches (larger values make better "
-                                "but longer texturizing "
-                                "and tend to make periodic results)"),
-                              NULL);
-  
-  g_signal_connect (adj, "value_changed",
-                    G_CALLBACK (gimp_int_adjustment_update),
-                    &vals->overlap);
+  adj = gimp_scale_entry_new(GTK_TABLE (table), 0, row++,
+                             _("Overlap (pixels) :"),
+                             SCALE_WIDTH, SPIN_BUTTON_WIDTH,
+                             vals->overlap,
+                             MIN(25, MIN(image_vals->width_p - 1 ,image_vals->height_p - 1)),
+                             MIN(image_vals->width_p, image_vals->height_p),
+                             5, 10, 0, TRUE, 0, 0,
+                             _("Set the overlap between patches (larger values make better "
+                               "but longer texturizing "
+                               "and tend to make periodic results)"),
+                             NULL);
+
+  g_signal_connect(adj, "value_changed",
+                   G_CALLBACK (gimp_int_adjustment_update),
+                   &vals->overlap);
 
 
   // Tileable texture?
-  tileable_checkbox = gtk_check_button_new_with_mnemonic (_("_Tileable"));
-  gtk_box_pack_start (GTK_BOX (main_vbox), tileable_checkbox, FALSE, FALSE, 0);
-  gtk_widget_show (tileable_checkbox);
-  gimp_help_set_help_data (tileable_checkbox,
-                           _("Selects if to create a tileable texture"),
-                           NULL);
-  
-  g_signal_connect (GTK_WIDGET (tileable_checkbox), "toggled",
-                    G_CALLBACK (gimp_toggle_button_update),
-                    &vals->make_tileable);
+  tileable_checkbox = gtk_check_button_new_with_mnemonic(_("_Tileable"));
+  gtk_box_pack_start(GTK_BOX (main_vbox), tileable_checkbox, FALSE, FALSE, 0);
+  gtk_widget_show(tileable_checkbox);
+  gimp_help_set_help_data(tileable_checkbox,
+                          _("Selects if to create a tileable texture"),
+                          NULL);
+
+  g_signal_connect(GTK_WIDGET (tileable_checkbox), "toggled",
+                   G_CALLBACK (gimp_toggle_button_update),
+                   &vals->make_tileable);
 
   // Show the main containers.
-  gtk_widget_show (main_vbox);
-  gtk_widget_show (dlg);
+  gtk_widget_show(main_vbox);
+  gtk_widget_show(dlg);
 
   run = (gimp_dialog_run (GIMP_DIALOG (dlg)) == GTK_RESPONSE_OK);
 
