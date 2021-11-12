@@ -24,9 +24,7 @@ extern "C" {
 
 // ||pixel1 - pixel2||^2
 // From experience, squares seem to work better than another type of norm.
-inline Graph::captype
-cost (guchar * pixel1, guchar * pixel2, int channels)
-{
+inline Graph::captype cost (guchar * pixel1, guchar * pixel2, int channels) {
   int diff, result = 0;
   for (int c = 0; c < channels; c++){
     diff = pixel1[c] - pixel2[c];
@@ -37,9 +35,7 @@ cost (guchar * pixel1, guchar * pixel2, int channels)
   // MAX_CAPACITY.
 }
 
-inline Graph::captype
-gradient (guchar * pixel1, guchar * pixel2, int channels)
-{
+inline Graph::captype gradient (guchar * pixel1, guchar * pixel2, int channels) {
   int diff, result = 0;
   for (int c = 0; c < channels; c++){
     diff = pixel1[c] - pixel2[c];
@@ -50,48 +46,43 @@ gradient (guchar * pixel1, guchar * pixel2, int channels)
 
 // When we write the four arguments to edge_weight on two lines of code,
 // we try to always align things (pixel VS image) so that it makes sense.
-inline Graph::captype
-edge_weight (int channels,
-             guchar * im1_pix1, guchar * im2_pix1,
-             guchar * im1_pix2, guchar * im2_pix2)
-{
+inline Graph::captype edge_weight (int channels,
+                                   guchar * im1_pix1, guchar * im2_pix1,
+                                   guchar * im1_pix2, guchar * im2_pix2) {
   return ((cost(im1_pix1,im2_pix1,channels) + (cost(im1_pix2,im2_pix2,channels)))
           / (gradient(im1_pix1,im1_pix2,channels) + gradient(im2_pix1,im2_pix2,channels) +1));
 }
 
-inline void
-paste_patch_pixel_to_image(int width_i, int height_i, int width_p, int height_p,
-                           int x_i, int y_i, int x_p, int y_p,
-                           int channels,
-                           guchar * image, guchar * patch) {   //,
-                           //guchar * coupe_h_here, guchar * coupe_v_here){
+inline void paste_patch_pixel_to_image(int width_i, int height_i, int width_p, int height_p,
+                                       int x_i, int y_i, int x_p, int y_p,
+                                       int channels,
+                                       guchar * image, guchar * patch) {
   int k;
   for (k = 0; k < channels; k++) {
     image[(y_i * width_i + x_i) * channels + k] = patch[(y_p * width_p + x_p) * channels + k];
-/*
-  Might become useful again if we start taking old cuts into account again.
-  if (y_i < height_i - 1 && y_p < height_p - 1){
-    for(k = 0; k < channels; k++)
+    /*
+      Might become useful again if we start taking old cuts into account again.
+      if (y_i < height_i - 1 && y_p < height_p - 1){
+      for(k = 0; k < channels; k++)
       coupe_v_here[((y_i + 1) * width_i + x_i) * channels + k] = patch[((y_p + 1) * width_p + x_p) * channels + k];
-  }
-  if (x_i < width_i - 1 && x_p < width_p - 1) {
-    for(k = 0; k < channels; k++)
+      }
+      if (x_i < width_i - 1 && x_p < width_p - 1) {
+      for(k = 0; k < channels; k++)
       coupe_h_here[(y_i * width_i + x_i + 1) * channels + k] = patch[(y_p * width_p + x_p + 1) * channels + k];
-   }
-  */
+      }
+    */
   }
 }
 
-void
-decoupe_graphe (int* patch_posn,
-                int width_i, int height_i, int width_p, int height_p,
-                int channels,
-                guchar  **rempli,
-                guchar   *image, guchar * patch,
-                guchar   *coupe_h_here, guchar * coupe_h_west,
-                guchar   *coupe_v_here, guchar * coupe_v_north,
-                gboolean  make_tileable, gboolean invert)
-{
+void decoupe_graphe (int* patch_posn,
+                     int width_i, int height_i, int width_p, int height_p,
+                     int channels,
+                     guchar  **rempli,
+                     guchar   *image, guchar * patch,
+                     guchar   *coupe_h_here, guchar * coupe_h_west,
+                     guchar   *coupe_v_here, guchar * coupe_v_north,
+                     gboolean  make_tileable, gboolean invert) {
+
 ////////////////////////////////////////////////////////////////////////////////
 // Variable declaration.
   gint k, x_p, y_p, x_i, y_i;// nb_sommets, sommet_courant; // Compteurs
@@ -298,7 +289,7 @@ decoupe_graphe (int* patch_posn,
 ////////////////////////////////////////////////////////////////////////////////
 // Compute the cut.
 
-  graphe->maxflow ();
+  graphe->maxflow();
 
 ////////////////////////////////////////////////////////////////////////////////
 // Update the image.
