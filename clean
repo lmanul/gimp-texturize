@@ -3,6 +3,7 @@
 import os
 
 FILES_TO_DELETE = [
+  "aclocal.m4",
   "autom4te.cache",
   "configure",
   "config.h",
