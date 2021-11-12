@@ -20,35 +20,31 @@
 
 /*  Local function prototypes  */
 static void query (void);
-static void run (const gchar      *name,
-		 gint              nparams,
-		 const GimpParam  *param,
-		 gint             *nreturn_vals,
-		 GimpParam       **return_vals);
+static void run(const gchar      *name,
+                gint              nparams,
+                const GimpParam  *param,
+                gint             *nreturn_vals,
+                GimpParam       **return_vals);
 
 /*  Local variables  */
-const PlugInVals default_vals =
-{
+const PlugInVals default_vals = {
   0,      // width_i
   0,      // height_i
   5,      // overlap
   FALSE,  // tileable
 };
 
-const PlugInImageVals default_image_vals =
-{
+const PlugInImageVals default_image_vals = {
   0,        // image_id
   500,      // width_p
   500       // height_p
 };
 
-const PlugInDrawableVals default_drawable_vals =
-{
+const PlugInDrawableVals default_drawable_vals = {
   0
 };
 
-const PlugInUIVals default_ui_vals =
-{
+const PlugInUIVals default_ui_vals = {
   TRUE
 };
 
@@ -58,8 +54,7 @@ static PlugInDrawableVals drawable_vals;
 static PlugInUIVals       ui_vals;
 
 
-GimpPlugInInfo PLUG_IN_INFO =
-{
+GimpPlugInInfo PLUG_IN_INFO = {
   NULL,  /* init_proc  */
   NULL,  /* quit_proc  */
   query, /* query_proc */
@@ -68,13 +63,11 @@ GimpPlugInInfo PLUG_IN_INFO =
 
 MAIN ()
 
-static void
-query (void) {
+static void query(void) {
   gchar *help_path;
   gchar *help_uri;
 
-  static GimpParamDef args[] =
-  {
+  static GimpParamDef args[] = {
     { GIMP_PDB_INT32,    "run_mode",   "Interactive, non-interactive"    },
     { GIMP_PDB_IMAGE,    "image",      "Input image"                     },
     { GIMP_PDB_DRAWABLE, "drawable",   "Input drawable"                  },
@@ -84,13 +77,13 @@ query (void) {
     { GIMP_PDB_INT32,    "tileable",   "Tileable"                        },
   };
 
-  gimp_plugin_domain_register (PLUGIN_NAME, LOCALEDIR);
+  gimp_plugin_domain_register(PLUGIN_NAME, LOCALEDIR);
 
-  help_path = g_build_filename (DATADIR, "help", NULL);
-  help_uri = g_filename_to_uri (help_path, NULL, NULL);
+  help_path = g_build_filename(DATADIR, "help", NULL);
+  help_uri = g_filename_to_uri(help_path, NULL, NULL);
   g_free (help_path);
 
-  gimp_plugin_help_register ("http://www.manucornet.net/Informatique/Texturize.php", help_uri);
+  gimp_plugin_help_register("http://www.manucornet.net/Informatique/Texturize.php", help_uri);
 
   gimp_install_procedure (
     PROCEDURE_NAME,
@@ -108,12 +101,11 @@ query (void) {
   gimp_plugin_menu_register (PROCEDURE_NAME, "<Image>/Filters/Map/");
 }
 
-static void
-run (const gchar      *name,
-     gint              n_params,
-     const GimpParam  *param,
-     gint             *nreturn_vals,
-     GimpParam       **return_vals) {
+static void run (const gchar      *name,
+                 gint              n_params,
+                 const GimpParam  *param,
+                 gint             *nreturn_vals,
+                 GimpParam       **return_vals) {
   static GimpParam   values[1];
   GimpDrawable      *drawable;
   gint32             image_ID;

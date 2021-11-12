@@ -2,28 +2,24 @@
 #define __MAIN_H__
 
 
-typedef struct
-{
+typedef struct {
   gint     width_i;
   gint     height_i;
   gint     overlap;
   gboolean make_tileable;
 } PlugInVals;
 
-typedef struct
-{
+typedef struct {
   gint32 image_id;
   gint width_p;
   gint height_p;
 } PlugInImageVals;
 
-typedef struct
-{
+typedef struct {
   gint32    drawable_id;
 } PlugInDrawableVals;
 
-typedef struct
-{
+typedef struct {
   gboolean  chain_active;
 } PlugInUIVals;
 
