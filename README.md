@@ -6,13 +6,19 @@ canvas. The copies aren't complete: we cut the border so that the transition is
 invisible, and the the texture seems natural.
 
 
-If you're under Debian or Ubuntu, before compiling, execute this command:
-  sudo apt-get install gimp libgimp2.0-dev intltool meson
+If you're under Debian or Ubuntu, install the build dependencies
+
+  sudo apt build-dep gimp-texturize
+
+Also install `meson`:
+
+  sudo apt install meson
+
 Under a different OS, install
-- gimp (you probably already have it...)
-- libgimp2.0-dev (libraries for developping with gimp)
-- intltool (an internationalization tool).
-- meson (the build tool we use)
+- `gimp` (you probably already have that)
+- `libgimp2.0-dev` (libraries for developping with GIMP)
+- `intltool` (an internationalization tool).
+- `meson` (the build tool we use)
 
 # Installation
 
