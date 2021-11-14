@@ -5,6 +5,10 @@ put several copies (patches) of the small image on the big canvas. The copies
 aren't complete: we cut the border so that the transition is invisible, and the
 the texture seems natural.
 
+# Examples
+
+https://lmanul.github.io/gimp-texturize/examples.html
+
 # Dependencies
 
 If you're using a Debian-based system, install the build dependencies
