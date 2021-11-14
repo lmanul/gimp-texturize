@@ -5,6 +5,7 @@ The idea is to put several copies (patches) of the small image on the big
 canvas. The copies aren't complete: we cut the border so that the transition is
 invisible, and the the texture seems natural.
 
+# Dependencies
 
 If you're under Debian or Ubuntu, install the build dependencies
 
