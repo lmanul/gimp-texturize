@@ -43,5 +43,7 @@ Graph Cuts" by Vivek Kwatra, Arno Schödl, Irfan Essa, Greg Turk and Aaron
 Bobick, available from www.cc.gatech.edu/cpl/projects/graphcuttextures.
 
 
-Copyright (C) 2004-2005  Manu Cornet            <m@ma.nu>
-                         Jean-Baptiste Rouquier <firstname.lastname@ens-lyon.org>
+Copyright (C) 2004-2005
+
+* Manu Cornet            <m@ma.nu>
+* Jean-Baptiste Rouquier <firstname.lastname@ens-lyon.org>
