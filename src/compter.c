@@ -6,8 +6,6 @@
 #include "main.h"
 #include "texturize.h"
 
-#include "plugin-intl.h"
-
 // Counts the number of pixels that are already filled.
 int count_filled_pixels(guchar **filled, int width_i, int height_i) {
   int x_i, y_i;
