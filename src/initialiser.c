@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
-#include <libgimp/gimp.h>
+#include <glib.h>
+
 #include "texturize.h"
 
 // Allocates enough memory for a 2-dimensional table of guchars and

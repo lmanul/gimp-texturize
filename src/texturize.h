@@ -1,3 +1,5 @@
+#include <glib.h>
+
 // Counts number of cells != 0 in filled.
 int count_filled_pixels(guchar ** filled, int width_i, int height_i);
 

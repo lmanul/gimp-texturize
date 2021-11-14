@@ -1,6 +1,7 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
+#include <glib.h>
 
 typedef struct {
   gint     width_i;
