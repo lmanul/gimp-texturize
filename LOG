@@ -4,57 +4,57 @@ course in a French university (and since its LOG file shouldn't be useful
 for anybody except the two students who worked on this project), this
 file is written in French.
 
-Ceci est le fichier de LOG de la création du greffon "Texturize". Les
+Ceci est le fichier de LOG de la crÃ©ation du greffon "Texturize". Les
 changements sont dans l'ordre chronologique inverse.
 
 ############################                ###########################
 ############################   2005/02/01   ###########################
 ############################                ###########################
 
-+ Réalisation de la page web dédiée au plugin.
++ RÃ©alisation de la page web dÃ©diÃ©e au plugin.
 
-+ Nettoyage global du code (versions précédentes, débuggage).
++ Nettoyage global du code (versions prÃ©cÃ©dentes, dÃ©buggage).
 
-+ Finalisation de la traduction en français.
++ Finalisation de la traduction en franÃ§ais.
 
 + Nettoyage de graphcut.cpp. Les lignes sont moins longues
-(mais toujours plus que 80 caractères).
+(mais toujours plus que 80 caractÃ¨res).
 
 ############################                ###########################
 ############################   2005/01/31   ###########################
 ############################                ###########################
 
 * On affiche un message d'erreur quand on rencontre une image avec une
-couche alpha (au lieu de traiter l'image tout de même, incorrectement).
+couche alpha (au lieu de traiter l'image tout de mÃªme, incorrectement).
 
-* Retour à la version précédente de la barre de progression.
+* Retour Ã  la version prÃ©cÃ©dente de la barre de progression.
 
-+* La page web du plugin commence à s'étoffer de quelques explications,
-d'exemples et d'une capture d'écran.
++* La page web du plugin commence Ã  s'Ã©toffer de quelques explications,
+d'exemples et d'une capture d'Ã©cran.
 
-+ Le patch et l'image final sont désormais des guchar*
++ Le patch et l'image final sont dÃ©sormais des guchar*
 (et non des guchar***). Le greffon tourne environ 5 fois plus vite.
-J'ai donc enlevé la recommandation d'aller boire un café :-)
+J'ai donc enlevÃ© la recommandation d'aller boire un cafÃ© :-)
 
-+ Le poids d'une arrête tient compte du gradient local : le greffon
-coupe maintenant préférentiellement le long des bords des objets.
++ Le poids d'une arrÃªte tient compte du gradient local : le greffon
+coupe maintenant prÃ©fÃ©rentiellement le long des bords des objets.
 
-+ L'image finale n'est plus initialisée en blanc. Le code est toujours
-présent pour les prochaines sessions de débuggage.
++ L'image finale n'est plus initialisÃ©e en blanc. Le code est toujours
+prÃ©sent pour les prochaines sessions de dÃ©buggage.
 
 ############################                ###########################
 ############################   2005/01/30   ###########################
 ############################                ###########################
 
-+ La barre de progression est plus régulière (on utilise l'ordonnée du
++ La barre de progression est plus rÃ©guliÃ¨re (on utilise l'ordonnÃ©e du
 dernier pixel rempli au lieu du pourcentages de pixels remplis).
 
 ############################                ###########################
 ############################   2005/01/29   ###########################
 ############################                ###########################
 
-+ La coupe min tient désormais compte des anciennes coupes, même sur la
-première passe (remplissage de l'image avant de chercher à cacher les
++ La coupe min tient dÃ©sormais compte des anciennes coupes, mÃªme sur la
+premiÃ¨re passe (remplissage de l'image avant de chercher Ã  cacher les
 mauvaises coutures).
 
 + rempli est maintenant un guchar** (et non un int**).
@@ -65,13 +65,13 @@ mauvaises coutures).
 ############################   2005/01/27   ###########################
 ############################                ###########################
 
-+ J'ai (péniblement) ajouté la détermination de la coupe de poids
++ J'ai (pÃ©niblement) ajoutÃ© la dÃ©termination de la coupe de poids
 minimal. La construction des sommets est une petite horreur de gestion
 des indices si l'on tente de rester propre.
 
-+ Corrigé un bug pour que la taille par défaut de la nouvelle image soit
-par défaut 2 fois la taille de l'image initiale, même si on ne touche
-pas à la boîte de dialogue.
++ CorrigÃ© un bug pour que la taille par dÃ©faut de la nouvelle image soit
+par dÃ©faut 2 fois la taille de l'image initiale, mÃªme si on ne touche
+pas Ã  la boÃ®te de dialogue.
 
 ############################                ###########################
 ############################   2005/01/25   ###########################
@@ -80,217 +80,217 @@ pas à la boîte de dialogue.
 + Rationalisation des noms des variables. Celles concernant l'image
 d'origine (le "patch") se terminent par _p, celle concernant l'image
 finale par _i.
-Corrigé le bug qui faisait coller les patch du haut tous à la même
-ordonnée (ie collés contre le bord). Maintenant ils peuvent déborder.
+CorrigÃ© le bug qui faisait coller les patch du haut tous Ã  la mÃªme
+ordonnÃ©e (ie collÃ©s contre le bord). Maintenant ils peuvent dÃ©border.
 
-+* Journée de travail à deux physiquement à côté. Nettoyages divers dans
++* JournÃ©e de travail Ã  deux physiquement Ã  cÃ´tÃ©. Nettoyages divers dans
 le code.
 
 ############################                ###########################
 ############################   2005/01/18   ###########################
 ############################                ###########################
 
-* C'est bon, l'offset marche ! J'ai aussi implémenté la méthode de JB
-qui consiste non plus à remplir l'image ligne par ligne mais à remplir
-toujours à partir du pixel vide le plus en haut à gauche :
-effectivement, ça marche mieux ! Bon, on approche du but, mais il reste
-encore les graph cut à implémenter (ou plutôt faire le lien avec le code
-déjà disponible) et essayer de se souvenir des coutures déjà faites
-(ça, ce sera le plus chaud).
+* C'est bon, l'offset marche ! J'ai aussi implÃ©mentÃ© la mÃ©thode de JB
+qui consiste non plus Ã  remplir l'image ligne par ligne mais Ã  remplir
+toujours Ã  partir du pixel vide le plus en haut Ã  gauche :
+effectivement, Ã§a marche mieux ! Bon, on approche du but, mais il reste
+encore les graph cut Ã  implÃ©menter (ou plutÃ´t faire le lien avec le code
+dÃ©jÃ  disponible) et essayer de se souvenir des coutures dÃ©jÃ  faites
+(Ã§a, ce sera le plus chaud).
 
 ############################                ###########################
 ############################   2005/01/16   ###########################
 ############################                ###########################
 
-* J'ai commencé à implémenter la fonction d'offset (ajout du fichier
-offset.c). C'est un calcul bête et méchant de similarité entre deux
-images (somme des différences de chaque couple de pixel, en valeur
-absolue). Mais il y a pas mal de sous-cas à traiter pour vérifier qu'on
+* J'ai commencÃ© Ã  implÃ©menter la fonction d'offset (ajout du fichier
+offset.c). C'est un calcul bÃªte et mÃ©chant de similaritÃ© entre deux
+images (somme des diffÃ©rences de chaque couple de pixel, en valeur
+absolue). Mais il y a pas mal de sous-cas Ã  traiter pour vÃ©rifier qu'on
 ne fait pas de segmentation fault, qu'on ne sort pas de l'image, etc.
 
 ############################                ###########################
 ############################   2005/01/15   ###########################
 ############################                ###########################
 
-* Voilà, à ce stade j'ai un greffon qui ne fait rien de super intéressant
-(il se contente de répéter l'image de départ jusqu'à remplir la nouvelle
-image) mais dont le résultat est propre, qui marche aussi pour de très
+* VoilÃ , Ã  ce stade j'ai un greffon qui ne fait rien de super intÃ©ressant
+(il se contente de rÃ©pÃ©ter l'image de dÃ©part jusqu'Ã  remplir la nouvelle
+image) mais dont le rÃ©sultat est propre, qui marche aussi pour de trÃ¨s
 grandes images et qui affiche une belle barre de progression. Demain,
 j'essaierai de trouver du temps pour rendre la fonction "offset" plus
-intéressante (calcul des corrélations, ie du produit de convolution, en
+intÃ©ressante (calcul des corrÃ©lations, ie du produit de convolution, en
 fait).
 
-* La fonction gimp_pixel_rgn_set_rect, qui sert à placer une zone de
-mémoire dans un rectangle de l'image, n'est pas très futée : on lui dit
-quel rectangle de l'image de destination il faut mettre à jour, mais si
-la zone de mémoire n'a pas exactement la même taille, il essaie quand
-même de placer tous les pixels et ça fait du coup des effets bizarres
-(les sortes de distorsions que j'observais tout à l'heure). Il faut donc
-à chaque fois tronquer la zone de mémoire en fonction de la zone de
-l'image de destination qu'on va occuper. C'est réparé.
+* La fonction gimp_pixel_rgn_set_rect, qui sert Ã  placer une zone de
+mÃ©moire dans un rectangle de l'image, n'est pas trÃ¨s futÃ©e : on lui dit
+quel rectangle de l'image de destination il faut mettre Ã  jour, mais si
+la zone de mÃ©moire n'a pas exactement la mÃªme taille, il essaie quand
+mÃªme de placer tous les pixels et Ã§a fait du coup des effets bizarres
+(les sortes de distorsions que j'observais tout Ã  l'heure). Il faut donc
+Ã  chaque fois tronquer la zone de mÃ©moire en fonction de la zone de
+l'image de destination qu'on va occuper. C'est rÃ©parÃ©.
 
-* J'ai ajouté une barre de progression qui renseigne sur le traitement
-de l'image : ça fait plus classe :)
+* J'ai ajoutÃ© une barre de progression qui renseigne sur le traitement
+de l'image : Ã§a fait plus classe :)
 
-* La plupart des fonctions utiles sont posées, mais encore à l'état
+* La plupart des fonctions utiles sont posÃ©es, mais encore Ã  l'Ã©tat
 d'esquisse. Ce que fait le greffon pour l'instant, c'est simplement
-recopier l'image de départ dans la nouvelle jusqu'à remplissage total.
-Il y a des distorsions curieuses à droit de l'image, il faut que je
-règle ça. Prochaine grande étape : faire une fonction de calcul d'offset
+recopier l'image de dÃ©part dans la nouvelle jusqu'Ã  remplissage total.
+Il y a des distorsions curieuses Ã  droit de l'image, il faut que je
+rÃ¨gle Ã§a. Prochaine grande Ã©tape : faire une fonction de calcul d'offset
 intelligente.
 
-* Maintenant que les basses sont bien posées et que je comprends comment
-interagir avec le Gimp, ça devient un peu plus amusant :) Je commence à
-poser les bases des fonctions dont j'aurai besoin, les différentes
+* Maintenant que les basses sont bien posÃ©es et que je comprends comment
+interagir avec le Gimp, Ã§a devient un peu plus amusant :) Je commence Ã 
+poser les bases des fonctions dont j'aurai besoin, les diffÃ©rentes
 boucles, l'architecture du projet.
 
-* En plus de placer l'image de départ en (0,0), je colore le reste en
-tout blanc pour partir sur un bon point de départ (sinon les autres
-pixels sont aléatoires et c'est un peu dégueu). Ça été l'occasion de
-comprendre (à la dure, et avec moult essais/erreurs) comment sont
-organisées les structures de données qui représentent des images : où
-sont les deux coordonnées, où sont les canaux de couleur. Bref, encore
-une fois ce n'était pas du tout, mais vraiment pas du tout documenté ni
-expliqué nulle part, donc il m'a fallu un certain nombre d'essais et
-d'images immondes pour comprendre comment ça marchait, et avant
-d'arriver à faire du blanc bien pur !
+* En plus de placer l'image de dÃ©part en (0,0), je colore le reste en
+tout blanc pour partir sur un bon point de dÃ©part (sinon les autres
+pixels sont alÃ©atoires et c'est un peu dÃ©gueu). Ã‡a Ã©tÃ© l'occasion de
+comprendre (Ã  la dure, et avec moult essais/erreurs) comment sont
+organisÃ©es les structures de donnÃ©es qui reprÃ©sentent des images : oÃ¹
+sont les deux coordonnÃ©es, oÃ¹ sont les canaux de couleur. Bref, encore
+une fois ce n'Ã©tait pas du tout, mais vraiment pas du tout documentÃ© ni
+expliquÃ© nulle part, donc il m'a fallu un certain nombre d'essais et
+d'images immondes pour comprendre comment Ã§a marchait, et avant
+d'arriver Ã  faire du blanc bien pur !
 
-* J'ai trouvé le problème : je travaillais sur une image GIF, à couleurs
-indexées (qui provenait d'ailleurs de la page web de l'article sur
-lequel on se base). L'algo serait censé marcher pour tous les types
-d'images (je gère un nombre de canaux quelconque), mais ici ça ne
+* J'ai trouvÃ© le problÃ¨me : je travaillais sur une image GIF, Ã  couleurs
+indexÃ©es (qui provenait d'ailleurs de la page web de l'article sur
+lequel on se base). L'algo serait censÃ© marcher pour tous les types
+d'images (je gÃ¨re un nombre de canaux quelconque), mais ici Ã§a ne
 marche pas, je ne sais pas pourquoi. J'ai donc mis un message d'erreur
-quand on essaie d'appliquer le greffon sur une image à couleurs indexées,
-je ne vois pas comment résoudre le problème pour l'instant.
+quand on essaie d'appliquer le greffon sur une image Ã  couleurs indexÃ©es,
+je ne vois pas comment rÃ©soudre le problÃ¨me pour l'instant.
 
 * J'ai donc bien une nouvelle image qui s'ouvre, mais j'ai maintenant
-des problèmes pour récupérer les données de l'image de départ et les
-refourguer à la nouvelle. Plus précisément, j'arrive à récupérer les
-données (en les affichant avec des printf, c'est bon), mais je n'arrive
-pas à les remettre dans la nouvelle image. La gestion de la mémoire
-n'est vraiment pas très sympa : si on veut aller chercher les pixels
-dans un rectangle de mémoire, c'est à base de tableau[i*taille_ligne +
+des problÃ¨mes pour rÃ©cupÃ©rer les donnÃ©es de l'image de dÃ©part et les
+refourguer Ã  la nouvelle. Plus prÃ©cisÃ©ment, j'arrive Ã  rÃ©cupÃ©rer les
+donnÃ©es (en les affichant avec des printf, c'est bon), mais je n'arrive
+pas Ã  les remettre dans la nouvelle image. La gestion de la mÃ©moire
+n'est vraiment pas trÃ¨s sympa : si on veut aller chercher les pixels
+dans un rectangle de mÃ©moire, c'est Ã  base de tableau[i*taille_ligne +
 j*taille_colonne + k] avec k variant de 0 au nombre de canaux (RGB,
-etc.). Il y a bien des procédures toutes faites pour lire un
-rectangle d'une région initialisée, et l'écrire dans une autre, mais la
-gestion de la mémoire derrière est telle que ce n'est vraiment pas
-évident de savoir quel type de zone mémoire il faut utiliser pour
-stocker ces données (ça, ça marche pour l'instant) et donner à manger à
-la procédure d'écriture (ça, ça ne marche pas)... Je sens que je vais
-m'empêtrer dans les pointeurs et les malloc exotiques :-p
+etc.). Il y a bien des procÃ©dures toutes faites pour lire un
+rectangle d'une rÃ©gion initialisÃ©e, et l'Ã©crire dans une autre, mais la
+gestion de la mÃ©moire derriÃ¨re est telle que ce n'est vraiment pas
+Ã©vident de savoir quel type de zone mÃ©moire il faut utiliser pour
+stocker ces donnÃ©es (Ã§a, Ã§a marche pour l'instant) et donner Ã  manger Ã 
+la procÃ©dure d'Ã©criture (Ã§a, Ã§a ne marche pas)... Je sens que je vais
+m'empÃªtrer dans les pointeurs et les malloc exotiques :-p
 
 ############################                ###########################
 ############################   2005/01/14   ###########################
 ############################                ###########################
 
-* Dernière modification de la journée : j'ai finalement choisi de demander à
+* DerniÃ¨re modification de la journÃ©e : j'ai finalement choisi de demander Ã 
 Gimp d'ouvrir une nouvelle image, au lieu de m'emmerder avec l'image
-actuelle. C'était vraiment une journée galère, j'ai un peu pété les
-plombs, et tout ça n'est vraiment pas bien documenté (probablement à
+actuelle. C'Ã©tait vraiment une journÃ©e galÃ¨re, j'ai un peu pÃ©tÃ© les
+plombs, et tout Ã§a n'est vraiment pas bien documentÃ© (probablement Ã 
 cause de la nouvelle version -- 2.2 -- qui vient de sortir). J'essaierai
-de faire un bon tutoriel d'écriture d'un greffon Gimp, ça manque
-*vraiment*. J'ai donc implémenté mon idée d'ouvrir une nouvelle image
-avec directement la bonne taille, c'est un peu plus subtil à coder mais
-ça marche : pour l'instant une nouvelle image (toute noire) s'ouvre.
+de faire un bon tutoriel d'Ã©criture d'un greffon Gimp, Ã§a manque
+*vraiment*. J'ai donc implÃ©mentÃ© mon idÃ©e d'ouvrir une nouvelle image
+avec directement la bonne taille, c'est un peu plus subtil Ã  coder mais
+Ã§a marche : pour l'instant une nouvelle image (toute noire) s'ouvre.
 
 * Bon, la compilation remarche (automake, autoconf, etc., c'est bon).
 Mais pour une raison que je ne comprends pas, il ne veut absolument pas
-me laisser écrire en C++ un fichier déjà présent dans l'archive (le
-fichier render.c que j'ai essayé de renommer en render.cpp), même en
+me laisser Ã©crire en C++ un fichier dÃ©jÃ  prÃ©sent dans l'archive (le
+fichier render.c que j'ai essayÃ© de renommer en render.cpp), mÃªme en
 changeant tout ce qu'il faut dans les Makefile et autre configure.in...
-Bon, ben il faudra que je me passe du C++ pour ce fichier-là, j'ai déjà
-passé trop de temps à essayer de lui faire manger mon render.cpp, sans
-succès.
+Bon, ben il faudra que je me passe du C++ pour ce fichier-lÃ , j'ai dÃ©jÃ 
+passÃ© trop de temps Ã  essayer de lui faire manger mon render.cpp, sans
+succÃ¨s.
 
 * Les fichiers qui calculent le flot max (ou la coupe de poids min) sont
-en C++ alors que le greffon est fait pour être programmé en C. J'ai
-passé beaucoup de temps à changer ce qu'il faut (et à comprendre quoi
+en C++ alors que le greffon est fait pour Ãªtre programmÃ© en C. J'ai
+passÃ© beaucoup de temps Ã  changer ce qu'il faut (et Ã  comprendre quoi
 changer !) dans les fichiers configure.in, Makefile.am, etc. C'est
-compliqué ces trucs-là, et automake, autoconf sont encore bien obscurs
+compliquÃ© ces trucs-lÃ , et automake, autoconf sont encore bien obscurs
 pour moi (sans compter le script autogen.sh inclus dans le
-template). Bref, pour que ça marche chez tout le monde quand on fait
-./configure && make && make install, y a toute une machinerie derrière,
-très complexe, et j'ai un peu les doigts coincés dedans :)
+template). Bref, pour que Ã§a marche chez tout le monde quand on fait
+./configure && make && make install, y a toute une machinerie derriÃ¨re,
+trÃ¨s complexe, et j'ai un peu les doigts coincÃ©s dedans :)
 
 * Ce qui est vraiment difficile, c'est qu'aucun des greffons que j'ai
-trouvés (y compris tous les greffons livrés avec The Gimp) ne
-redimensionnent l'image de départ : l'image d'arrivée a exactement la
-même taille. Or c'est la principale difficulté à laquelle je suis
-confronté : le redimensionnement apporte des problèmes d'initialisation
-des "drawable" que j'essaie de résoudre par plusieurs moyens
+trouvÃ©s (y compris tous les greffons livrÃ©s avec The Gimp) ne
+redimensionnent l'image de dÃ©part : l'image d'arrivÃ©e a exactement la
+mÃªme taille. Or c'est la principale difficultÃ© Ã  laquelle je suis
+confrontÃ© : le redimensionnement apporte des problÃ¨mes d'initialisation
+des "drawable" que j'essaie de rÃ©soudre par plusieurs moyens
 (agrandissement de l'image pour ensuite effacer des pixels,
 agrandissement de l'image mais en gardant l'original dans un coin --
-dans ce dernier cas j'ai un mal fou à demander à Gimp de me laisser
-écrire dans les autres pixels, etc.), mais pour l'instant sans succès.
+dans ce dernier cas j'ai un mal fou Ã  demander Ã  Gimp de me laisser
+Ã©crire dans les autres pixels, etc.), mais pour l'instant sans succÃ¨s.
 
 ############################                ###########################
 ############################   2005/01/13   ###########################
 ############################                ###########################
 
-* J'ai passé pas mal de temps pour comprendre comment marchaient les
-choses sous Gimp (et je n'ai pas fini !). Bref, j'ai enfin réussi à
-demander à mon greffon de redimensionner l'image (il faut aller fouiller
-dans les librairies de Gimp, c'est mal documenté, la doc correspond à
-une version antérieure et plein de trucs ont changé depuis... bref ce
-n'est pas évident).
+* J'ai passÃ© pas mal de temps pour comprendre comment marchaient les
+choses sous Gimp (et je n'ai pas fini !). Bref, j'ai enfin rÃ©ussi Ã 
+demander Ã  mon greffon de redimensionner l'image (il faut aller fouiller
+dans les librairies de Gimp, c'est mal documentÃ©, la doc correspond Ã 
+une version antÃ©rieure et plein de trucs ont changÃ© depuis... bref ce
+n'est pas Ã©vident).
 
 
 ############################                ###########################
 ############################   2005/01/11   ###########################
 ############################                ###########################
 
-* Je crée le fichier "texturize.h" pour regrouper le prototype de toutes
-les fonctions et les trucs communs à tous les fichiers source (en
-particulier pour faire le lien entre le greffon lui-même et l'algo de
+* Je crÃ©e le fichier "texturize.h" pour regrouper le prototype de toutes
+les fonctions et les trucs communs Ã  tous les fichiers source (en
+particulier pour faire le lien entre le greffon lui-mÃªme et l'algo de
 graph cut que j'utilise).
 
-* Il y a aussi les problèmes d'internationalisation : dans le
+* Il y a aussi les problÃ¨mes d'internationalisation : dans le
 sous-dossier "po", il y a la traduction de tous les messages dans plein
-de langues. Je vais faire l'anglais (fichier de départ) et le français.
+de langues. Je vais faire l'anglais (fichier de dÃ©part) et le franÃ§ais.
 
-* Je modifie la fenêtre de dialogue de base (avec plein d'exemples de
+* Je modifie la fenÃªtre de dialogue de base (avec plein d'exemples de
 curseurs) pour mettre juste la taille de la nouvelle image et poser la
-bonne question. J'enlève les définitions de variables inutiles.
+bonne question. J'enlÃ¨ve les dÃ©finitions de variables inutiles.
 
 * J'inclus les sources de "maxflow" (algo de calcul du flot max) dans
-le répertoire du greffon ; je mets les deux sous-répertoires
+le rÃ©pertoire du greffon ; je mets les deux sous-rÃ©pertoires
 (adjacency-list et forward-star) et je fais des liens symboliques vers
-les éléments de adjacency-list (c'est le plus gourmand en RAM, mais le
+les Ã©lÃ©ments de adjacency-list (c'est le plus gourmand en RAM, mais le
 plus rapide). Je compile... Ah, c'est du code C++ donc j'installe le
 paquet g++, je recompile... C'est bon, il fallait ajouter la ligne
 "AC_PROG_CXX" au fichier configure.in. Je ne pige pas trop comment
-fonctionne automake, configure, etc. mais maintenant que ça marche, je
+fonctionne automake, configure, etc. mais maintenant que Ã§a marche, je
 ne touche plus :)
 
 ############################                ###########################
 ############################   2005/01/07   ###########################
 ############################                ###########################
 
-* Pour commencer à me familiariser avec la structure des fichiers
-main.c, render.c, interface.c, etc., je change déjà les textes de
-façade (nom du greffon, nom des auteurs, etc.). Je commence à voir un
-peu comment ça marche.
+* Pour commencer Ã  me familiariser avec la structure des fichiers
+main.c, render.c, interface.c, etc., je change dÃ©jÃ  les textes de
+faÃ§ade (nom du greffon, nom des auteurs, etc.). Je commence Ã  voir un
+peu comment Ã§a marche.
 
-* Ça ne fonctionne toujours pas (./config râle : ma version de GIMP est
+* Ã‡a ne fonctionne toujours pas (./config rÃ¢le : ma version de GIMP est
 trop ancienne). J'installe donc tous ces paquets (et gimp) en version
-unstable. Bon, ça va mieux : j'ai fait ./configure, make, sudo make
-install et tout va bien. Le nouveau greffon "plug-in template" apparaît
+unstable. Bon, Ã§a va mieux : j'ai fait ./configure, make, sudo make
+install et tout va bien. Le nouveau greffon "plug-in template" apparaÃ®t
 bien dans la loiste des plug-ins disponibles, dans le GIMP, avec un
-exemple de boîte de dialogue très bien fait.
+exemple de boÃ®te de dialogue trÃ¨s bien fait.
 
-* Installation de plusieurs paquets liés au développement sous GIMP (je
-ne sais pas lesquels sont vraiment utiles mais ça ne marchait pas dans
+* Installation de plusieurs paquets liÃ©s au dÃ©veloppement sous GIMP (je
+ne sais pas lesquels sont vraiment utiles mais Ã§a ne marchait pas dans
 au moins l'un d'entre eux) :
 
 sudo apt-get install libgimp2.0-dev libglib2.0-dev libgtk1.2-dev
 				libgtkgl2.0-dev
 
-* J'ai commencé par changer la licence (donnée dans le fichier COPYING)
-en la GPL, un peu plus adaptée à notre projet, il me semble.
+* J'ai commencÃ© par changer la licence (donnÃ©e dans le fichier COPYING)
+en la GPL, un peu plus adaptÃ©e Ã  notre projet, il me semble.
 
-* J'ai donc téléchargé le "plugin template" depuis le site officiel des
-développeurs de GIMP.
+* J'ai donc tÃ©lÃ©chargÃ© le "plugin template" depuis le site officiel des
+dÃ©veloppeurs de GIMP.
 
 
- LocalWords:  guchar débuggage offset.c ie JB fault gimp rgn rect
+ LocalWords:  guchar dÃ©buggage offset.c ie JB fault gimp rgn rect
  LocalWords:  printf RGB malloc
