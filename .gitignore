@@ -1,10 +1,5 @@
 *~
-aclocal.m4
-autom4te.cache/
 build/
-help/Makefile
-help/en/Makefile
-help/images/Makefile
 intltool-extract
 intltool-merge
 intltool-update
@@ -13,7 +8,3 @@ po/Makefile.in
 po/Makefile.in.in
 po/POTFILES
 po/*.gmo
-po/stamp-it
-src/.deps/
-src/*.o
-stamp-h1
