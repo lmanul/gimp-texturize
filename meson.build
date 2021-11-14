@@ -1,9 +1,10 @@
 project('texturize', ['c', 'cpp'])
 
 gimp_dep = dependency('gimp-2.0')
-# gimpwidgets_dep = dependency('gimpwidgets-2.0')
 gtk_dep = dependency('gtk+-2.0')
 glib_dep = dependency('glib-2.0')
+libgimpui = meson.get_compiler('c').find_library('libgimpui-2.0')
+libgimpwidgets = meson.get_compiler('c').find_library('libgimpwidgets-2.0')
 
 graph_lib = library('graph', [
                      'src/compter.c',
@@ -21,7 +22,12 @@ texturize_lib = library('texturize-lib', [
                          'src/interface.c',
                          'src/offset.c',
                          'src/render.c'],
-                        dependencies: [gimp_dep, gtk_dep, graph_dep])
+                        dependencies: [
+                          gimp_dep,
+                          gtk_dep,
+                          graph_dep,
+                          libgimpui,
+                          libgimpwidgets])
 
 texturize_dep = declare_dependency(link_with: texturize_lib)
 
