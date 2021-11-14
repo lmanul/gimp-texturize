@@ -1,15 +1,7 @@
 *~
-Makefile
-Makefile.in
 aclocal.m4
 autom4te.cache/
-builddir/
-compile
-config.h
-config.h.in
-config.log
-config.status
-configure
+build/
 help/Makefile
 help/en/Makefile
 help/images/Makefile
@@ -24,6 +16,4 @@ po/*.gmo
 po/stamp-it
 src/.deps/
 src/*.o
-src/Makefile
-src/texturize
 stamp-h1

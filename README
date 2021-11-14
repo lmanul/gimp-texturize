@@ -1,5 +1,4 @@
-GIMP Plug-In Texturize
-=====================
+# GIMP Plug-In Texturize
 
 This plugin takes a small image and creates a texture out of it.
 The idea is to put several copies (patches) of the small image on the big
@@ -8,26 +7,34 @@ invisible, and the the texture seems natural.
 
 
 If you're under Debian or Ubuntu, before compiling, execute this command:
-  sudo apt-get install gimp libgimp2.0-dev intltool
+  sudo apt-get install gimp libgimp2.0-dev intltool meson
 Under a different OS, install
 - gimp (you probably already have it...)
 - libgimp2.0-dev (libraries for developping with gimp)
 - intltool (an internationalization tool).
+- meson (the build tool we use)
 
-Now to build and install it, just run:
+# Installation
 
-	./configure
-	make
-	make install
+To build the plugin:
 
-Then (close and) reopen the Gimp. Texturize will be in the "map" menu.
+   meson setup build
+   cd build
+   meson compile
 
+There should now be an executable `texturize` in your current directory.
+Copy it to your GIMP plugins:
+
+  mkdir -p ~/.config/GIMP/2.10/plug-ins
+  cp texturize ~/.config/GIMP/2.10/plug-ins
+
+Then (close and) reopen the GIMP. Texturize will be in the Filters->Map menu.
 
 
 This plugin is based on the article "Graphcut Textures: Image and Video Synthesis Using
-Graph Cuts" by Vivek Kwatra, Arno Schödl, Irfan Essa, Greg Turk and Aaron
+Graph Cuts" by Vivek Kwatra, Arno SchÃ¶dl, Irfan Essa, Greg Turk and Aaron
 Bobick, available from www.cc.gatech.edu/cpl/projects/graphcuttextures.
 
 
-Copyright (C) 2004-2005  Manu Cornet            <Manu@ManuCornet.net>
+Copyright (C) 2004-2005  Manu Cornet            <m@ma.nu>
                          Jean-Baptiste Rouquier <firstname.lastname@ens-lyon.org>
