@@ -9,11 +9,11 @@ invisible, and the the texture seems natural.
 
 If you're under Debian or Ubuntu, install the build dependencies
 
-  sudo apt build-dep gimp-texturize
+    sudo apt build-dep gimp-texturize
 
 Also install `meson`:
 
-  sudo apt install meson
+    sudo apt install meson
 
 Under a different OS, install
 - `gimp` (you probably already have that)
@@ -25,15 +25,15 @@ Under a different OS, install
 
 To build the plugin:
 
-   meson setup build
-   cd build
-   meson compile
+    meson setup build
+    cd build
+    meson compile
 
 There should now be an executable `texturize` in your current directory.
 Copy it to your GIMP plugins:
 
-  mkdir -p ~/.config/GIMP/2.10/plug-ins
-  cp texturize ~/.config/GIMP/2.10/plug-ins
+    mkdir -p ~/.config/GIMP/2.10/plug-ins
+    cp texturize ~/.config/GIMP/2.10/plug-ins
 
 Then (close and) reopen the GIMP. Texturize will be in the Filters->Map menu.
 
