@@ -1,16 +1,13 @@
 #include "config.h"
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <gtk/gtk.h>
-#include <libgimp/gimp.h>
-#include <libgimp/gimpui.h>
-#include "plugin-intl.h"
+#include <glib.h>
 
 extern "C" {
 #include "compter.h"
 #include "main.h"
-#include "render.h"
 #include "texturize.h"
 }
 #include "graph.h"

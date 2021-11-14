@@ -1,13 +1,9 @@
 #include "config.h"
 #include <stdio.h>
 
-#include <gtk/gtk.h>
-
-#include <libgimp/gimp.h>
-#include <libgimp/gimpui.h>
+#include <glib.h>
 
 #include "main.h"
-#include "render.h"
 #include "texturize.h"
 
 #include "plugin-intl.h"
