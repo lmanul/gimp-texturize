@@ -85,7 +85,6 @@ void decoupe_graphe (int* patch_posn,
   gint k, x_p, y_p, x_i, y_i;// nb_sommets, sommet_courant; // Compteurs
   gint real_x_i, real_y_i;
   gint x_inf, y_inf, x_sup, y_sup;
-  int chute_patch_posn[2];
   Graph * graphe = new Graph(); // Le graphe à couper
   Graph::node_id *node_of_pixel = (void **) calloc (width_p * height_p, sizeof (Graph::node_id)); // Le noeud du graph auquel correspond un pointeur.
   for (k=0; k<width_p * height_p; k++) node_of_pixel[k] = NULL;
@@ -93,7 +92,6 @@ void decoupe_graphe (int* patch_posn,
   Graph::captype poids; // Pour calculer le poids d'un arc avant de le déclarer à Graph:add_edge
   Graph::node_id first_node = NULL, node_sommet_courant;
   guchar r;
-  guchar new_r;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Graph creation.
