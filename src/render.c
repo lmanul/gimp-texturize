@@ -24,7 +24,7 @@ gint32 render(gint32        image_ID,
 
   gint32 new_image_id = 0;
   gint32 new_layer_id = 0;
-  GimpDrawable *    new_drawable;
+  GimpDrawable*     new_drawable;
   GimpImageBaseType image_type = GIMP_RGB;
   GimpImageType     drawable_type = GIMP_RGB_IMAGE;
   gint32            drawable_id = drawable->drawable_id;
@@ -35,25 +35,25 @@ gint32 render(gint32        image_ID,
 
   gint k, x_i, y_i; // Many counters
 
-  guchar * patch; // To store the original image
-  guchar * image; // Buffer to store the current image in a 3d array
+  guchar* patch; // To store the original image
+  guchar* image; // Buffer to store the current image in a 3d array
 
   // These are for storing the pixels we have discarded along the cuts.
-  guchar * coupe_h_here;  // pixel (x,y) of the patch to which belongs the pixel
-                          // on the left (we will thus not use the first
-                          // column of this array).
+  guchar* coupe_h_here;  // pixel (x,y) of the patch to which belongs the pixel
+                         // on the left (we will thus not use the first
+                         // column of this array).
 
-  guchar * coupe_h_west;  // Pixel to the left of the patch to which belongs the
-                          // pixel (x,y) (same for the first column).
+  guchar* coupe_h_west;  // Pixel to the left of the patch to which belongs the
+                         // pixel (x,y) (same for the first column).
 
-  guchar * coupe_v_here;  // pixel (x,y) of the patch to which belongs the pixel
-                          // to the top (we will thus not use the first
-                          // line of this array).
+  guchar* coupe_v_here;  // pixel (x,y) of the patch to which belongs the pixel
+                         // to the top (we will thus not use the first
+                         // line of this array).
 
-  guchar * coupe_v_north; // Pixel to the top of the patch to which belongs the
-                          // pixel (x,y) (same for the first line).
+  guchar* coupe_v_north; // Pixel to the top of the patch to which belongs the
+                         // pixel (x,y) (same for the first line).
 
-  guchar ** filled; // To keep track of which pixels have been filled.
+  guchar** filled; // To keep track of which pixels have been filled.
   // 0 iff the pixel isn't filled
   // 1 if the pixel is filled and wihout any cuts
   // 3 if there is an upwards cut
