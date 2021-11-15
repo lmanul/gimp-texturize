@@ -139,8 +139,8 @@ gint32 render(gint32        image_ID,
   new_layer_id = gimp_layer_new(new_image_id, "Texture",
                                 width_i, height_i,
                                 drawable_type, 100, GIMP_NORMAL_MODE);
-  gimp_image_insert_layer(new_image_id, new_layer_id, 0, 0);
-  new_drawable = gimp_drawable_get_buffer(new_layer_id);
+  gimp_image_add_layer(new_image_id, new_layer_id, 0);
+  new_drawable = gimp_drawable_get(new_layer_id);
 
   // Initialize in and out regions.
   gimp_pixel_rgn_init(&rgn_out, new_drawable, 0, 0, width_i, height_i, TRUE, TRUE);
@@ -254,7 +254,7 @@ gint32 render(gint32        image_ID,
 
   gimp_pixel_rgn_set_rect(&rgn_out, image, 0, 0, width_i, height_i);
 
-  gegl_buffer_flush(new_drawable);
+  gimp_drawable_flush(new_drawable);
   gimp_drawable_merge_shadow (new_drawable->drawable_id, TRUE);
   gimp_drawable_update(new_drawable->drawable_id, 0, 0, width_i, height_i);
   gimp_drawable_detach(new_drawable);
