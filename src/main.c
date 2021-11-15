@@ -127,7 +127,7 @@ static void run (const gchar      *name,
 
   run_mode = (GimpRunMode)param[0].data.d_int32;
   image_ID = param[1].data.d_int32;
-  drawable = gimp_drawable_get (param[2].data.d_drawable);
+  drawable = gimp_drawable_get_buffer(param[2].data.d_drawable);
 
   /*  Initialize with default values  */
   vals          = default_vals;
