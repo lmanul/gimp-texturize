@@ -3,7 +3,7 @@
 This plugin takes a small image and creates a texture out of it.  The idea is to
 put several copies (patches) of the small image on the big canvas. The copies
 aren't complete: we cut the border so that the transition is invisible, and the
-the texture seems natural.
+texture seems natural.
 
 # Examples
 
