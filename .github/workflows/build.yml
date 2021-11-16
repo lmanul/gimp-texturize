@@ -1,0 +1,24 @@
+name: build-check
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: install_dependencies
+      run: sudo apt install libgimp2.0-dev meson
+    - name: build
+      run: |
+           meson setup build
+           cd build
+           # For Ubuntu 20.04:
+           ninja
+           # For newest Ubuntu:
+           # meson compile
+           ls texturize && \
+              { echo "texturize found. SUCCESS."; } || \
+              { echo "texturize not found"; exit 1; }
