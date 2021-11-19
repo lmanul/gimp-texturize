@@ -10,7 +10,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install_dependencies
-      run: sudo apt install libgimp2.0-dev meson
+      # Attempt to fix 'unable to fetch some archives' failures during this step
+      run: sudo apt update && sudo apt install libgimp2.0-dev meson
     - name: build
       run: |
            meson setup build
