@@ -4,6 +4,10 @@ project(
   meson_version: '>= 0.51.0',
 )
 
+i18n = import('i18n')
+
+gettext_package = 'gimp-texturize'
+
 gimp_dep = dependency('gimp-2.0')
 gtk_dep = dependency('gtk+-2.0')
 glib_dep = dependency('glib-2.0')
@@ -43,3 +47,5 @@ executable(
   install: true,
   install_dir: texturize_plugin_dir,
 )
+
+subdir('po')

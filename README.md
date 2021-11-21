@@ -22,7 +22,7 @@ Also install `meson`:
 Under a different OS, install
 - `gimp` (you probably already have that)
 - `libgimp2.0-dev` (libraries for developping with GIMP)
-- `intltool` (an internationalization tool).
+- `gettext` (an internationalization tool).
 - `meson` (the build tool we use)
 
 # Installation
