@@ -7,8 +7,7 @@ project(
 gimp_dep = dependency('gimp-2.0')
 gtk_dep = dependency('gtk+-2.0')
 glib_dep = dependency('glib-2.0')
-libgimpui = meson.get_compiler('c').find_library('libgimpui-2.0')
-libgimpwidgets = meson.get_compiler('c').find_library('libgimpwidgets-2.0')
+gimpui_dep = dependency('gimpui-2.0')
 
 prefix = get_option('prefix')
 # Once we bump meson version to 0.58, we will be able to use positional argument
@@ -39,8 +38,7 @@ executable(
   dependencies: [
     gimp_dep,
     gtk_dep,
-    libgimpui,
-    libgimpwidgets,
+    gimpui_dep,
   ],
   install: true,
   install_dir: texturize_plugin_dir,
