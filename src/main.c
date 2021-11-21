@@ -1,5 +1,4 @@
 #include "config.h"
-#include "extra_config.h"
 
 #include <string.h>
 

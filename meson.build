@@ -22,8 +22,46 @@ gimp_libdir = gimp_dep.get_variable(
 )
 texturize_plugin_dir = gimp_libdir / 'plug-ins' / 'texturize'
 
+datadir = prefix / get_option('datadir')
+localedir = prefix / get_option('localedir')
+
+configure_include_dir = include_directories('.')
+conf_data = configuration_data()
+conf_data.set10(
+  'ENABLE_NLS',
+  true,
+  description: 'always defined to indicate that i18n is enabled',
+)
+conf_data.set_quoted(
+  'GETTEXT_PACKAGE',
+  gettext_package,
+  description: 'The gettext translation domain.',
+)
+conf_data.set10(
+  'HAVE_BIND_TEXTDOMAIN_CODESET',
+  meson.get_compiler('c').has_function('bind_textdomain_codeset'),
+  description: 'Define to 1 if you have the “bind_textdomain_codeset” function.',
+)
+conf_data.set_quoted(
+  'PLUGIN_NAME',
+  meson.project_name(),
+  description: 'Plug-In name',
+)
+conf_data.set_quoted(
+  'DATADIR',
+  datadir,
+)
+conf_data.set_quoted(
+  'LOCALEDIR',
+  datadir,
+)
+
+configure_file(
+  output: 'config.h',
+  configuration: conf_data,
+)
+
 sources = [
-  'extra_config.h',
   'src/compter.c',
   'src/compter.h',
   'src/graph.cpp',
@@ -44,6 +82,7 @@ executable(
     gtk_dep,
     gimpui_dep,
   ],
+  include_directories: configure_include_dir,
   install: true,
   install_dir: texturize_plugin_dir,
 )
