@@ -13,17 +13,17 @@ msgstr ""
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/interface.c:85
 msgid "GIMP Plug-In Template"
-msgstr "Mall för GIMP-insticksmodul"
+msgstr "Mall fÃ¶r GIMP-insticksmodul"
 
 #. gimp_scale_entry_new() examples
 #: src/interface.c:100
 msgid "ScaleEntry Examples"
-msgstr "Skalfältexempel"
+msgstr "SkalfÃ¤ltexempel"
 
 #: src/interface.c:113
 msgid "Dummy 1:"
@@ -31,7 +31,7 @@ msgstr "Exempel 1:"
 
 #: src/interface.c:116
 msgid "Dummy scale entry 1"
-msgstr "Exempelskalfält 1"
+msgstr "ExempelskalfÃ¤lt 1"
 
 #: src/interface.c:122
 msgid "Dummy 2:"
@@ -39,7 +39,7 @@ msgstr "Exempel 2:"
 
 #: src/interface.c:125
 msgid "Dummy scale entry 2"
-msgstr "Exempelskalfält 2"
+msgstr "ExempelskalfÃ¤lt 2"
 
 #: src/interface.c:131
 msgid "Dummy 3:"
@@ -47,12 +47,12 @@ msgstr "Exempel 3:"
 
 #: src/interface.c:134
 msgid "Dummy scale entry 3"
-msgstr "Exempelskalfält 3"
+msgstr "ExempelskalfÃ¤lt 3"
 
 #. gimp_random_seed_new() example
 #: src/interface.c:141
 msgid "A Random Seed Entry"
-msgstr "Ett slumpfrösfält"
+msgstr "Ett slumpfrÃ¶sfÃ¤lt"
 
 #. gimp_coordinates_new() example
 #: src/interface.c:156
@@ -69,12 +69,12 @@ msgstr "Bredd:"
 
 #: src/interface.c:178
 msgid "Height:"
-msgstr "Höjd:"
+msgstr "HÃ¶jd:"
 
 #. Image and drawable menus
 #: src/interface.c:186
 msgid "Image and Drawable Menu Examples"
-msgstr "Menyexempel för bild och ritbara ytan"
+msgstr "Menyexempel fÃ¶r bild och ritbara ytan"
 
 #: src/interface.c:205
 msgid "Layers:"
@@ -87,7 +87,7 @@ msgstr "RGB-bilder:"
 #: src/main.c:137
 #, fuzzy
 msgid "Plug-In Template..."
-msgstr "Mall för GIMP-insticksmodul"
+msgstr "Mall fÃ¶r GIMP-insticksmodul"
 
 #: src/render.c:49
 msgid "This plug-in is just a dummy. It has now finished doing nothing."
@@ -107,7 +107,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "<Image>/Filters/Misc/Plug-In Template..."
-#~ msgstr "<Image>/Filter/Diverse/Mall för insticksmodul..."
+#~ msgstr "<Image>/Filter/Diverse/Mall fÃ¶r insticksmodul..."
 
 #~ msgid "OK"
 #~ msgstr "OK"
