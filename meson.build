@@ -87,4 +87,9 @@ executable(
   install_dir: texturize_plugin_dir,
 )
 
+install_subdir(
+  'help',
+  install_dir: datadir / 'gimp-texturize',
+)
+
 subdir('po')
