@@ -63,8 +63,8 @@ gboolean dialog (gint32              image_ID,
     PLUGIN_NAME,
     NULL, GTK_DIALOG_MODAL,
     gimp_standard_help_func, "plug-in-template",
-    GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-    GTK_STOCK_OK,     GTK_RESPONSE_OK,
+    _("_Cancel"), GTK_RESPONSE_CANCEL,
+    _("_OK"), GTK_RESPONSE_OK,
     NULL);
 
   main_vbox = gtk_vbox_new (FALSE, 12);

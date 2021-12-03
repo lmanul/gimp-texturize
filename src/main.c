@@ -1,5 +1,4 @@
 #include "config.h"
-#include "extra_config.h"
 
 #include <string.h>
 
@@ -84,7 +83,7 @@ static void query(void) {
   help_uri = g_filename_to_uri(help_path, NULL, NULL);
   g_free (help_path);
 
-  gimp_plugin_help_register("http://www.manucornet.net/Informatique/Texturize.php", help_uri);
+  gimp_plugin_help_register("https://lmanul.github.io/gimp-texturize/", help_uri);
 
   gimp_install_procedure (
     PROCEDURE_NAME,
