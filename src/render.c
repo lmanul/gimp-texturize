@@ -139,7 +139,7 @@ gint32 render(gint32        image_ID,
   new_layer_id = gimp_layer_new(new_image_id, "Texture",
                                 width_i, height_i,
                                 drawable_type, 100, GIMP_NORMAL_MODE);
-  gimp_image_add_layer(new_image_id, new_layer_id, 0);
+  gimp_image_insert_layer(new_image_id, new_layer_id, 0, -1);
   new_drawable = gimp_drawable_get(new_layer_id);
 
   // Initialize in and out regions.
