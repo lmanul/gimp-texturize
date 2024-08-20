@@ -3,12 +3,18 @@
 import os
 
 BUILD_DIR = "build"
+PLUGINS_DIR = os.path.expanduser("~/.config/GIMP/2.10/plug-ins")
 
 def main():
     if not os.path.exists(BUILD_DIR):
         os.system("meson setup " + BUILD_DIR)
     os.chdir(BUILD_DIR)
     os.system("meson compile")
+
+    if not os.path.exists(PLUGINS_DIR):
+        os.system("mkdir -p " + PLUGINS_DIR)
+    print("Copying the 'texturize' binary to " + PLUGINS_DIR + "...")
+    os.system("cp texturize " + PLUGINS_DIR + "/")
 
 if __name__ == "__main__":
     main()
