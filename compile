@@ -7,8 +7,10 @@ PLUGINS_DIR = os.path.expanduser("~/.config/GIMP/2.10/plug-ins")
 
 def main():
     if not os.path.exists(BUILD_DIR):
+        print("Setting up...")
         os.system("meson setup " + BUILD_DIR)
     os.chdir(BUILD_DIR)
+    print("Compiling...")
     os.system("meson compile")
 
     if not os.path.exists(PLUGINS_DIR):
