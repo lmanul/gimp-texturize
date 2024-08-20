@@ -1,0 +1,14 @@
+#!/usr/bin/python
+
+import os
+
+BUILD_DIR = "build"
+
+def main():
+    if not os.path.exists(BUILD_DIR):
+        os.system("meson setup " + BUILD_DIR)
+    os.chdir(BUILD_DIR)
+    os.system("meson compile")
+
+if __name__ == "__main__":
+    main()
