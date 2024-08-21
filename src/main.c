@@ -89,7 +89,7 @@ static void query(void) {
     PROCEDURE_NAME,
     "Blurb",
     "Help",
-    "Emmanuel Cornet <Manu@manucornet.net>",
+    "Manu Cornet <m@ma.nu>",
     "Jean-Baptiste Rouquier <Jean-Baptiste.Rouquier@ens-lyon.fr>",
     "2007",
     N_("Texturize..."),
