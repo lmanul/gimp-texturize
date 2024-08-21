@@ -55,7 +55,7 @@ gint32 render(gint32        image_ID,
 
   guchar** filled; // To keep track of which pixels have been filled.
   // 0 iff the pixel isn't filled
-  // 1 if the pixel is filled and wihout any cuts
+  // 1 if the pixel is filled and without any cuts
   // 3 if there is an upwards cut
   // 5 if there is a cut towards the left
   // 7 if both
@@ -64,7 +64,7 @@ gint32 render(gint32        image_ID,
   int cur_posn[2];          // The position of the pixel to be filled.
   int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
   int x_off_min, y_off_min; // Max and min values of the offset, i.e. the vector
-  int x_off_max, y_off_max; // substracted from cur_posn to get patch_posn.
+  int x_off_max, y_off_max; // subtracted from cur_posn to get patch_posn.
 
   float progress; // Progress bar displayed during computation.
   gimp_progress_init ("Texturizing image...");
@@ -87,7 +87,7 @@ gint32 render(gint32        image_ID,
     return -1;
   }
 
-  //g_warning ("Tileable : %i\n", vals->make_tileable);
+  //g_warning ("Tile-able : %i\n", vals->make_tile-able);
 
   /* Figure out the type of the new image according to the original image */
   switch (gimp_drawable_type (drawable_id)) {
