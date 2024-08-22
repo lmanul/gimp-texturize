@@ -163,9 +163,11 @@ gint32 render(gint32        image_ID,
 //////////////////                                    /////////////////
 
   // Retrieve the initial image into the patch.
+  // patch = destination buffer, rgn_in = source
   gimp_pixel_rgn_get_rect (&rgn_in, patch, 0, 0, width_p, height_p);
 
   // Then paste a first patch at position (0,0) of the out image.
+  // patch = source buffer, rgn_out = destination
   gimp_pixel_rgn_set_rect (&rgn_out, patch, 0, 0, width_p, height_p);
 
   // And declare we have already filled in the corresponding pixels.
@@ -174,6 +176,7 @@ gint32 render(gint32        image_ID,
   }
 
   // Retrieve all of the current image into image.
+  // image = destination buffer, rgn_out = source
   gimp_pixel_rgn_get_rect (&rgn_out, image, 0, 0, width_i, height_i);
 
 
@@ -228,6 +231,7 @@ gint32 render(gint32        image_ID,
 //////////////////////        Last clean up        /////////////////////
 //////////////////////                             /////////////////////
 
+  // image = source buffer, rgn_out = destination
   gimp_pixel_rgn_set_rect(&rgn_out, image, 0, 0, width_i, height_i);
 
   gimp_drawable_flush(new_drawable);
