@@ -187,8 +187,7 @@ gint32 render(gint32        image_ID,
   int count = count_filled_pixels (filled,width_i,height_i);
   int count_max = width_i * height_i;
 
-  while (1) {
-    if (count >= count_max) break;
+  while (count < count_max) {
 
     /* Update the current position: it's the next pixel to fill. */
     if (pixel_to_fill (filled, width_i, height_i, cur_posn) == NULL) {
