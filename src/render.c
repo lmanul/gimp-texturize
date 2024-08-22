@@ -133,7 +133,7 @@ gint32 render(gint32        image_ID,
 //////////////////                                     /////////////////
 
   // Create a new image with only one layer.
-  new_image_id = gimp_image_new(width_i,height_i,image_type);
+  new_image_id = gimp_image_new(width_i, height_i, image_type);
   new_layer_id = gimp_layer_new(new_image_id, "Texture",
                                 width_i, height_i,
                                 drawable_type, 100, GIMP_NORMAL_MODE);
@@ -145,8 +145,8 @@ gint32 render(gint32        image_ID,
   gimp_pixel_rgn_init(&rgn_in, drawable, 0, 0, width_p, height_p, FALSE, FALSE);
 
   // Allocate some memory for everyone.
-  patch = g_new(guchar,width_p * height_p * channels);
-  image = g_new(guchar,width_i * height_i * channels);
+  patch = g_new(guchar, width_p * height_p * channels);
+  image = g_new(guchar, width_i * height_i * channels);
   filled = init_guchar_tab_2d (width_i, height_i);
 
   coupe_h_here  = g_new(guchar, width_i * height_i * channels);
@@ -228,27 +228,6 @@ gint32 render(gint32        image_ID,
 //////////////////////                             /////////////////////
 //////////////////////        Last clean up        /////////////////////
 //////////////////////                             /////////////////////
-
-
-/*
-  // To see where cuts are.
-  guchar * image_coupes;
-  image_coupes = g_new(guchar, width_i*height_i*channels);
-  for (k=0;k<width_i*height_i*channels;k++) image_coupes[k] = 255;
-
-  for(x_i=1; x_i<width_i; x_i++){
-    for(y_i=1; y_i<height_i; y_i++){
-      guchar r = filled[x_i][y_i];
-      if (HAS_CUT_NORTH(r) || HAS_CUT_WEST(r)){
-        for (k=0; k<channels; k++)
-          image_coupes[(y_i*width_i +x_i)*channels +k] = 0;
-      }
-//      if (HAS_CUT_WEST(r))
-//        image_coupes[(y_i*width_i +x_i)*channels +channels-1] = 255;
-    }
-  }
-*/
-
 
   gimp_pixel_rgn_set_rect(&rgn_out, image, 0, 0, width_i, height_i);
 
