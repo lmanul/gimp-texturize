@@ -85,11 +85,11 @@ void cut_graph (int* patch_posn,
   gint k, x_p, y_p, x_i, y_i;// nb_sommets, sommet_courant; // Compteurs
   gint real_x_i, real_y_i;
   gint x_inf, y_inf, x_sup, y_sup;
-  Graph * graphe = new Graph(); // Le graphe à couper
+  Graph * graph = new Graph(); // The graph to cut
   Graph::node_id *node_of_pixel = (void **) calloc (width_p * height_p, sizeof (Graph::node_id)); // Le noeud du graph auquel correspond un pointeur.
   for (k=0; k<width_p * height_p; k++) node_of_pixel[k] = NULL;
 
-  Graph::captype poids; // Pour calculer le poids d'un arc avant de le déclarer à Graph:add_edge
+  Graph::captype weight; // Pour calculer le weight d'un arc avant de le déclarer à Graph:add_edge
   Graph::node_id first_node = NULL, node_sommet_courant;
   guchar r;
 
@@ -161,7 +161,7 @@ void cut_graph (int* patch_posn,
 
       // Si le pixel de l'image n'est pas rempli, on ne fait rien et on passe au suivant
       if (rempli[x_i][y_i]) {
-        node_of_pixel[x_p * height_p + y_p] = graphe->add_node ();
+        node_of_pixel[x_p * height_p + y_p] = graph->add_node ();
         if (first_node == NULL) first_node = node_of_pixel[x_p * height_p + y_p];
       }
     }
@@ -225,28 +225,28 @@ void cut_graph (int* patch_posn,
         // is filled in the image, create a link to it.
         if ((!make_tileable && y_p != 0 && y_i != 0 && rempli[x_i][y_i - 1])
           || (make_tileable && y_p != 0 && rempli[x_i][modulo (y_i - 1, height_i)])) {
-          poids = edge_weight (channels,
+          weight = edge_weight (channels,
                                image + ((y_i * width_i + x_i) * channels),
                                patch + ((y_p * width_p + x_p) * channels),
                                image + (((modulo (y_i - 1, height_i)) * width_i + x_i) * channels),
                                patch + (((y_p - 1) * width_p + x_p) * channels));
-          graphe->add_edge (node_sommet_courant,
+          graph->add_edge (node_sommet_courant,
                             node_of_pixel[x_p * height_p + y_p - 1],
-                            poids, poids);
+                            weight, weight);
         }
 
         // If the West neighbor exists in the patch and if the West pixel is
         // filled in the image, we create a link to it.
         if ((!make_tileable && x_p != 0 && x_i != 0 && rempli[x_i - 1][y_i])
           || (make_tileable && x_p != 0 && rempli[modulo (x_i - 1, width_i)][y_i])) {
-          poids = edge_weight (channels,
+          weight = edge_weight (channels,
                                image + ((y_i * width_i + x_i) * channels),
                                patch + ((y_p * width_p + x_p) * channels),
                                image + ((y_i * width_i + (modulo (x_i, width_i) - 1)) * channels),
                                patch + ((y_p * width_p + (x_p - 1)) * channels));
-          graphe->add_edge (node_sommet_courant,
+          graph->add_edge (node_sommet_courant,
                             node_of_pixel[(x_p - 1) * height_p + y_p],
-                            poids, poids);
+                            weight, weight);
         }
 
         // If I am on the edge of the patch and, if !make_tileable, I am not on
@@ -254,7 +254,7 @@ void cut_graph (int* patch_posn,
        if (    (make_tileable && (x_p == 0 || y_p == 0 || x_p == width_p - 1 || y_p == height_p - 1))
             || (!make_tileable && (x_p == 0 || y_p == 0 || x_p == width_p - 1 || y_p == height_p - 1)
 		               &&  x_i != 0 && y_i != 0 && x_i != width_i - 1 && y_i != height_i - 1)) {
-          graphe->add_tweights (node_sommet_courant, MAX_CAPACITY, 0);
+          graph->add_tweights (node_sommet_courant, MAX_CAPACITY, 0);
 	}
 
         // If one of my neighbords exists and isn't filled, link me to the sink.
@@ -268,7 +268,7 @@ void cut_graph (int* patch_posn,
                  || (y_p != height_p - 1 && !rempli[x_i][modulo (y_i + 1, height_i)])          // South
                  || (x_p != width_p - 1  && !rempli[modulo (x_i + 1, width_i)][y_i])           // East
                  || (x_p != 0            && !rempli[modulo (x_i - 1, width_i)][y_i])))) {      // West
-          graphe->add_tweights (node_sommet_courant, 0, MAX_CAPACITY);
+          graph->add_tweights (node_sommet_courant, 0, MAX_CAPACITY);
 	}
       }
     }
@@ -277,14 +277,14 @@ void cut_graph (int* patch_posn,
   // If !make_tileable, link the top left pixel in patch \cap image to the
   // source.
   if (!make_tileable) {
-    graphe->add_tweights (first_node, MAX_CAPACITY, 0);
+    graph->add_tweights (first_node, MAX_CAPACITY, 0);
   }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Compute the cut.
 
-  graphe->maxflow();
+  graph->maxflow();
 
 ////////////////////////////////////////////////////////////////////////////////
 // Update the image.
@@ -297,7 +297,7 @@ void cut_graph (int* patch_posn,
       y_i = modulo (real_y_i, height_i);
       r = rempli[x_i][y_i];
       if (r) {
-        if (graphe->what_segment(node_of_pixel[x_p * height_p + y_p]) == Graph::SINK) {
+        if (graph->what_segment(node_of_pixel[x_p * height_p + y_p]) == Graph::SINK) {
           paste_patch_pixel_to_image (width_i, height_i, width_p, height_p, x_i, y_i, x_p, y_p,
                                       channels, image, patch); //,
                                       //coupe_h_here, coupe_v_here);
@@ -314,7 +314,7 @@ void cut_graph (int* patch_posn,
 ////////////////////////////////////////////////////////////////////////////////
 // Clean up.
 
-  delete graphe;
+  delete graph;
   free (node_of_pixel);
 
   return;

@@ -87,8 +87,6 @@ gint32 render(gint32        image_ID,
     return -1;
   }
 
-  //g_warning ("Tile-able : %i\n", vals->make_tile-able);
-
   /* Figure out the type of the new image according to the original image */
   switch (gimp_drawable_type (drawable_id)) {
   case GIMP_RGB_IMAGE:
@@ -116,7 +114,7 @@ gint32 render(gint32        image_ID,
   }
 
 ////////////////////////////                  ///////////////////////////
-////////////////////////////   Recouvrement   ///////////////////////////
+////////////////////////////      Overlap     ///////////////////////////
 ////////////////////////////                  ///////////////////////////
 
   /* WARNING: our conventions here aren't necessarily intuitive. Given the way
