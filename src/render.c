@@ -209,15 +209,15 @@ gint32 render(gint32        image_ID,
                    filled,
                    vals->make_tileable);
 
-    decoupe_graphe(patch_posn,
-                   width_i, height_i, width_p, height_p,
-                   channels,
-                   filled,
-                   image,
-                   patch,
-                   coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
-                   vals->make_tileable,
-                   FALSE);
+    cut_graph(patch_posn,
+              width_i, height_i, width_p, height_p,
+              channels,
+              filled,
+              image,
+              patch,
+              coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
+              vals->make_tileable,
+              FALSE);
 
     // Display progress to the user.
     count = count_filled_pixels (filled, width_i, height_i);

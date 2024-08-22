@@ -71,14 +71,14 @@ inline void paste_patch_pixel_to_image(int width_i, int height_i, int width_p, i
   }
 }
 
-void decoupe_graphe (int* patch_posn,
-                     int width_i, int height_i, int width_p, int height_p,
-                     int channels,
-                     guchar  **rempli,
-                     guchar   *image, guchar * patch,
-                     guchar   *coupe_h_here, guchar * coupe_h_west,
-                     guchar   *coupe_v_here, guchar * coupe_v_north,
-                     gboolean  make_tileable, gboolean invert) {
+void cut_graph (int* patch_posn,
+                int width_i, int height_i, int width_p, int height_p,
+                int channels,
+                guchar  **rempli,
+                guchar   *image, guchar * patch,
+                guchar   *coupe_h_here, guchar * coupe_h_west,
+                guchar   *coupe_v_here, guchar * coupe_v_north,
+                gboolean  make_tileable, gboolean invert) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Variable declaration.

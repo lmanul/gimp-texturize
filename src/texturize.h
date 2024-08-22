@@ -4,7 +4,7 @@
 int count_filled_pixels(guchar ** filled, int width_i, int height_i);
 
 // Compute the graph, cuts it and updates the image.
-void decoupe_graphe(
+void cut_graph(
     int* patch_posn, // Where to put the patch.
     int width_i, int height_i, int width_p, int height_p,
     int channels,
