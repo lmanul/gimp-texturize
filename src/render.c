@@ -237,7 +237,6 @@ gint32 render(gint32        image_ID,
   gimp_drawable_flush(new_drawable);
   gimp_drawable_merge_shadow (new_drawable->drawable_id, TRUE);
   gimp_drawable_update(new_drawable->drawable_id, 0, 0, width_i, height_i);
-  gimp_drawable_detach(new_drawable);
   gimp_displays_flush();
 
   g_free(patch);
