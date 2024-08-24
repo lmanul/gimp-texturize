@@ -136,9 +136,9 @@ gint32 render(gint32        image_ID,
 //////////////////                                     /////////////////
 
   // Create a new image with only one layer.
-  new_image_id = gimp_image_new(width_i, height_i, image_type);
+  new_image_id = gimp_image_new(rect_image.width, rect_image.height, image_type);
   new_layer_id = gimp_layer_new(new_image_id, "Texture",
-                                width_i, height_i,
+                                rect_image.width, rect_image.height,
                                 drawable_type, 100, GIMP_NORMAL_MODE);
   gimp_image_insert_layer(new_image_id, new_layer_id, 0, -1);
   new_drawable = gimp_drawable_get(new_layer_id);
@@ -148,8 +148,8 @@ gint32 render(gint32        image_ID,
   gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
 
   // Allocate some memory for everyone.
-  patch = g_new(guchar, width_p * height_p * channels);
-  image = g_new(guchar, width_i * height_i * channels);
+  patch = g_new(guchar, rect_patch.width * rect_patch.height * channels);
+  image = g_new(guchar, rect_image.width * rect_image.height * channels);
   filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
 
   coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
