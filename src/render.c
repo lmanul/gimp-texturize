@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <gegl.h>
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 #include "plugin-intl.h"
@@ -77,6 +78,8 @@ gint32 render(gint32        image_ID,
   height_i = vals->height_i;
   width_p  = image_vals->width_p;
   height_p = image_vals->height_p;
+  GeglRectangle rect_image = { 0, 0, width_i, height_i };
+  GeglRectangle rect_patch = { 0, 0, width_p, height_p };
   channels = gimp_drawable_bpp (drawable->drawable_id);
 
   if (width_i == width_p && height_i == height_p) {
@@ -141,8 +144,8 @@ gint32 render(gint32        image_ID,
   new_drawable = gimp_drawable_get(new_layer_id);
 
   // Initialize in and out regions.
-  gimp_pixel_rgn_init(&rgn_out, new_drawable, 0, 0, width_i, height_i, TRUE, TRUE);
-  gimp_pixel_rgn_init(&rgn_in, drawable, 0, 0, width_p, height_p, FALSE, FALSE);
+  gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
+  gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
 
   // Allocate some memory for everyone.
   patch = g_new(guchar, width_p * height_p * channels);
@@ -210,7 +213,7 @@ gint32 render(gint32        image_ID,
                    vals->make_tileable);
 
     cut_graph(patch_posn,
-              width_i, height_i, width_p, height_p,
+              rect_image.width, rect_image.height, rect_patch.width, rect_patch.height,
               channels,
               filled,
               image,
@@ -220,7 +223,7 @@ gint32 render(gint32        image_ID,
               FALSE);
 
     // Display progress to the user.
-    count = count_filled_pixels (filled, width_i, height_i);
+    count = count_filled_pixels (filled, rect_image.width, rect_image.height);
     progress = ((float) count) / ((float) count_max);
     progress = (progress > 1.0f)? 1.0f : ((progress < 0.0f)? 0.0f : progress);
     gimp_progress_update(progress);
@@ -236,7 +239,7 @@ gint32 render(gint32        image_ID,
 
   gimp_drawable_flush(new_drawable);
   gimp_drawable_merge_shadow (new_drawable->drawable_id, TRUE);
-  gimp_drawable_update(new_drawable->drawable_id, 0, 0, width_i, height_i);
+  gimp_drawable_update(new_drawable->drawable_id, rect_image.x, rect_image.y, rect_image.width, rect_image.height);
   gimp_displays_flush();
 
   g_free(patch);
