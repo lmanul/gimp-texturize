@@ -150,12 +150,12 @@ gint32 render(gint32        image_ID,
   // Allocate some memory for everyone.
   patch = g_new(guchar, width_p * height_p * channels);
   image = g_new(guchar, width_i * height_i * channels);
-  filled = init_guchar_tab_2d (width_i, height_i);
+  filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
 
-  coupe_h_here  = g_new(guchar, width_i * height_i * channels);
-  coupe_h_west  = g_new(guchar, width_i * height_i * channels);
-  coupe_v_here  = g_new(guchar, width_i * height_i * channels);
-  coupe_v_north = g_new(guchar, width_i * height_i * channels);
+  coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_v_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_v_north = g_new(guchar, rect_image.width * rect_image.height * channels);
 
   // For security, initialize everything to 0.
   for (k = 0; k < width_i * height_i * channels; k++)
@@ -180,7 +180,7 @@ gint32 render(gint32        image_ID,
 
   // Retrieve all of the current image into image.
   // image = destination buffer, rgn_out = source
-  gimp_pixel_rgn_get_rect (&rgn_out, image, 0, 0, width_i, height_i);
+  gimp_pixel_rgn_get_rect (&rgn_out, image, 0, 0, rect_image.width, rect_image.height);
 
 
 /////////////////////////                      ////////////////////////
@@ -190,8 +190,8 @@ gint32 render(gint32        image_ID,
 
   // The current position : (0,0)
   cur_posn[0] = 0; cur_posn[1] = 0;
-  int count = count_filled_pixels (filled,width_i,height_i);
-  int count_max = width_i * height_i;
+  int count = count_filled_pixels (filled, rect_image.width, rect_image.height);
+  int count_max = rect_image.width * rect_image.height;
 
   while (count < count_max) {
 
@@ -203,7 +203,7 @@ gint32 render(gint32        image_ID,
 
     offset_optimal(patch_posn,
                    image, patch,
-                   width_p, height_p, width_i, height_i,
+                   rect_patch.width, rect_patch.height, rect_image.width, rect_image.height,
                    cur_posn[0] - x_off_min,
                    cur_posn[1] - y_off_min,
                    cur_posn[0] - x_off_max,
@@ -235,7 +235,7 @@ gint32 render(gint32        image_ID,
 //////////////////////                             /////////////////////
 
   // image = source buffer, rgn_out = destination
-  gimp_pixel_rgn_set_rect(&rgn_out, image, 0, 0, width_i, height_i);
+  gimp_pixel_rgn_set_rect(&rgn_out, image, rect_image.x, rect_image.y, rect_image.width, rect_image.height);
 
   gimp_drawable_flush(new_drawable);
   gimp_drawable_merge_shadow (new_drawable->drawable_id, TRUE);
