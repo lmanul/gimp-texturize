@@ -147,10 +147,6 @@ static void run (const gchar      *name,
         vals.height_i      = param[4].data.d_int32;
         vals.overlap       = param[5].data.d_int32;
         vals.make_tileable = param[6].data.d_int32;
-
-        // vals.random_seed = param[7].data.d_int32;
-        // if (vals.random_seed)
-        //   vals.seed = g_random_int ();
       }
       break;
 
@@ -168,9 +164,6 @@ static void run (const gchar      *name,
     case GIMP_RUN_WITH_LAST_VALS:
       /*  Possibly retrieve data  */
       gimp_get_data (DATA_KEY_VALS, &vals);
-
-      // if (vals.random_seed)
-      //   vals.seed = g_random_int ();
       break;
 
     default:
