@@ -192,7 +192,8 @@ static void run (const gchar      *name,
       gimp_set_data (DATA_KEY_UI_VALS, &ui_vals, sizeof (ui_vals));
     }
 
-    gimp_drawable_detach (drawable);
+    gimp_drawable_flush(drawable);
+    gimp_drawable_merge_shadow(drawable->drawable_id, TRUE);
 
     // If new_image_id = -1, there has been an error (indexed colors ?).
     if (new_image_id != -1)
