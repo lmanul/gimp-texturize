@@ -85,7 +85,7 @@ static void query(void) {
 
   gimp_plugin_help_register("https://lmanul.github.io/gimp-texturize/", help_uri);
 
-  gimp_install_procedure (
+  gimp_install_procedure(
     PROCEDURE_NAME,
     "Blurb",
     "Help",
@@ -101,11 +101,11 @@ static void query(void) {
   gimp_plugin_menu_register (PROCEDURE_NAME, "<Image>/Filters/Map/");
 }
 
-static void run (const gchar      *name,
-                 gint              n_params,
-                 const GimpParam  *param,
-                 gint             *nreturn_vals,
-                 GimpParam       **return_vals) {
+static void run(const gchar      *name,
+                gint              n_params,
+                const GimpParam  *param,
+                gint             *nreturn_vals,
+                GimpParam       **return_vals) {
   static GimpParam   values[1];
   GimpDrawable      *drawable;
   gint32             image_ID;
@@ -152,8 +152,8 @@ static void run (const gchar      *name,
 
     case GIMP_RUN_INTERACTIVE:
       /*  Possibly retrieve data  */
-      gimp_get_data (DATA_KEY_VALS,    &vals);
-      gimp_get_data (DATA_KEY_UI_VALS, &ui_vals);
+      gimp_get_data(DATA_KEY_VALS,    &vals);
+      gimp_get_data(DATA_KEY_UI_VALS, &ui_vals);
 
       if (! dialog(image_ID, drawable,
                    &vals, &image_vals, &drawable_vals, &ui_vals)) {
@@ -163,7 +163,7 @@ static void run (const gchar      *name,
 
     case GIMP_RUN_WITH_LAST_VALS:
       /*  Possibly retrieve data  */
-      gimp_get_data (DATA_KEY_VALS, &vals);
+      gimp_get_data(DATA_KEY_VALS, &vals);
       break;
 
     default:
@@ -174,15 +174,15 @@ static void run (const gchar      *name,
   }
 
   if (status == GIMP_PDB_SUCCESS) {
-    new_image_id = render (image_ID, drawable,
-                           &vals, &image_vals, &drawable_vals);
+    new_image_id = render(image_ID, drawable,
+                          &vals, &image_vals, &drawable_vals);
 
     if (run_mode != GIMP_RUN_NONINTERACTIVE)
-      gimp_displays_flush ();
+      gimp_displays_flush();
 
     if (run_mode == GIMP_RUN_INTERACTIVE) {
-      gimp_set_data (DATA_KEY_VALS,    &vals,    sizeof (vals));
-      gimp_set_data (DATA_KEY_UI_VALS, &ui_vals, sizeof (ui_vals));
+      gimp_set_data(DATA_KEY_VALS,    &vals,    sizeof (vals));
+      gimp_set_data(DATA_KEY_UI_VALS, &ui_vals, sizeof (ui_vals));
     }
 
     gimp_drawable_flush(drawable);
