@@ -112,7 +112,7 @@ static void run (const gchar      *name,
   GimpRunMode        run_mode;
   GimpPDBStatusType  status = GIMP_PDB_SUCCESS;
 
-  gint32 new_image_id=0;
+  gint32 new_image_id = 0;
 
   *nreturn_vals = 1;
   *return_vals  = values;
