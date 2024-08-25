@@ -80,6 +80,7 @@ gint32 render(gint32        image_ID,
   height_p = image_vals->height_p;
   GeglRectangle rect_image = { 0, 0, width_i, height_i };
   GeglRectangle rect_patch = { 0, 0, width_p, height_p };
+  const Babl* format;
   channels = gimp_drawable_bpp (drawable->drawable_id);
 
   if (width_i == width_p && height_i == height_p) {
@@ -96,11 +97,13 @@ gint32 render(gint32        image_ID,
   case GIMP_RGBA_IMAGE:
     image_type    = GIMP_RGB;
     drawable_type = GIMP_RGB_IMAGE;
+    format = babl_format("RGB u8");
     break;
   case GIMP_GRAY_IMAGE:
   case GIMP_GRAYA_IMAGE:
     image_type    = GIMP_GRAY;
     drawable_type = GIMP_GRAY_IMAGE;
+    format = babl_format("Y u8");
     break;
   case GIMP_INDEXED_IMAGE:
   case GIMP_INDEXEDA_IMAGE:
