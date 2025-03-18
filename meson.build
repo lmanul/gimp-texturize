@@ -9,8 +9,13 @@ i18n = import('i18n')
 gettext_package = 'gimp-texturize'
 
 gimp_dep = dependency('gimp-2.0')
+# TODO: Upgrade to:
+# gimp_dep = dependency('gimp-3.0')
 gtk_dep = dependency('gtk+-2.0')
+# TODO: Upgrade to:
+# gtk_dep = dependency('gtk+-3.0')
 glib_dep = dependency('glib-2.0')
+# TODO: Remove:
 gimpui_dep = dependency('gimpui-2.0')
 
 prefix = get_option('prefix')
