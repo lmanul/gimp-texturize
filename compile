@@ -18,7 +18,8 @@ def main():
         os.system("mkdir -p " + PLUGINS_DIR_2)
     print("Copying the 'texturize' binary to " + PLUGINS_DIR_2 + "...")
     os.system("cp texturize " + PLUGINS_DIR_2 + "/")
-    # Optional for now
+    if not os.path.exists(PLUGINS_DIR_3):
+        os.system("mkdir -p " + PLUGINS_DIR_3)
     if os.path.exists(PLUGINS_DIR_3):
         subdir = os.path.join(PLUGINS_DIR_3, "texturize")
         if not os.path.exists(subdir):
