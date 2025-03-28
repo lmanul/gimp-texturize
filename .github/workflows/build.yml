@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: install_dependencies
       # Attempt to fix 'unable to fetch some archives' failures during this step
-      run: sudo apt update && sudo apt install libgimp3.0-dev meson
+      run: sudo apt update && sudo apt install meson
     - name: build
       run: |
            meson setup build
