@@ -2,8 +2,10 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
+#include "main.h"
+
 /* The name of my PDB procedure */
-#define PLUG_IN_PROC "plug-in-zemarmot-c-demo-hello-world"
+#define PLUG_IN_PROC "plug-in-texturize-c-texturize"
 
 /* Our custom class HelloWorld is derived from GimpPlugIn. */
 struct _HelloWorld
@@ -76,19 +78,10 @@ hello_world_create_procedure (GimpPlugIn  *plug_in,
                                       "Jehan, ZeMarmot project",
                                       "2025");
 
-      gimp_procedure_add_font_argument   (procedure, "font", "Font", NULL,
-                                          FALSE, NULL, TRUE,
-                                          G_PARAM_READWRITE);
-      gimp_procedure_add_int_argument    (procedure, "font-size", "Font Size", NULL,
-                                          1, 1000, 20,
-                                          G_PARAM_READWRITE);
-      gimp_procedure_add_unit_argument   (procedure, "font-unit", "Font Unit", NULL,
-                                          TRUE, FALSE, gimp_unit_pixel (),
-                                          G_PARAM_READWRITE);
-      gimp_procedure_add_string_argument (procedure, "text", "Text", NULL,
-                                          "Hello World!",
-                                          G_PARAM_READWRITE);
-
+      gimp_procedure_add_int_argument(procedure, "width_i", "New image _width", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "height_i", "New image _height", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "overlap", "O_verlap", NULL, 5, 1000, 300, G_PARAM_READWRITE);
+      gimp_procedure_add_boolean_argument(procedure, "tileable", "_Tileable", NULL, 0, G_PARAM_READWRITE);
     }
 
   return procedure;
@@ -190,10 +183,6 @@ GIMP_MAIN (HELLO_WORLD_TYPE)
 
 #include <string.h>
 
-#include <libgimp/gimp.h>
-#include <libgimp/gimpui.h>
-
-#include "main.h"
 #include "interface.h"
 #include "render.h"
 #include "texturize.h"
