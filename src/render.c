@@ -108,6 +108,12 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
 
   gimp_progress_update(progress);
 
+  coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_v_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
+  coupe_v_north = g_new(guchar, rect_image.width * rect_image.height * channels);
+
+
   progress = 100;
   gimp_progress_update(progress);
 
@@ -117,6 +123,11 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
       rect_image.width, rect_image.height, drawable_type, 100,
       GIMP_LAYER_MODE_NORMAL);
   gimp_image_insert_layer(new_image, new_layer, NULL /* parent */, 0);
+
+  g_free(coupe_h_here);
+  g_free(coupe_h_west);
+  g_free(coupe_v_here);
+  g_free(coupe_v_north);
 
   return new_image;
 }
@@ -154,11 +165,6 @@ gint32 render(gint32        image_ID,
   patch = g_new(guchar, rect_patch.width * rect_patch.height * channels);
   image = g_new(guchar, rect_image.width * rect_image.height * channels);
   filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
-
-  coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
-  coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
-  coupe_v_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
-  coupe_v_north = g_new(guchar, rect_image.width * rect_image.height * channels);
 
   // For security, initialize everything to 0.
   for (k = 0; k < width_i * height_i * channels; k++)
@@ -246,10 +252,6 @@ gint32 render(gint32        image_ID,
   gimp_displays_flush();
 
   g_free(patch);
-  g_free(coupe_h_here);
-  g_free(coupe_h_west);
-  g_free(coupe_v_here);
-  g_free(coupe_v_north);
 
 }
 */
