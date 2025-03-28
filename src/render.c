@@ -135,7 +135,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   // GeglBuffer* buffer_out;
 
   // The initial image data, renamed to "patch".
-  gpointer patch =
+  guchar* patch =
       g_new(guchar, rect_patch.width * rect_patch.height * channels);
   GeglBuffer* buffer_in = gimp_drawable_get_buffer(drawable);
   // patch = destination
@@ -151,13 +151,16 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
       GIMP_LAYER_MODE_NORMAL);
   GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
 
-  // Paste a first patch at position (0,0) of the out image.
-  gegl_buffer_set(dest_buffer, &rect_patch, 0, format, patch,
-    GEGL_AUTO_ROWSTRIDE);
-
   // The destination image.
-  gpointer image =
-      g_new(guchar, rect_image.width * rect_image.height * channels);
+  guchar* image =
+    g_new(guchar, rect_image.width * rect_image.height * channels);
+
+  // Paste a first patch at position (0,0) of the out image.
+  // TODO: is there a shortcut for this low-level operation?
+  for (int row = 0; row < height_p; row++) {
+    // Copy row by row
+    memcpy(image + row * width_i * channels, patch + row * width_p * channels, channels * width_p);
+  }
 
   // And declare we have already filled in the corresponding pixels.
   for (int x_i = 0; x_i < width_p; x_i++) {
@@ -177,6 +180,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
 
   gimp_progress_update(1.0);
 
+  gegl_buffer_set(dest_buffer, &rect_image, 0, format, image, GEGL_AUTO_ROWSTRIDE);
   // Necessary for the drawable to update
   g_object_unref(dest_buffer);
 
