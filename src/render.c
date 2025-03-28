@@ -16,11 +16,13 @@
 GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint overlap, gboolean tileable) {
   gint width_p = gimp_drawable_get_width(drawable);
   gint height_p = gimp_drawable_get_height(drawable);
+  GimpImageBaseType image_type = GIMP_RGB;
+  GimpImageType     drawable_type = GIMP_RGB_IMAGE;
   printf("Patch width %i\n", width_p);
   printf("Image width %i\n", width_i);
 
-  float progress; // Progress bar displayed during computation.
-  gimp_progress_init("Texturizing image...");
+  float progress = 0; // Progress bar displayed during computation.
+  gimp_progress_init(_("Texturizing image..."));
 
   GeglRectangle rect_image = { 0, 0, width_i, height_i };
   GeglRectangle rect_patch = { 0, 0, width_p, height_p };
@@ -34,6 +36,34 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
     g_message(_("New image size is too small."));
     return NULL;
   }
+
+  // Figure out the type of the new image according to the original image
+  switch (gimp_drawable_type(drawable)) {
+    case GIMP_RGB_IMAGE:
+    case GIMP_RGBA_IMAGE:
+      image_type    = GIMP_RGB;
+      drawable_type = GIMP_RGB_IMAGE;
+      format = babl_format("RGB u8");
+      break;
+    case GIMP_GRAY_IMAGE:
+    case GIMP_GRAYA_IMAGE:
+      image_type    = GIMP_GRAY;
+      drawable_type = GIMP_GRAY_IMAGE;
+      format = babl_format("Y u8");
+      break;
+    case GIMP_INDEXED_IMAGE:
+    case GIMP_INDEXEDA_IMAGE:
+      g_message (_("Sorry, the Texturize plugin only supports RGB and grayscale images. "
+        "Please convert your image to RGB mode first."));
+      return NULL;
+    }
+
+    if (gimp_drawable_has_alpha(drawable)) {
+      g_message (_("Sorry, the Texturize plugin doesn't support images"
+        " with an alpha (ie transparency) channel yet."
+        " Please flatten your image first."));
+      return NULL;
+    }
 
   ////////////////////////////                  ///////////////////////////
   ////////////////////////////      Overlap     ///////////////////////////
@@ -60,8 +90,29 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   // 7 if both
   // I.e. the weak bit is "filled?", the previous bit is "upwards_cut?".
 
+  // These are for storing the pixels we have discarded along the cuts.
+  guchar* coupe_h_here;  // pixel (x,y) of the patch to which belongs the pixel
+  // on the left (we will thus not use the first column of this array).
 
-  GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
+  guchar* coupe_h_west;  // Pixel to the left of the patch to which belongs the
+  // pixel (x,y) (same for the first column).
+
+  guchar* coupe_v_here;  // pixel (x,y) of the patch to which belongs the pixel
+  // to the top (we will thus not use the first row of this array).
+
+  guchar* coupe_v_north; // Pixel to the top of the patch to which belongs the
+  // pixel (x,y) (same for the first row).
+
+  int cur_posn[2];          // The position of the pixel to be filled.
+  int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
+
+  gimp_progress_update(progress);
+
+  progress = 100;
+  gimp_progress_update(progress);
+
+  GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
+
   return new_image;
 }
 
@@ -91,58 +142,12 @@ gint32 render(gint32        image_ID,
   guchar* patch; // To store the original image
   guchar* image; // Buffer to store the current image in a 3d array
 
-  // These are for storing the pixels we have discarded along the cuts.
-  guchar* coupe_h_here;  // pixel (x,y) of the patch to which belongs the pixel
-                         // on the left (we will thus not use the first
-                         // column of this array).
-
-  guchar* coupe_h_west;  // Pixel to the left of the patch to which belongs the
-                         // pixel (x,y) (same for the first column).
-
-  guchar* coupe_v_here;  // pixel (x,y) of the patch to which belongs the pixel
-                         // to the top (we will thus not use the first
-                         // line of this array).
-
-  guchar* coupe_v_north; // Pixel to the top of the patch to which belongs the
-                         // pixel (x,y) (same for the first line).
-
-
-  int cur_posn[2];          // The position of the pixel to be filled.
-  int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
 
 ///////////////////////                           //////////////////////
 ///////////////////////      Image dimensions     //////////////////////
 ///////////////////////                           //////////////////////
 
 
-
-  // Figure out the type of the new image according to the original image
-  switch (gimp_drawable_type (drawable_id)) {
-  case GIMP_RGB_IMAGE:
-  case GIMP_RGBA_IMAGE:
-    image_type    = GIMP_RGB;
-    drawable_type = GIMP_RGB_IMAGE;
-    format = babl_format("RGB u8");
-    break;
-  case GIMP_GRAY_IMAGE:
-  case GIMP_GRAYA_IMAGE:
-    image_type    = GIMP_GRAY;
-    drawable_type = GIMP_GRAY_IMAGE;
-    format = babl_format("Y u8");
-    break;
-  case GIMP_INDEXED_IMAGE:
-  case GIMP_INDEXEDA_IMAGE:
-    g_message (_("Sorry, the Texturize plugin only supports RGB and grayscale images. "
-		 "Please convert your image to RGB mode first."));
-    return -1;
-  }
-
-  if (gimp_drawable_has_alpha (drawable_id)) {
-    g_message (_("Sorry, the Texturize plugin doesn't support images"
-		 " with an alpha (ie transparency) channel yet."
-		 " Please flatten your image first."));
-    return -1;
-  }
 
 
 //////////////////                                     /////////////////
