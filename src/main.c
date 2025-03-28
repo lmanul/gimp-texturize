@@ -153,10 +153,6 @@ GIMP_MAIN (TEXTURIZE_TYPE)
 
 /*
 
-#include "config.h"
-
-#include <string.h>
-
 #include "interface.h"
 #include "render.h"
 #include "texturize.h"
@@ -235,21 +231,6 @@ static void query(void) {
   g_free (help_path);
 
   gimp_plugin_help_register("https://lmanul.github.io/gimp-texturize/", help_uri);
-
-  gimp_install_procedure(
-    PROCEDURE_NAME,
-    "Blurb",
-    "Help",
-    "Manu Cornet <m@ma.nu>",
-    "Jean-Baptiste Rouquier <Jean-Baptiste.Rouquier@ens-lyon.fr>",
-    "2007",
-    N_("Texturize..."),
-    "RGB*, GRAY*, INDEXED*",
-    GIMP_PLUGIN,
-    G_N_ELEMENTS (args), 0,
-    args, NULL);
-
-  gimp_plugin_menu_register (PROCEDURE_NAME, "<Image>/Filters/Map/");
 }
 
 static void run(const gchar      *name,
@@ -257,16 +238,6 @@ static void run(const gchar      *name,
                 const GimpParam  *param,
                 gint             *nreturn_vals,
                 GimpParam       **return_vals) {
-  static GimpParam   values[1];
-  GimpDrawable      *drawable;
-  gint32             image_ID;
-  GimpRunMode        run_mode;
-  GimpPDBStatusType  status = GIMP_PDB_SUCCESS;
-
-  gint32 new_image_id = 0;
-
-  *nreturn_vals = 1;
-  *return_vals  = values;
 
   //  Initialize i18n support
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -274,19 +245,6 @@ static void run(const gchar      *name,
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 #endif
   textdomain (GETTEXT_PACKAGE);
-
-  run_mode = (GimpRunMode)param[0].data.d_int32;
-  image_ID = param[1].data.d_int32;
-  drawable = gimp_drawable_get (param[2].data.d_drawable);
-
-  //  Initialize with default values
-  vals          = default_vals;
-  image_vals    = default_image_vals;
-  drawable_vals = default_drawable_vals;
-  ui_vals       = default_ui_vals;
-
-  image_vals.width_p  = gimp_image_width(image_ID);
-  image_vals.height_p = gimp_image_height(image_ID);
 
   if (strcmp (name, PROCEDURE_NAME) == 0) {
     switch (run_mode) {
@@ -346,9 +304,6 @@ static void run(const gchar      *name,
       g_message(_("There was a problem when opening the new image."));
     }
  }
-
-  values[0].type = GIMP_PDB_STATUS;
-  values[0].data.d_status = status;
 }
 
 */

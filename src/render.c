@@ -133,8 +133,6 @@ gint32 render(gint32        image_ID,
 /////////////////////      Variable declaration     ////////////////////
 /////////////////////                               ////////////////////
 
-  gint32 new_image_id = 0;
-  gint32 new_layer_id = 0;
   GimpDrawable*     new_drawable;
   GimpPixelRgn rgn_in, rgn_out;
 
@@ -142,14 +140,6 @@ gint32 render(gint32        image_ID,
 
   guchar* patch; // To store the original image
   guchar* image; // Buffer to store the current image in a 3d array
-
-
-///////////////////////                           //////////////////////
-///////////////////////      Image dimensions     //////////////////////
-///////////////////////                           //////////////////////
-
-
-
 
 //////////////////                                     /////////////////
 //////////////////      New image, initializations     /////////////////
@@ -261,7 +251,5 @@ gint32 render(gint32        image_ID,
   g_free(coupe_v_here);
   g_free(coupe_v_north);
 
-  // Finally return the ID of the new image, for the main function to display it
-  return new_image_id;
 }
 */
