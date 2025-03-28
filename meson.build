@@ -67,7 +67,6 @@ sources = [
 #  'src/compter.h',
 #  'src/graph.cpp',
 #  'src/graphcut.cpp',
-#  'src/initialize.c',
 #  'src/interface.c',
 #  'src/maxflow.cpp',
   'src/main.c',
