@@ -27,6 +27,14 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   const Babl* format;
   gint channels = gimp_drawable_get_bpp(drawable);  // 3 for RGB, 1 for grayscale
 
+  if (width_i == width_p && height_i == height_p) {
+    g_message(_("New image size and original image size are the same."));
+    return NULL;
+  } else if (width_i <= width_p || height_i <= height_p) {
+    g_message(_("New image size is too small."));
+    return NULL;
+  }
+
   ////////////////////////////                  ///////////////////////////
   ////////////////////////////      Overlap     ///////////////////////////
   ////////////////////////////                  ///////////////////////////
@@ -43,6 +51,15 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   y_off_min = MIN(overlap, height_p - 1);
   x_off_max = CLAMP(20, x_off_min/3, width_p -1);  // We know that x_off_min/5 < width_p -1
   y_off_max = CLAMP(20, y_off_min/3, height_p - 1);  // We know that y_off_min/5 < height_p-1
+
+  guchar** filled; // To keep track of which pixels have been filled.
+  // 0 iff the pixel isn't filled
+  // 1 if the pixel is filled and without any cuts
+  // 3 if there is an upwards cut
+  // 5 if there is a cut towards the left
+  // 7 if both
+  // I.e. the weak bit is "filled?", the previous bit is "upwards_cut?".
+
 
   GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
   return new_image;
@@ -89,31 +106,15 @@ gint32 render(gint32        image_ID,
   guchar* coupe_v_north; // Pixel to the top of the patch to which belongs the
                          // pixel (x,y) (same for the first line).
 
-  guchar** filled; // To keep track of which pixels have been filled.
-  // 0 iff the pixel isn't filled
-  // 1 if the pixel is filled and without any cuts
-  // 3 if there is an upwards cut
-  // 5 if there is a cut towards the left
-  // 7 if both
-  // I.e. the weak bit is "filled?", the previous bit is "upwards_cut?".
 
   int cur_posn[2];          // The position of the pixel to be filled.
   int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
-
-
 
 ///////////////////////                           //////////////////////
 ///////////////////////      Image dimensions     //////////////////////
 ///////////////////////                           //////////////////////
 
 
-  if (width_i == width_p && height_i == height_p) {
-    g_message(_("New image size and original image size are the same."));
-    return -1;
-  } else if (width_i <= width_p || height_i <= height_p) {
-    g_message(_("New image size is too small."));
-    return -1;
-  }
 
   // Figure out the type of the new image according to the original image
   switch (gimp_drawable_type (drawable_id)) {

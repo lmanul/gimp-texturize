@@ -139,8 +139,12 @@ texturize_run (GimpProcedure        *procedure,
                 "tileable", &tileable,
                 NULL);
   GimpImage* new_image = render(drawables[0], width_i, height_i, overlap, tileable);
-  gimp_display_new(new_image);
-  return gimp_procedure_new_return_values(procedure, GIMP_PDB_SUCCESS, NULL);
+  if (new_image == NULL) {
+    return gimp_procedure_new_return_values(procedure, GIMP_PDB_EXECUTION_ERROR, NULL);
+  } else {
+    gimp_display_new(new_image);
+    return gimp_procedure_new_return_values(procedure, GIMP_PDB_SUCCESS, NULL);
+  }
 }
 
 /* Generate needed main() code */
