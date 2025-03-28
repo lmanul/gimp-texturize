@@ -7,49 +7,48 @@
 /* The name of my PDB procedure */
 #define PLUG_IN_PROC "plug-in-texturize-c-texturize"
 
-/* Our custom class HelloWorld is derived from GimpPlugIn. */
-struct _HelloWorld {
+/* Our custom class Texturize is derived from GimpPlugIn. */
+struct _Texturize {
   GimpPlugIn parent_instance;
 };
 
-#define HELLO_WORLD_TYPE (hello_world_get_type())
-G_DECLARE_FINAL_TYPE (HelloWorld, hello_world, HELLO_WORLD,, GimpPlugIn)
+#define TEXTURIZE_TYPE (texturize_get_type())
+G_DECLARE_FINAL_TYPE (Texturize, texturize, TEXTURIZE,, GimpPlugIn)
 
 /* Declarations */
-static GList          * hello_world_query_procedures (GimpPlugIn           *plug_in);
-static GimpProcedure  * hello_world_create_procedure (GimpPlugIn           *plug_in,
-                                                      const gchar          *name);
-static GimpValueArray * hello_world_run(GimpProcedure        *procedure,
-                                        GimpRunMode           run_mode,
-                                        GimpImage            *image,
-                                        GimpDrawable        **drawables,
-                                        GimpProcedureConfig  *config,
-                                        gpointer              run_data);
+static GList          * texturize_query_procedures (GimpPlugIn           *plug_in);
+static GimpProcedure  * texturize_create_procedure (GimpPlugIn           *plug_in,
+                                                    const gchar          *name);
+static GimpValueArray * texturize_run(GimpProcedure        *procedure,
+                                      GimpRunMode           run_mode,
+                                      GimpImage            *image,
+                                      GimpDrawable        **drawables,
+                                      GimpProcedureConfig  *config,
+                                      gpointer              run_data);
 
+G_DEFINE_TYPE (Texturize, texturize, GIMP_TYPE_PLUG_IN)
 
-G_DEFINE_TYPE (HelloWorld, hello_world, GIMP_TYPE_PLUG_IN)
-
-static void hello_world_class_init (HelloWorldClass *klass) {
+static void texturize_class_init (TexturizeClass *klass) {
   GimpPlugInClass *plug_in_class = GIMP_PLUG_IN_CLASS (klass);
 
-  plug_in_class->query_procedures = hello_world_query_procedures;
-  plug_in_class->create_procedure = hello_world_create_procedure;
+  plug_in_class->query_procedures = texturize_query_procedures;
+  plug_in_class->create_procedure = texturize_create_procedure;
 }
 
-static void hello_world_init (HelloWorld *hello_world) {
+static void texturize_init (Texturize *texturize) {
 }
 
-static GList * hello_world_query_procedures (GimpPlugIn *plug_in) {
+static GList * texturize_query_procedures (GimpPlugIn *plug_in) {
   return g_list_append (NULL, g_strdup (PLUG_IN_PROC));
 }
 
-static GimpProcedure * hello_world_create_procedure (GimpPlugIn  *plug_in, const gchar *name) {
+static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const gchar *name) {
   GimpProcedure *procedure = NULL;
 
   if (g_strcmp0 (name, PLUG_IN_PROC) == 0) {
       procedure = gimp_image_procedure_new (plug_in, name,
                                             GIMP_PDB_PROC_TYPE_PLUGIN,
-                                            hello_world_run, NULL, NULL);
+                                            texturize_run, NULL, NULL);
 
       gimp_procedure_set_sensitivity_mask (procedure, GIMP_PROCEDURE_SENSITIVE_ALWAYS);
 
@@ -77,12 +76,12 @@ static GimpProcedure * hello_world_create_procedure (GimpPlugIn  *plug_in, const
 #define PLUG_IN_BINARY "c-hello-world"
 
 static GimpValueArray *
-hello_world_run (GimpProcedure        *procedure,
-                 GimpRunMode           run_mode,
-                 GimpImage            *image,
-                 GimpDrawable        **drawables,
-                 GimpProcedureConfig  *config,
-                 gpointer              run_data) {
+texturize_run (GimpProcedure        *procedure,
+               GimpRunMode           run_mode,
+               GimpImage            *image,
+               GimpDrawable        **drawables,
+               GimpProcedureConfig  *config,
+               gpointer              run_data) {
   GimpTextLayer *text_layer;
   GimpLayer     *parent   = NULL;
   gint           position = 0;
@@ -157,7 +156,7 @@ hello_world_run (GimpProcedure        *procedure,
 }
 
 /* Generate needed main() code */
-GIMP_MAIN (HELLO_WORLD_TYPE)
+GIMP_MAIN (TEXTURIZE_TYPE)
 
 
 /*
