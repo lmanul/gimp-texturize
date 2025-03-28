@@ -12,13 +12,13 @@
 
 #include "plugin-intl.h"
 
-/*  Constants  */
+//  Constants
 #define PROCEDURE_NAME   "gimp_plugin_texturize"
 #define DATA_KEY_VALS    "plug_in_texturize"
 #define DATA_KEY_UI_VALS "plug_in_texturize_ui"
 #define PARASITE_KEY     "plug-in-texturize-options"
 
-/*  Local function prototypes  */
+//  Local function prototypes
 static void query (void);
 static void run(const gchar      *name,
                 gint              nparams,
@@ -26,7 +26,7 @@ static void run(const gchar      *name,
                 gint             *nreturn_vals,
                 GimpParam       **return_vals);
 
-/*  Local variables  */
+//  Local variables
 const PlugInVals default_vals = {
   0,      // width_i
   0,      // height_i
@@ -55,10 +55,10 @@ static PlugInUIVals       ui_vals;
 
 
 GimpPlugInInfo PLUG_IN_INFO = {
-  NULL,  /* init_proc  */
-  NULL,  /* quit_proc  */
-  query, /* query_proc */
-  run,   /* run_proc   */
+  NULL,  // init_proc
+  NULL,  // quit_proc
+  query, // query_proc
+  run,   // run_proc
 };
 
 MAIN ()
@@ -117,7 +117,7 @@ static void run(const gchar      *name,
   *nreturn_vals = 1;
   *return_vals  = values;
 
-  /*  Initialize i18n support  */
+  //  Initialize i18n support
   bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 #ifdef HAVE_BIND_TEXTDOMAIN_CODESET
   bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -128,7 +128,7 @@ static void run(const gchar      *name,
   image_ID = param[1].data.d_int32;
   drawable = gimp_drawable_get (param[2].data.d_drawable);
 
-  /*  Initialize with default values  */
+  //  Initialize with default values
   vals          = default_vals;
   image_vals    = default_image_vals;
   drawable_vals = default_drawable_vals;
@@ -151,7 +151,7 @@ static void run(const gchar      *name,
       break;
 
     case GIMP_RUN_INTERACTIVE:
-      /*  Possibly retrieve data  */
+      //  Possibly retrieve data
       gimp_get_data(DATA_KEY_VALS,    &vals);
       gimp_get_data(DATA_KEY_UI_VALS, &ui_vals);
 
@@ -162,7 +162,7 @@ static void run(const gchar      *name,
       break;
 
     case GIMP_RUN_WITH_LAST_VALS:
-      /*  Possibly retrieve data  */
+      //  Possibly retrieve data
       gimp_get_data(DATA_KEY_VALS, &vals);
       break;
 
