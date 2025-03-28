@@ -91,25 +91,23 @@ texturize_run (GimpProcedure        *procedure,
   gboolean *tileable;
 
   n_drawables = gimp_core_object_array_get_length ((GObject **) drawables);
+  printf("Drawable %i\n\n", n_drawables);
 
   if (n_drawables > 1) {
     GError *error = NULL;
 
-    g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
-                  "'%s' works only with a single layer.", PLUG_IN_NAME_CAPITALIZED);
+    g_set_error (&error, GIMP_PLUG_IN_ERROR, 0, "'%s' works only with a single image.", PLUG_IN_NAME_CAPITALIZED);
 
-    return gimp_procedure_new_return_values (procedure,
-                                              GIMP_PDB_CALLING_ERROR,
-                                              error);
+    return gimp_procedure_new_return_values(procedure, GIMP_PDB_CALLING_ERROR, error);
   } else if (n_drawables == 1) {
     GimpDrawable *drawable = drawables[0];
 
     if (!GIMP_IS_LAYER (drawable)) {
         GError *error = NULL;
-        g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
-                      "Procedure '%s' works with layers only.",
-                      PLUG_IN_NAME_CAPITALIZED);
-        return gimp_procedure_new_return_values (procedure, GIMP_PDB_CALLING_ERROR, error);
+        g_set_error(&error, GIMP_PLUG_IN_ERROR, 0,
+                    "Procedure '%s' works with layers only.",
+                    PLUG_IN_NAME_CAPITALIZED);
+        return gimp_procedure_new_return_values(procedure, GIMP_PDB_CALLING_ERROR, error);
       }
 
     // parent = GIMP_LAYER(gimp_item_get_parent(GIMP_ITEM(drawable)));
@@ -119,7 +117,7 @@ texturize_run (GimpProcedure        *procedure,
   if (run_mode == GIMP_RUN_INTERACTIVE) {
     GtkWidget *dialog;
 
-    gimp_ui_init (PLUG_IN_BINARY);
+    gimp_ui_init(PLUG_IN_BINARY);
     dialog = gimp_procedure_dialog_new(procedure, GIMP_PROCEDURE_CONFIG (config), PLUG_IN_NAME_CAPITALIZED);
     gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), NULL);
 
