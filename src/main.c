@@ -3,6 +3,7 @@
 #include <libgimp/gimpui.h>
 
 #include "main.h"
+#include "render.h"
 
 /* The name of my PDB procedure */
 #define PLUG_IN_PROC "plug-in-texturize-c-texturize"
@@ -137,9 +138,7 @@ texturize_run (GimpProcedure        *procedure,
                 "overlap", &overlap,
                 "tileable", &tileable,
                 NULL);
-
-  printf("Width is %i", width_i);
-  GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
+  GimpImage* new_image = render(drawables[0], width_i, height_i, overlap, tileable);
   gimp_display_new(new_image);
   return gimp_procedure_new_return_values(procedure, GIMP_PDB_SUCCESS, NULL);
 }

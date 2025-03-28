@@ -72,7 +72,7 @@ sources = [
 #  'src/maxflow.cpp',
   'src/main.c',
 #  'src/offset.c',
-#  'src/render.c'
+  'src/render.c'
 ]
 
 executable(

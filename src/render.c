@@ -13,6 +13,13 @@
 
 //  Public functions
 
+GimpImage* render(GimpDrawable *drawable, gint new_width, gint new_height, gint overlap, gboolean tileable) {
+  GimpImage* new_image = gimp_image_new(new_width, new_height, GIMP_RGB);
+  return new_image;
+}
+
+
+/*
 gint32 render(gint32        image_ID,
               GimpDrawable       *drawable,
               PlugInVals         *vals,
@@ -124,9 +131,9 @@ gint32 render(gint32        image_ID,
 ////////////////////////////                  ///////////////////////////
 
   // WARNING: our conventions here aren't necessarily intuitive. Given the way
-     that we detect the next pixel to fill, offsets are always negative values
-     (we paste the patch a little above and to the left). However, {x,y}_off_*
-     are positive values, and x_off_max < x_off_min. */
+  // that we detect the next pixel to fill, offsets are always negative values
+  // (we paste the patch a little above and to the left). However, {x,y}_off_*
+  // are positive values, and x_off_max < x_off_min.
 
   // Heuristic values, to refine when we get more experience.
   x_off_min = MIN (vals->overlap, width_p - 1);
@@ -251,7 +258,7 @@ gint32 render(gint32        image_ID,
   g_free(coupe_v_here);
   g_free(coupe_v_north);
 
-  // Finally return the ID of the new image, for the main function to display
-     it */
+  // Finally return the ID of the new image, for the main function to display it
   return new_image_id;
 }
+*/
