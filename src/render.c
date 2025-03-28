@@ -29,7 +29,16 @@ guchar** init_guchar_tab_2d (gint x, gint y) {
   return tab;
 }
 
-GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint overlap, gboolean tileable) {
+void debug_print_guchar_buffer(gpointer buffer, int width, int height) {
+  for (int row = 0; row < height; row++) {
+    for (int col = 0; col < width; col++) {
+      printf("%i ", ((guchar*)buffer)[row * width + col]);
+    }
+  }
+}
+
+GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
+    gint overlap, gboolean tileable) {
   gint width_p = gimp_drawable_get_width(drawable);
   gint height_p = gimp_drawable_get_height(drawable);
   GimpImageBaseType image_type = GIMP_RGB;
@@ -129,17 +138,21 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   gpointer patch =
       g_new(guchar, rect_patch.width * rect_patch.height * channels);
   GeglBuffer* buffer_in = gimp_drawable_get_buffer(drawable);
+  // patch = destination
   gegl_buffer_get(buffer_in, &rect_patch, 1.0, format, patch,
       GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+
+  debug_print_guchar_buffer(patch, width_p, height_p);
 
   // The destination image.
   gpointer image =
       g_new(guchar, rect_image.width * rect_image.height * channels);
   GeglBuffer* buffer_out = gegl_buffer_new(&rect_image, format);
-  GeglColor* color = gegl_color_new("red");
-  gegl_color_set_rgba(color, 255, 0, 0, 1);
-  // gegl_buffer_clear(buffer_out, &rect_image);
-  gegl_buffer_set_color(buffer_out, &rect_image, color);
+  GeglColor* color = gegl_color_new("#ff0000");
+  GeglRectangle rect_test = { 0, 0, 200, 200 };
+  // gegl_color_set_rgba(color, 255, 0, 0, 1);
+  gegl_buffer_clear(buffer_out, &rect_image);
+  // gegl_buffer_set_color(buffer_out, &rect_test, color);
 
   // Paste a first patch at position (0,0) of the out image.
   gegl_buffer_set(buffer_out, &rect_patch, 0, format, patch,
@@ -153,11 +166,8 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   }
 
   // Initialize in and out regions.
-  //  gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
+  // gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
   // gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
-
-  // Allocate some memory for everyone.
-  // image = g_new(guchar, rect_image.width * rect_image.height * channels);
 
   coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
   coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
@@ -168,20 +178,30 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
     coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
   }
 
-  gimp_progress_update(100);
+  gimp_progress_update(1.0);
 
   // Create a new image with only one layer.
-  GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
-  GimpLayer* new_layer = gimp_layer_new(new_image, "Texture",
-    rect_image.width, rect_image.height, drawable_type, 100,
-    GIMP_LAYER_MODE_NORMAL);
+  // GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
+  GimpImage* new_image = gimp_image_new(width_p, height_p, image_type);
+  // GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
+  //     rect_image.width, rect_image.height, drawable_type, 100,
+  //     GIMP_LAYER_MODE_NORMAL);
+  GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
+      rect_patch.width, rect_patch.height, drawable_type, 100.0,
+      GIMP_LAYER_MODE_NORMAL);
   GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
+  // gegl_buffer_set(dest_buffer, &rect_image, 0, format, image, GEGL_AUTO_ROWSTRIDE);
+  gegl_buffer_set(dest_buffer, &rect_patch, 0, format, patch, GEGL_AUTO_ROWSTRIDE);
 
-  gegl_buffer_copy(
-      buffer_out, &rect_image, GEGL_ABYSS_NONE, dest_buffer, &rect_image);
-  gimp_drawable_update(
-      GIMP_DRAWABLE(new_layer), 0, 0, rect_image.width, rect_image.height);
+  // gegl_buffer_copy(
+  //     buffer_out, &rect_image, GEGL_ABYSS_NONE, dest_buffer, &rect_image);
+  // gimp_drawable_merge_shadow(GIMP_DRAWABLE(new_layer), FALSE /* push to undo stack */);
+  // gimp_drawable_update(GIMP_DRAWABLE(new_layer),
+  //     rect_image.x, rect_image.y, rect_image.width, rect_image.height);
+  gimp_drawable_update(GIMP_DRAWABLE(new_layer),
+      rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height);
   gimp_image_insert_layer(new_image, new_layer, NULL /* parent */, 0);
+  gimp_displays_flush();
 
   g_free(coupe_h_here);
   g_free(coupe_h_west);
@@ -195,17 +215,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
 
 
 /*
-gint32 render(gint32        image_ID,
-              GimpDrawable       *drawable,
-              PlugInVals         *vals,
-              PlugInImageVals    *image_vals,
-              PlugInDrawableVals *drawable_vals) {
-
-  GimpDrawable*     new_drawable;
-
-  gint k, x_i, y_i; // Many counters
-
-
 
 //////////////////                                    /////////////////
 //////////////////    Cleaning up of the new image    /////////////////
