@@ -67,7 +67,6 @@ sources = [
   'src/counting.h',
   'src/graph.cpp',
   'src/graphcut.cpp',
-  # 'src/interface.c',
   'src/maxflow.cpp',
   'src/main.c',
   'src/offset.c',
