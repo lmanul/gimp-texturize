@@ -8,15 +8,11 @@ i18n = import('i18n')
 
 gettext_package = 'gimp-texturize'
 
-gimp_dep = dependency('gimp-2.0')
-# TODO: Upgrade to:
-# gimp_dep = dependency('gimp-3.0')
-gtk_dep = dependency('gtk+-2.0')
-# TODO: Upgrade to:
-# gtk_dep = dependency('gtk+-3.0')
+gimp_dep = dependency('gimp-3.0')
+gtk_dep = dependency('gtk+-3.0')
 glib_dep = dependency('glib-2.0')
 # TODO: Remove:
-gimpui_dep = dependency('gimpui-2.0')
+gimpui_dep = dependency('gimpui-3.0')
 
 prefix = get_option('prefix')
 # Once we bump meson version to 0.58, we will be able to use positional argument
@@ -67,16 +63,16 @@ configure_file(
 )
 
 sources = [
-  'src/compter.c',
-  'src/compter.h',
-  'src/graph.cpp',
-  'src/graphcut.cpp',
-  'src/initialize.c',
-  'src/interface.c',
-  'src/maxflow.cpp',
+#  'src/compter.c',
+#  'src/compter.h',
+#  'src/graph.cpp',
+#  'src/graphcut.cpp',
+#  'src/initialize.c',
+#  'src/interface.c',
+#  'src/maxflow.cpp',
   'src/main.c',
-  'src/offset.c',
-  'src/render.c'
+#  'src/offset.c',
+#  'src/render.c'
 ]
 
 executable(
