@@ -13,7 +13,8 @@ https://lmanul.github.io/gimp-texturize/examples.html
 
 If you're using a Debian-based system, install the build dependencies
 
-    sudo apt build-dep gimp-texturize meson
+    sudo apt build-dep gimp-texturize
+    sudo apt install meson
 
 Under a different OS, install
 - `gimp` (you probably already have that)
