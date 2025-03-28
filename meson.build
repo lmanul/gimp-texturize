@@ -63,14 +63,14 @@ configure_file(
 )
 
 sources = [
-#  'src/compter.c',
-#  'src/compter.h',
-#  'src/graph.cpp',
-#  'src/graphcut.cpp',
-#  'src/interface.c',
-#  'src/maxflow.cpp',
+  'src/compter.c',
+  'src/compter.h',
+  'src/graph.cpp',
+  'src/graphcut.cpp',
+  # 'src/interface.c',
+  'src/maxflow.cpp',
   'src/main.c',
-#  'src/offset.c',
+  'src/offset.c',
   'src/render.c'
 ]
 

@@ -9,9 +9,9 @@
 #define PLUG_IN_PROC "plug-in-texturize-c-texturize"
 #define PLUG_IN_NAME_CAPITALIZED "Texturize"
 
-#define DEFAULT_NEW_IMAGE_WIDTH 1000;
-#define DEFAULT_NEW_IMAGE_HEIGHT 1000;
-#define DEFAULT_OVERLAP 300;
+#define DEFAULT_NEW_IMAGE_WIDTH 600;
+#define DEFAULT_NEW_IMAGE_HEIGHT 600;
+#define DEFAULT_OVERLAP 100;
 
 /* Our custom class Texturize is derived from GimpPlugIn. */
 struct _Texturize {

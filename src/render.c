@@ -37,6 +37,63 @@ void debug_print_guchar_buffer(gpointer buffer, int width, int height) {
   }
 }
 
+void the_big_loop(
+    guchar* image, guchar* patch,
+    int width_i, int height_i, int width_p, int height_p,
+    GeglRectangle rect_image, GeglRectangle rect_patch,
+    guchar** filled,
+    gboolean tileable,
+    guchar* coupe_h_here, guchar* coupe_h_west,
+    guchar* coupe_v_here, guchar* coupe_v_north,
+    int x_off_min, int y_off_min,
+    int x_off_max, int y_off_max,
+    int channels) {
+
+  float progress = 0; // Progress bar displayed during computation.
+  int cur_posn[2];          // The position of the pixel to be filled.
+  int patch_posn[2];
+  // The current position : (0,0)
+  cur_posn[0] = 0; cur_posn[1] = 0;
+  int count = count_filled_pixels (filled, rect_image.width, rect_image.height);
+  int count_max = rect_image.width * rect_image.height;
+
+  while (count < count_max) {
+
+    // Update the current position: it's the next pixel to fill.
+    if (pixel_to_fill (filled, width_i, height_i, cur_posn) == NULL) {
+      g_message (_("There was a problem when filling the new image."));
+      exit(-1);
+    };
+
+    offset_optimal(patch_posn,
+                   image, patch,
+                   rect_patch.width, rect_patch.height, rect_image.width, rect_image.height,
+                   cur_posn[0] - x_off_min,
+                   cur_posn[1] - y_off_min,
+                   cur_posn[0] - x_off_max,
+                   cur_posn[1] - y_off_max,
+                   channels,
+                   filled,
+                   tileable);
+
+    cut_graph(patch_posn,
+              rect_image.width, rect_image.height, rect_patch.width, rect_patch.height,
+              channels,
+              filled,
+              image,
+              patch,
+              coupe_h_here, coupe_h_west, coupe_v_here, coupe_v_north,
+              tileable,
+              FALSE);
+
+    // Display progress to the user.
+    count = count_filled_pixels (filled, rect_image.width, rect_image.height);
+    progress = ((float) count) / ((float) count_max);
+    progress = (progress > 1.0f)? 1.0f : ((progress < 0.0f)? 0.0f : progress);
+    gimp_progress_update(progress);
+  }
+}
+
 GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
     gint overlap, gboolean tileable) {
   gint width_p = gimp_drawable_get_width(drawable);
@@ -48,7 +105,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
 
   gimp_progress_init(_("Texturizing image..."));
   gimp_progress_update(0);
-  float progress = 0; // Progress bar displayed during computation.
 
   GeglRectangle rect_image = { 0, 0, width_i, height_i };
   GeglRectangle rect_patch = { 0, 0, width_p, height_p };
@@ -109,7 +165,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   y_off_max = CLAMP(20, y_off_min/3, height_p - 1);  // We know that y_off_min/5 < height_p-1
 
   // Keeps track of which pixels have been filled.
-  guchar** filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
+  guchar** filled = init_guchar_tab_2d(rect_image.width, rect_image.height);
   // 0 iff the pixel isn't filled
   // 1 if the pixel is filled and without any cuts
   // 3 if there is an upwards cut
@@ -129,10 +185,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
 
   guchar* coupe_v_north; // Pixel to the top of the patch to which belongs the
   // pixel (x,y) (same for the first row).
-
-  int cur_posn[2];          // The position of the pixel to be filled.
-  int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
-  // GeglBuffer* buffer_out;
 
   // The initial image data, renamed to "patch".
   guchar* patch =
@@ -177,6 +229,17 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   for (int k = 0; k < width_i * height_i * channels; k++) {
     coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
   }
+
+  the_big_loop(
+    image, patch, width_i, height_i, width_p, height_p,
+    rect_image, rect_patch,
+    filled,
+    tileable, coupe_h_here, coupe_h_west,
+    coupe_v_here, coupe_v_north,
+    x_off_min, y_off_min,
+    x_off_max, y_off_max,
+    channels
+  );
 
   gimp_progress_update(1.0);
 
