@@ -94,8 +94,7 @@ texturize_run (GimpProcedure        *procedure,
                GimpDrawable        **drawables,
                GimpProcedureConfig  *config,
                gpointer              run_data) {
-  // GimpLayer     *parent   = NULL;
-  // gint           position = 0;
+
   gint           n_drawables;
 
   gint     width_i = DEFAULT_NEW_IMAGE_WIDTH;
@@ -125,9 +124,6 @@ texturize_run (GimpProcedure        *procedure,
         return gimp_procedure_new_return_values(procedure,
             GIMP_PDB_CALLING_ERROR, error);
       }
-
-    // parent = GIMP_LAYER(gimp_item_get_parent(GIMP_ITEM(drawable)));
-    // position = gimp_image_get_item_position(image, GIMP_ITEM(drawable));
   }
 
   if (run_mode == GIMP_RUN_INTERACTIVE) {
@@ -161,5 +157,4 @@ texturize_run (GimpProcedure        *procedure,
   }
 }
 
-/* Generate needed main() code */
 GIMP_MAIN (TEXTURIZE_TYPE)
