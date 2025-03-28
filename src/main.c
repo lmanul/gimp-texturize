@@ -95,7 +95,7 @@ texturize_run (GimpProcedure        *procedure,
   gboolean tileable = 0;
 
   n_drawables = gimp_core_object_array_get_length ((GObject **) drawables);
-  printf("DrawableEE %i\n\n", n_drawables);
+  printf("Drawable %i\n\n", n_drawables);
   gimp_message ("Texturizing...");
 
   if (n_drawables > 1 || n_drawables == 0) {

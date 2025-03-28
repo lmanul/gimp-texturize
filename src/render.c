@@ -11,7 +11,7 @@
 #include "main.h"
 #include "texturize.h"
 
-/*  Public functions  */
+//  Public functions
 
 gint32 render(gint32        image_ID,
               GimpDrawable       *drawable,
@@ -91,7 +91,7 @@ gint32 render(gint32        image_ID,
     return -1;
   }
 
-  /* Figure out the type of the new image according to the original image */
+  // Figure out the type of the new image according to the original image
   switch (gimp_drawable_type (drawable_id)) {
   case GIMP_RGB_IMAGE:
   case GIMP_RGBA_IMAGE:
@@ -123,7 +123,7 @@ gint32 render(gint32        image_ID,
 ////////////////////////////      Overlap     ///////////////////////////
 ////////////////////////////                  ///////////////////////////
 
-  /* WARNING: our conventions here aren't necessarily intuitive. Given the way
+  // WARNING: our conventions here aren't necessarily intuitive. Given the way
      that we detect the next pixel to fill, offsets are always negative values
      (we paste the patch a little above and to the left). However, {x,y}_off_*
      are positive values, and x_off_max < x_off_min. */
@@ -131,8 +131,8 @@ gint32 render(gint32        image_ID,
   // Heuristic values, to refine when we get more experience.
   x_off_min = MIN (vals->overlap, width_p - 1);
   y_off_min = MIN (vals->overlap, height_p - 1);
-  x_off_max = CLAMP (20, x_off_min/3, width_p -1); /* We know that x_off_min/5 < width_p -1 */
-  y_off_max = CLAMP (20, y_off_min/3, height_p - 1); /* We know that y_off_min/5 < height_p-1 */
+  x_off_max = CLAMP (20, x_off_min/3, width_p -1); // We know that x_off_min/5 < width_p -1
+  y_off_max = CLAMP (20, y_off_min/3, height_p - 1); // We know that y_off_min/5 < height_p-1
 
 //////////////////                                     /////////////////
 //////////////////      New image, initializations     /////////////////
@@ -198,7 +198,7 @@ gint32 render(gint32        image_ID,
 
   while (count < count_max) {
 
-    /* Update the current position: it's the next pixel to fill. */
+    // Update the current position: it's the next pixel to fill.
     if (pixel_to_fill (filled, width_i, height_i, cur_posn) == NULL) {
       g_message (_("There was a problem when filling the new image."));
       exit(-1);
@@ -251,7 +251,7 @@ gint32 render(gint32        image_ID,
   g_free(coupe_v_here);
   g_free(coupe_v_north);
 
-  /* Finally return the ID of the new image, for the main function to display
+  // Finally return the ID of the new image, for the main function to display
      it */
   return new_image_id;
 }
