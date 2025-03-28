@@ -27,20 +27,11 @@ Under a different OS, install
 
 # Installation
 
-To build the plugin:
+To build and install the plugin:
 
-    meson setup build
-    cd build
-    meson compile
-
-There should now be an executable `texturize` in your current directory.
-Copy it to your GIMP plugins:
-
-    mkdir -p ~/.config/GIMP/2.10/plug-ins
-    cp texturize ~/.config/GIMP/2.10/plug-ins
+    ./compile
 
 Then (close and) reopen the GIMP. Texturize will be in the Filters->Map menu.
-
 
 This plugin is based on the article "Graphcut Textures: Image and Video Synthesis Using
 Graph Cuts" by Vivek Kwatra, Arno Schödl, Irfan Essa, Greg Turk and Aaron
