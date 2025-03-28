@@ -13,8 +13,13 @@
 
 //  Public functions
 
-GimpImage* render(GimpDrawable *drawable, gint new_width, gint new_height, gint overlap, gboolean tileable) {
-  GimpImage* new_image = gimp_image_new(new_width, new_height, GIMP_RGB);
+GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint overlap, gboolean tileable) {
+  gint width_p = gimp_drawable_get_width(drawable);
+  gint height_p = gimp_drawable_get_height(drawable);
+  printf("Patch width %i\n", width_p);
+  printf("Image width %i\n", width_i);
+
+  GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
   return new_image;
 }
 
@@ -38,7 +43,6 @@ gint32 render(gint32        image_ID,
   gint32            drawable_id = drawable->drawable_id;
 
   GimpPixelRgn rgn_in, rgn_out;
-  gint width_i, height_i, width_p, height_p;
   gint channels; // 3 for RVB, 1 for grayscale
 
   gint k, x_i, y_i; // Many counters
