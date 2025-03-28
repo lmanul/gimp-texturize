@@ -19,6 +19,31 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   printf("Patch width %i\n", width_p);
   printf("Image width %i\n", width_i);
 
+  float progress; // Progress bar displayed during computation.
+  gimp_progress_init("Texturizing image...");
+
+  GeglRectangle rect_image = { 0, 0, width_i, height_i };
+  GeglRectangle rect_patch = { 0, 0, width_p, height_p };
+  const Babl* format;
+  gint channels = gimp_drawable_get_bpp(drawable);  // 3 for RGB, 1 for grayscale
+
+  ////////////////////////////                  ///////////////////////////
+  ////////////////////////////      Overlap     ///////////////////////////
+  ////////////////////////////                  ///////////////////////////
+
+  // WARNING: our conventions here aren't necessarily intuitive. Given the way
+  // that we detect the next pixel to fill, offsets are always negative values
+  // (we paste the patch a little above and to the left). However, {x,y}_off_*
+  // are positive values, and x_off_max < x_off_min.
+
+  // Heuristic values, to refine when we get more experience.
+  int x_off_min, y_off_min; // Max and min values of the offset, i.e. the vector
+  int x_off_max, y_off_max; // subtracted from cur_posn to get patch_posn.
+  x_off_min = MIN(overlap, width_p - 1);
+  y_off_min = MIN(overlap, height_p - 1);
+  x_off_max = CLAMP(20, x_off_min/3, width_p -1);  // We know that x_off_min/5 < width_p -1
+  y_off_max = CLAMP(20, y_off_min/3, height_p - 1);  // We know that y_off_min/5 < height_p-1
+
   GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
   return new_image;
 }
@@ -43,7 +68,6 @@ gint32 render(gint32        image_ID,
   gint32            drawable_id = drawable->drawable_id;
 
   GimpPixelRgn rgn_in, rgn_out;
-  gint channels; // 3 for RVB, 1 for grayscale
 
   gint k, x_i, y_i; // Many counters
 
@@ -75,24 +99,13 @@ gint32 render(gint32        image_ID,
 
   int cur_posn[2];          // The position of the pixel to be filled.
   int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
-  int x_off_min, y_off_min; // Max and min values of the offset, i.e. the vector
-  int x_off_max, y_off_max; // subtracted from cur_posn to get patch_posn.
 
-  float progress; // Progress bar displayed during computation.
-  gimp_progress_init ("Texturizing image...");
+
 
 ///////////////////////                           //////////////////////
 ///////////////////////      Image dimensions     //////////////////////
 ///////////////////////                           //////////////////////
 
-  width_i  = vals->width_i;
-  height_i = vals->height_i;
-  width_p  = image_vals->width_p;
-  height_p = image_vals->height_p;
-  GeglRectangle rect_image = { 0, 0, width_i, height_i };
-  GeglRectangle rect_patch = { 0, 0, width_p, height_p };
-  const Babl* format;
-  channels = gimp_drawable_bpp (drawable->drawable_id);
 
   if (width_i == width_p && height_i == height_p) {
     g_message(_("New image size and original image size are the same."));
@@ -130,20 +143,6 @@ gint32 render(gint32        image_ID,
     return -1;
   }
 
-////////////////////////////                  ///////////////////////////
-////////////////////////////      Overlap     ///////////////////////////
-////////////////////////////                  ///////////////////////////
-
-  // WARNING: our conventions here aren't necessarily intuitive. Given the way
-  // that we detect the next pixel to fill, offsets are always negative values
-  // (we paste the patch a little above and to the left). However, {x,y}_off_*
-  // are positive values, and x_off_max < x_off_min.
-
-  // Heuristic values, to refine when we get more experience.
-  x_off_min = MIN (vals->overlap, width_p - 1);
-  y_off_min = MIN (vals->overlap, height_p - 1);
-  x_off_max = CLAMP (20, x_off_min/3, width_p -1); // We know that x_off_min/5 < width_p -1
-  y_off_max = CLAMP (20, y_off_min/3, height_p - 1); // We know that y_off_min/5 < height_p-1
 
 //////////////////                                     /////////////////
 //////////////////      New image, initializations     /////////////////
