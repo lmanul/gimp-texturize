@@ -194,8 +194,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   gegl_buffer_get(buffer_in, &rect_patch, 1.0, format, patch,
       GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
 
-  debug_print_guchar_buffer(patch, width_p, height_p);
-
   // Create a new image with only one layer.
   GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
   GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
