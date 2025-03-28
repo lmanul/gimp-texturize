@@ -72,7 +72,7 @@ static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const g
   return procedure;
 }
 
-#define PLUG_IN_BINARY "c-hello-world"
+#define PLUG_IN_BINARY "texturize"
 
 static GimpValueArray *
 texturize_run (GimpProcedure        *procedure,
@@ -92,6 +92,7 @@ texturize_run (GimpProcedure        *procedure,
 
   n_drawables = gimp_core_object_array_get_length ((GObject **) drawables);
   printf("Drawable %i\n\n", n_drawables);
+  gimp_message ("Texturizing...");
 
   if (n_drawables > 1) {
     GError *error = NULL;
