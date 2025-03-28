@@ -100,8 +100,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   gint height_p = gimp_drawable_get_height(drawable);
   GimpImageBaseType image_type = GIMP_RGB;
   GimpImageType     drawable_type = GIMP_RGB_IMAGE;
-  printf("Patch width %i\n", width_p);
-  printf("Image width %i\n", width_i);
 
   gimp_progress_init(_("Texturizing image..."));
   gimp_progress_update(0);
@@ -193,6 +191,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   // patch = destination
   gegl_buffer_get(buffer_in, &rect_patch, 1.0, format, patch,
       GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+  g_object_unref(buffer_in);
 
   // Create a new image with only one layer.
   GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
