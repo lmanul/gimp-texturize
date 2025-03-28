@@ -6,6 +6,7 @@
 
 /* The name of my PDB procedure */
 #define PLUG_IN_PROC "plug-in-texturize-c-texturize"
+#define PLUG_IN_NAME_CAPITALIZED "Texturize"
 
 /* Our custom class Texturize is derived from GimpPlugIn. */
 struct _Texturize {
@@ -80,75 +81,59 @@ texturize_run (GimpProcedure        *procedure,
                GimpDrawable        **drawables,
                GimpProcedureConfig  *config,
                gpointer              run_data) {
-  GimpTextLayer *text_layer;
-  GimpLayer     *parent   = NULL;
-  gint           position = 0;
+  // GimpLayer     *parent   = NULL;
+  // gint           position = 0;
   gint           n_drawables;
 
-  gchar         *text;
-  GimpFont      *font;
-  gint           size;
-  GimpUnit      *unit;
+  gint     *width_i;
+  gint     *height_i;
+  gint     *overlap;
+  gboolean *tileable;
 
   n_drawables = gimp_core_object_array_get_length ((GObject **) drawables);
 
   if (n_drawables > 1) {
-      GError *error = NULL;
+    GError *error = NULL;
 
-      g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
-                   "Procedure '%s' works with zero or one layer.",
-                   PLUG_IN_PROC);
+    g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
+                  "'%s' works only with a single layer.", PLUG_IN_NAME_CAPITALIZED);
 
-      return gimp_procedure_new_return_values (procedure,
-                                               GIMP_PDB_CALLING_ERROR,
-                                               error);
-    } else if (n_drawables == 1) {
-      GimpDrawable *drawable = drawables[0];
+    return gimp_procedure_new_return_values (procedure,
+                                              GIMP_PDB_CALLING_ERROR,
+                                              error);
+  } else if (n_drawables == 1) {
+    GimpDrawable *drawable = drawables[0];
 
-      if (! GIMP_IS_LAYER (drawable))
-        {
-          GError *error = NULL;
+    if (!GIMP_IS_LAYER (drawable)) {
+        GError *error = NULL;
+        g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
+                      "Procedure '%s' works with layers only.",
+                      PLUG_IN_NAME_CAPITALIZED);
+        return gimp_procedure_new_return_values (procedure, GIMP_PDB_CALLING_ERROR, error);
+      }
 
-          g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
-                       "Procedure '%s' works with layers only.",
-                       PLUG_IN_PROC);
+    // parent = GIMP_LAYER(gimp_item_get_parent(GIMP_ITEM(drawable)));
+    // position = gimp_image_get_item_position(image, GIMP_ITEM(drawable));
+  }
 
-          return gimp_procedure_new_return_values (procedure,
-                                                   GIMP_PDB_CALLING_ERROR,
-                                                   error);
-        }
+  if (run_mode == GIMP_RUN_INTERACTIVE) {
+    GtkWidget *dialog;
 
-      parent   = GIMP_LAYER (gimp_item_get_parent (GIMP_ITEM (drawable)));
-      position = gimp_image_get_item_position (image, GIMP_ITEM (drawable));
+    gimp_ui_init (PLUG_IN_BINARY);
+    dialog = gimp_procedure_dialog_new(procedure, GIMP_PROCEDURE_CONFIG (config), PLUG_IN_NAME_CAPITALIZED);
+    gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), NULL);
+
+    if (!gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(dialog))) {
+      return gimp_procedure_new_return_values(procedure, GIMP_PDB_CANCEL, NULL);
     }
-
-  if (run_mode == GIMP_RUN_INTERACTIVE)
-    {
-      GtkWidget *dialog;
-
-      gimp_ui_init (PLUG_IN_BINARY);
-      dialog = gimp_procedure_dialog_new (procedure,
-                                          GIMP_PROCEDURE_CONFIG (config),
-                                          "Hello World");
-      gimp_procedure_dialog_fill (GIMP_PROCEDURE_DIALOG (dialog), NULL);
-
-      if (! gimp_procedure_dialog_run (GIMP_PROCEDURE_DIALOG (dialog)))
-        return gimp_procedure_new_return_values (procedure, GIMP_PDB_CANCEL, NULL);
-    }
+  }
 
   g_object_get (config,
-                "text",      &text,
-                "font",      &font,
-                "font-size", &size,
-                "font-unit", &unit,
+                "width_i", &width_i,
+                "height_i", &height_i,
+                "overlap", &overlap,
+                "tileable", &tileable,
                 NULL);
-
-  text_layer = gimp_text_layer_new (image, text, font, size, unit);
-  gimp_image_insert_layer (image, GIMP_LAYER (text_layer), parent, position);
-
-  g_clear_object (&font);
-  g_clear_object (&unit);
-  g_free (text);
 
   return gimp_procedure_new_return_values (procedure, GIMP_PDB_SUCCESS, NULL);
 }
