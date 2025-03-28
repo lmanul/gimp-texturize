@@ -63,8 +63,8 @@ configure_file(
 )
 
 sources = [
-  'src/compter.c',
-  'src/compter.h',
+  'src/counting.c',
+  'src/counting.h',
   'src/graph.cpp',
   'src/graphcut.cpp',
   # 'src/interface.c',

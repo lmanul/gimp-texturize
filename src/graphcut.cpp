@@ -6,7 +6,7 @@
 #include <glib.h>
 
 extern "C" {
-#include "compter.h"
+#include "counting.h"
 #include "main.h"
 #include "texturize.h"
 }
