@@ -11,7 +11,23 @@
 #include "main.h"
 #include "texturize.h"
 
-//  Public functions
+// Allocates enough memory for a 2-dimensional table of guchars and
+// initializes all elements to zero.
+guchar** init_guchar_tab_2d (gint x, gint y) {
+  guchar** tab;
+  tab = (guchar**) malloc (x * sizeof (guchar*));
+
+  for (gint i = 0; i < x; i++) {
+    tab[i] = (guchar*) malloc (y * sizeof (guchar));
+  }
+
+  for (gint i = 0; i < x; i++) {
+    for (gint j = 0; j < y; j++) {
+      tab[i][j] = 0;
+    }
+  }
+  return tab;
+}
 
 GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint overlap, gboolean tileable) {
   gint width_p = gimp_drawable_get_width(drawable);
@@ -21,8 +37,9 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   printf("Patch width %i\n", width_p);
   printf("Image width %i\n", width_i);
 
-  float progress = 0; // Progress bar displayed during computation.
   gimp_progress_init(_("Texturizing image..."));
+  gimp_progress_update(0);
+  float progress = 0; // Progress bar displayed during computation.
 
   GeglRectangle rect_image = { 0, 0, width_i, height_i };
   GeglRectangle rect_patch = { 0, 0, width_p, height_p };
@@ -53,15 +70,15 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
       break;
     case GIMP_INDEXED_IMAGE:
     case GIMP_INDEXEDA_IMAGE:
-      g_message (_("Sorry, the Texturize plugin only supports RGB and grayscale images. "
-        "Please convert your image to RGB mode first."));
+      g_message (_("Sorry, the Texturize plugin only supports RGB and "
+        "grayscale images. Please convert your image to RGB first."));
       return NULL;
     }
 
     if (gimp_drawable_has_alpha(drawable)) {
-      g_message (_("Sorry, the Texturize plugin doesn't support images"
-        " with an alpha (ie transparency) channel yet."
-        " Please flatten your image first."));
+      g_message (_("Sorry, the Texturize plugin doesn't support images with "
+        "an alpha (i.e. transparency) channel yet. Please convert your image "
+        "first."));
       return NULL;
     }
 
@@ -82,7 +99,8 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   x_off_max = CLAMP(20, x_off_min/3, width_p -1);  // We know that x_off_min/5 < width_p -1
   y_off_max = CLAMP(20, y_off_min/3, height_p - 1);  // We know that y_off_min/5 < height_p-1
 
-  guchar** filled; // To keep track of which pixels have been filled.
+  // Keeps track of which pixels have been filled.
+  guchar** filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
   // 0 iff the pixel isn't filled
   // 1 if the pixel is filled and without any cuts
   // 3 if there is an upwards cut
@@ -105,29 +123,72 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
 
   int cur_posn[2];          // The position of the pixel to be filled.
   int patch_posn[2];        // Where we'll paste the patch to fill this pixel.
+  // GeglBuffer* buffer_out;
 
-  gimp_progress_update(progress);
+  // The initial image data, renamed to "patch".
+  gpointer patch =
+      g_new(guchar, rect_patch.width * rect_patch.height * channels);
+  GeglBuffer* buffer_in = gimp_drawable_get_buffer(drawable);
+  gegl_buffer_get(buffer_in, &rect_patch, 1.0, format, patch,
+      GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
+
+  // The destination image.
+  gpointer image =
+      g_new(guchar, rect_image.width * rect_image.height * channels);
+  GeglBuffer* buffer_out = gegl_buffer_new(&rect_image, format);
+  GeglColor* color = gegl_color_new("red");
+  gegl_color_set_rgba(color, 255, 0, 0, 1);
+  // gegl_buffer_clear(buffer_out, &rect_image);
+  gegl_buffer_set_color(buffer_out, &rect_image, color);
+
+  // Paste a first patch at position (0,0) of the out image.
+  gegl_buffer_set(buffer_out, &rect_patch, 0, format, patch,
+      GEGL_AUTO_ROWSTRIDE);
+
+  // And declare we have already filled in the corresponding pixels.
+  for (int x_i = 0; x_i < width_p; x_i++) {
+    for (int y_i = 0; y_i < height_p; y_i++) {
+      filled[x_i][y_i] = 1;
+    }
+  }
+
+  // Initialize in and out regions.
+  //  gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
+  // gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
+
+  // Allocate some memory for everyone.
+  // image = g_new(guchar, rect_image.width * rect_image.height * channels);
 
   coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
   coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
   coupe_v_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
   coupe_v_north = g_new(guchar, rect_image.width * rect_image.height * channels);
+  // For security, initialize everything to 0.
+  for (int k = 0; k < width_i * height_i * channels; k++) {
+    coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
+  }
 
-
-  progress = 100;
-  gimp_progress_update(progress);
+  gimp_progress_update(100);
 
   // Create a new image with only one layer.
   GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
   GimpLayer* new_layer = gimp_layer_new(new_image, "Texture",
-      rect_image.width, rect_image.height, drawable_type, 100,
-      GIMP_LAYER_MODE_NORMAL);
+    rect_image.width, rect_image.height, drawable_type, 100,
+    GIMP_LAYER_MODE_NORMAL);
+  GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
+
+  gegl_buffer_copy(
+      buffer_out, &rect_image, GEGL_ABYSS_NONE, dest_buffer, &rect_image);
+  gimp_drawable_update(
+      GIMP_DRAWABLE(new_layer), 0, 0, rect_image.width, rect_image.height);
   gimp_image_insert_layer(new_image, new_layer, NULL /* parent */, 0);
 
   g_free(coupe_h_here);
   g_free(coupe_h_west);
   g_free(coupe_v_here);
   g_free(coupe_v_north);
+  g_free(patch);
+  g_free(filled);
 
   return new_image;
 }
@@ -140,35 +201,11 @@ gint32 render(gint32        image_ID,
               PlugInImageVals    *image_vals,
               PlugInDrawableVals *drawable_vals) {
 
-/////////////////////                               ////////////////////
-/////////////////////      Variable declaration     ////////////////////
-/////////////////////                               ////////////////////
-
   GimpDrawable*     new_drawable;
-  GimpPixelRgn rgn_in, rgn_out;
 
   gint k, x_i, y_i; // Many counters
 
-  guchar* patch; // To store the original image
-  guchar* image; // Buffer to store the current image in a 3d array
 
-//////////////////                                     /////////////////
-//////////////////      New image, initializations     /////////////////
-//////////////////                                     /////////////////
-
-
-  // Initialize in and out regions.
-  gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
-  gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
-
-  // Allocate some memory for everyone.
-  patch = g_new(guchar, rect_patch.width * rect_patch.height * channels);
-  image = g_new(guchar, rect_image.width * rect_image.height * channels);
-  filled = init_guchar_tab_2d (rect_image.width, rect_image.height);
-
-  // For security, initialize everything to 0.
-  for (k = 0; k < width_i * height_i * channels; k++)
-    coupe_h_here[k] = coupe_h_west[k] = coupe_v_here[k] = coupe_v_north[k] = 0;
 
 //////////////////                                    /////////////////
 //////////////////    Cleaning up of the new image    /////////////////
@@ -177,15 +214,6 @@ gint32 render(gint32        image_ID,
   // Retrieve the initial image into the patch.
   // patch = destination buffer, rgn_in = source
   gimp_pixel_rgn_get_rect (&rgn_in, patch, 0, 0, width_p, height_p);
-
-  // Then paste a first patch at position (0,0) of the out image.
-  // patch = source buffer, rgn_out = destination
-  gimp_pixel_rgn_set_rect (&rgn_out, patch, 0, 0, width_p, height_p);
-
-  // And declare we have already filled in the corresponding pixels.
-  for (x_i = 0; x_i < width_p; x_i++) {
-    for (y_i = 0; y_i < height_p; y_i++) filled[x_i][y_i] = 1;
-  }
 
   // Retrieve all of the current image into image.
   // image = destination buffer, rgn_out = source
@@ -251,7 +279,6 @@ gint32 render(gint32        image_ID,
   gimp_drawable_update(new_drawable->drawable_id, rect_image.x, rect_image.y, rect_image.width, rect_image.height);
   gimp_displays_flush();
 
-  g_free(patch);
 
 }
 */
