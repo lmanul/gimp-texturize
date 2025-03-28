@@ -56,13 +56,11 @@ static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const g
       gimp_procedure_add_menu_path (procedure, "<Image>/Filters/Map/");
 
       gimp_procedure_set_documentation (procedure,
-                                        "Official Hello World Tutorial in C",
-                                        "Some longer text to explain about this procedure. "
-                                        "This is mostly for other developers calling this procedure.",
+                                        "Texturize Plugin for the GIMP",
+                                        "Creates seamless textures from existing images. "
+                                        "",
                                         NULL);
-      gimp_procedure_set_attribution (procedure, "Jehan",
-                                      "Jehan, ZeMarmot project",
-                                      "2025");
+      gimp_procedure_set_attribution (procedure, "Manu Cornet & Jean-Baptiste Rouquier", "", "2007");
 
       gimp_procedure_add_int_argument(procedure, "width_i", "New image _width", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
       gimp_procedure_add_int_argument(procedure, "height_i", "New image _height", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
