@@ -111,7 +111,12 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i, gint over
   progress = 100;
   gimp_progress_update(progress);
 
+  // Create a new image with only one layer.
   GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
+  GimpLayer* new_layer = gimp_layer_new(new_image, "Texture",
+      rect_image.width, rect_image.height, drawable_type, 100,
+      GIMP_LAYER_MODE_NORMAL);
+  gimp_image_insert_layer(new_image, new_layer, NULL /* parent */, 0);
 
   return new_image;
 }
@@ -131,10 +136,6 @@ gint32 render(gint32        image_ID,
   gint32 new_image_id = 0;
   gint32 new_layer_id = 0;
   GimpDrawable*     new_drawable;
-  GimpImageBaseType image_type = GIMP_RGB;
-  GimpImageType     drawable_type = GIMP_RGB_IMAGE;
-  gint32            drawable_id = drawable->drawable_id;
-
   GimpPixelRgn rgn_in, rgn_out;
 
   gint k, x_i, y_i; // Many counters
@@ -154,13 +155,6 @@ gint32 render(gint32        image_ID,
 //////////////////      New image, initializations     /////////////////
 //////////////////                                     /////////////////
 
-  // Create a new image with only one layer.
-  new_image_id = gimp_image_new(rect_image.width, rect_image.height, image_type);
-  new_layer_id = gimp_layer_new(new_image_id, "Texture",
-                                rect_image.width, rect_image.height,
-                                drawable_type, 100, GIMP_NORMAL_MODE);
-  gimp_image_insert_layer(new_image_id, new_layer_id, 0, -1);
-  new_drawable = gimp_drawable_get(new_layer_id);
 
   // Initialize in and out regions.
   gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
