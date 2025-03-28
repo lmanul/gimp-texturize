@@ -192,6 +192,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
   // gegl_buffer_set(dest_buffer, &rect_image, 0, format, image, GEGL_AUTO_ROWSTRIDE);
   gegl_buffer_set(dest_buffer, &rect_patch, 0, format, patch, GEGL_AUTO_ROWSTRIDE);
+  g_object_unref(dest_buffer);
 
   // gegl_buffer_copy(
   //     buffer_out, &rect_image, GEGL_ABYSS_NONE, dest_buffer, &rect_image);
