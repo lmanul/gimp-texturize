@@ -50,9 +50,9 @@ static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const g
                                             GIMP_PDB_PROC_TYPE_PLUGIN,
                                             texturize_run, NULL, NULL);
 
-      gimp_procedure_set_sensitivity_mask (procedure, GIMP_PROCEDURE_SENSITIVE_ALWAYS);
+      gimp_procedure_set_sensitivity_mask (procedure, GIMP_PROCEDURE_SENSITIVE_DRAWABLE);
 
-      gimp_procedure_set_menu_label (procedure, "Texturize");
+      gimp_procedure_set_menu_label (procedure, "Texturize...");
       gimp_procedure_add_menu_path (procedure, "<Image>/Filters/Map/");
 
       gimp_procedure_set_documentation (procedure,
