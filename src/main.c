@@ -22,9 +22,9 @@ struct _Texturize {
 G_DECLARE_FINAL_TYPE (Texturize, texturize, TEXTURIZE,, GimpPlugIn)
 
 /* Declarations */
-static GList          * texturize_query_procedures (GimpPlugIn           *plug_in);
-static GimpProcedure  * texturize_create_procedure (GimpPlugIn           *plug_in,
-                                                    const gchar          *name);
+static GList          * texturize_query_procedures (GimpPlugIn *plug_in);
+static GimpProcedure  * texturize_create_procedure (GimpPlugIn  *plug_in,
+                                                    const gchar *name);
 static GimpValueArray * texturize_run(GimpProcedure        *procedure,
                                       GimpRunMode           run_mode,
                                       GimpImage            *image,
@@ -48,7 +48,8 @@ static GList * texturize_query_procedures (GimpPlugIn *plug_in) {
   return g_list_append (NULL, g_strdup (PLUG_IN_PROC));
 }
 
-static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const gchar *name) {
+static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in,
+    const gchar *name) {
   GimpProcedure *procedure = NULL;
 
   if (g_strcmp0 (name, PLUG_IN_PROC) == 0) {
@@ -56,22 +57,29 @@ static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const g
                                             GIMP_PDB_PROC_TYPE_PLUGIN,
                                             texturize_run, NULL, NULL);
 
-      gimp_procedure_set_sensitivity_mask (procedure, GIMP_PROCEDURE_SENSITIVE_DRAWABLE);
+      gimp_procedure_set_sensitivity_mask (procedure,
+          GIMP_PROCEDURE_SENSITIVE_DRAWABLE);
 
       gimp_procedure_set_menu_label (procedure, "Texturize...");
       gimp_procedure_add_menu_path (procedure, "<Image>/Filters/Map/");
 
       gimp_procedure_set_documentation (procedure,
-                                        "Texturize Plugin for the GIMP",
-                                        "Creates seamless textures from existing images. "
-                                        "",
-                                        NULL);
-      gimp_procedure_set_attribution (procedure, "Manu Cornet & Jean-Baptiste Rouquier", "", "2007");
+          "Texturize Plugin for the GIMP",
+          "Creates seamless textures from existing images. "
+          "",
+          NULL);
+      gimp_procedure_set_attribution (procedure,
+          "Manu Cornet & Jean-Baptiste Rouquier", "", "2007");
 
-      gimp_procedure_add_int_argument(procedure, "width_i", "New image _width", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
-      gimp_procedure_add_int_argument(procedure, "height_i", "New image _height", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
-      gimp_procedure_add_int_argument(procedure, "overlap", "O_verlap", "Higher: slower, more seamless but potentially more visible repetition", 5, 1000, 300, G_PARAM_READWRITE);
-      gimp_procedure_add_boolean_argument(procedure, "tileable", "_Tileable", "Whether the new image should be tileable", 0, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "width_i",
+          "New image _width", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "height_i",
+          "New image _height", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "overlap", "O_verlap",
+          "Higher: slower, more seamless but potentially more visible repetition",
+          5, 1000, 300, G_PARAM_READWRITE);
+      gimp_procedure_add_boolean_argument(procedure, "tileable", "_Tileable",
+          "Whether the new image should be tileable", 0, G_PARAM_READWRITE);
     }
 
   return procedure;
@@ -102,9 +110,11 @@ texturize_run (GimpProcedure        *procedure,
   if (n_drawables > 1 || n_drawables == 0) {
     GError *error = NULL;
 
-    g_set_error (&error, GIMP_PLUG_IN_ERROR, 0, "'%s' works only with a single image.", PLUG_IN_NAME_CAPITALIZED);
+    g_set_error (&error, GIMP_PLUG_IN_ERROR, 0,
+        "'%s' works only with a single image.", PLUG_IN_NAME_CAPITALIZED);
 
-    return gimp_procedure_new_return_values(procedure, GIMP_PDB_CALLING_ERROR, error);
+    return gimp_procedure_new_return_values(procedure, GIMP_PDB_CALLING_ERROR,
+        error);
   } else if (n_drawables == 1) {
     GimpDrawable *drawable = drawables[0];
 
@@ -113,7 +123,8 @@ texturize_run (GimpProcedure        *procedure,
         g_set_error(&error, GIMP_PLUG_IN_ERROR, 0,
                     "Procedure '%s' works with layers only.",
                     PLUG_IN_NAME_CAPITALIZED);
-        return gimp_procedure_new_return_values(procedure, GIMP_PDB_CALLING_ERROR, error);
+        return gimp_procedure_new_return_values(procedure,
+            GIMP_PDB_CALLING_ERROR, error);
       }
 
     // parent = GIMP_LAYER(gimp_item_get_parent(GIMP_ITEM(drawable)));
@@ -124,7 +135,8 @@ texturize_run (GimpProcedure        *procedure,
     GtkWidget *dialog;
 
     gimp_ui_init(PLUG_IN_BINARY);
-    dialog = gimp_procedure_dialog_new(procedure, GIMP_PROCEDURE_CONFIG (config), PLUG_IN_NAME_CAPITALIZED);
+    dialog = gimp_procedure_dialog_new(procedure, GIMP_PROCEDURE_CONFIG(config),
+        PLUG_IN_NAME_CAPITALIZED);
     gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), NULL);
 
     if (!gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(dialog))) {
@@ -138,9 +150,11 @@ texturize_run (GimpProcedure        *procedure,
                 "overlap", &overlap,
                 "tileable", &tileable,
                 NULL);
-  GimpImage* new_image = render(drawables[0], width_i, height_i, overlap, tileable);
+  GimpImage* new_image = render(drawables[0], width_i, height_i, overlap,
+      tileable);
   if (new_image == NULL) {
-    return gimp_procedure_new_return_values(procedure, GIMP_PDB_EXECUTION_ERROR, NULL);
+    return gimp_procedure_new_return_values(procedure, GIMP_PDB_EXECUTION_ERROR,
+        NULL);
   } else {
     gimp_display_new(new_image);
     return gimp_procedure_new_return_values(procedure, GIMP_PDB_SUCCESS, NULL);
