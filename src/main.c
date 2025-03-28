@@ -8,6 +8,10 @@
 #define PLUG_IN_PROC "plug-in-texturize-c-texturize"
 #define PLUG_IN_NAME_CAPITALIZED "Texturize"
 
+#define DEFAULT_NEW_IMAGE_WIDTH 1000;
+#define DEFAULT_NEW_IMAGE_HEIGHT 1000;
+#define DEFAULT_OVERLAP 300;
+
 /* Our custom class Texturize is derived from GimpPlugIn. */
 struct _Texturize {
   GimpPlugIn parent_instance;
@@ -65,8 +69,8 @@ static GimpProcedure * texturize_create_procedure (GimpPlugIn  *plug_in, const g
 
       gimp_procedure_add_int_argument(procedure, "width_i", "New image _width", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
       gimp_procedure_add_int_argument(procedure, "height_i", "New image _height", NULL, 1, 100000, 1000, G_PARAM_READWRITE);
-      gimp_procedure_add_int_argument(procedure, "overlap", "O_verlap", NULL, 5, 1000, 300, G_PARAM_READWRITE);
-      gimp_procedure_add_boolean_argument(procedure, "tileable", "_Tileable", NULL, 0, G_PARAM_READWRITE);
+      gimp_procedure_add_int_argument(procedure, "overlap", "O_verlap", "Higher: slower, more seamless but potentially more visible repetition", 5, 1000, 300, G_PARAM_READWRITE);
+      gimp_procedure_add_boolean_argument(procedure, "tileable", "_Tileable", "Whether the new image should be tileable", 0, G_PARAM_READWRITE);
     }
 
   return procedure;
@@ -85,16 +89,16 @@ texturize_run (GimpProcedure        *procedure,
   // gint           position = 0;
   gint           n_drawables;
 
-  gint     *width_i;
-  gint     *height_i;
-  gint     *overlap;
-  gboolean *tileable;
+  gint     width_i = DEFAULT_NEW_IMAGE_WIDTH;
+  gint     height_i = DEFAULT_NEW_IMAGE_HEIGHT;
+  gint     overlap = DEFAULT_OVERLAP;
+  gboolean tileable = 0;
 
   n_drawables = gimp_core_object_array_get_length ((GObject **) drawables);
-  printf("Drawable %i\n\n", n_drawables);
+  printf("DrawableEE %i\n\n", n_drawables);
   gimp_message ("Texturizing...");
 
-  if (n_drawables > 1) {
+  if (n_drawables > 1 || n_drawables == 0) {
     GError *error = NULL;
 
     g_set_error (&error, GIMP_PLUG_IN_ERROR, 0, "'%s' works only with a single image.", PLUG_IN_NAME_CAPITALIZED);
@@ -134,7 +138,10 @@ texturize_run (GimpProcedure        *procedure,
                 "tileable", &tileable,
                 NULL);
 
-  return gimp_procedure_new_return_values (procedure, GIMP_PDB_SUCCESS, NULL);
+  printf("Width is %i", width_i);
+  GimpImage* new_image = gimp_image_new(width_i, height_i, GIMP_RGB);
+  gimp_display_new(new_image);
+  return gimp_procedure_new_return_values(procedure, GIMP_PDB_SUCCESS, NULL);
 }
 
 /* Generate needed main() code */
