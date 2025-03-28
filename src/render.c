@@ -144,19 +144,20 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
 
   debug_print_guchar_buffer(patch, width_p, height_p);
 
+  // Create a new image with only one layer.
+  GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
+  GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
+      rect_image.width, rect_image.height, drawable_type, 100,
+      GIMP_LAYER_MODE_NORMAL);
+  GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
+
+  // Paste a first patch at position (0,0) of the out image.
+  gegl_buffer_set(dest_buffer, &rect_patch, 0, format, patch,
+    GEGL_AUTO_ROWSTRIDE);
+
   // The destination image.
   gpointer image =
       g_new(guchar, rect_image.width * rect_image.height * channels);
-  GeglBuffer* buffer_out = gegl_buffer_new(&rect_image, format);
-  GeglColor* color = gegl_color_new("#ff0000");
-  GeglRectangle rect_test = { 0, 0, 200, 200 };
-  // gegl_color_set_rgba(color, 255, 0, 0, 1);
-  gegl_buffer_clear(buffer_out, &rect_image);
-  // gegl_buffer_set_color(buffer_out, &rect_test, color);
-
-  // Paste a first patch at position (0,0) of the out image.
-  gegl_buffer_set(buffer_out, &rect_patch, 0, format, patch,
-      GEGL_AUTO_ROWSTRIDE);
 
   // And declare we have already filled in the corresponding pixels.
   for (int x_i = 0; x_i < width_p; x_i++) {
@@ -164,10 +165,6 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
       filled[x_i][y_i] = 1;
     }
   }
-
-  // Initialize in and out regions.
-  // gimp_pixel_rgn_init(&rgn_out, new_drawable, rect_image.x, rect_image.y, rect_image.width, rect_image.height, TRUE, TRUE);
-  // gimp_pixel_rgn_init(&rgn_in, drawable, rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height, FALSE, FALSE);
 
   coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
   coupe_h_west  = g_new(guchar, rect_image.width * rect_image.height * channels);
@@ -180,25 +177,9 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
 
   gimp_progress_update(1.0);
 
-  // Create a new image with only one layer.
-  // GimpImage* new_image = gimp_image_new(width_i, height_i, image_type);
-  GimpImage* new_image = gimp_image_new(width_p, height_p, image_type);
-  // GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
-  //     rect_image.width, rect_image.height, drawable_type, 100,
-  //     GIMP_LAYER_MODE_NORMAL);
-  GimpLayer* new_layer = gimp_layer_new(new_image, _("Texture"),
-      rect_patch.width, rect_patch.height, drawable_type, 100.0,
-      GIMP_LAYER_MODE_NORMAL);
-  GeglBuffer* dest_buffer = gimp_drawable_get_buffer(GIMP_DRAWABLE(new_layer));
-  // gegl_buffer_set(dest_buffer, &rect_image, 0, format, image, GEGL_AUTO_ROWSTRIDE);
-  gegl_buffer_set(dest_buffer, &rect_patch, 0, format, patch, GEGL_AUTO_ROWSTRIDE);
+  // Necessary for the drawable to update
   g_object_unref(dest_buffer);
 
-  // gegl_buffer_copy(
-  //     buffer_out, &rect_image, GEGL_ABYSS_NONE, dest_buffer, &rect_image);
-  // gimp_drawable_merge_shadow(GIMP_DRAWABLE(new_layer), FALSE /* push to undo stack */);
-  // gimp_drawable_update(GIMP_DRAWABLE(new_layer),
-  //     rect_image.x, rect_image.y, rect_image.width, rect_image.height);
   gimp_drawable_update(GIMP_DRAWABLE(new_layer),
       rect_patch.x, rect_patch.y, rect_patch.width, rect_patch.height);
   gimp_image_insert_layer(new_image, new_layer, NULL /* parent */, 0);
