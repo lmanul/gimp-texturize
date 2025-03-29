@@ -3,3 +3,4 @@ build/
 po/POTFILES
 po/*.pot
 po/*.gmo
+.vscode
