@@ -27,4 +27,6 @@ def main():
         os.system("cp texturize " + subdir)
 
 if __name__ == "__main__":
+    if os.getcwd() == "scripts":
+        os.chdir("..")
     main()

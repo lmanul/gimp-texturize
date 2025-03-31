@@ -3,6 +3,8 @@
 import os
 
 def main():
+    if os.getcwd() == "scripts":
+        os.chdir("..")
     os.system("rm -rf build")
 
 if __name__ == "__main__":
