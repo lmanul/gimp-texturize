@@ -1,0 +1,133 @@
+#!/usr/bin/python
+
+# Times parts of the plugin outside of GIMP, on a generated texture.
+#
+# The parts live in perftest_harness.c (see the top of that file to add one).
+# The harness is linked against the object files of the plugin build, which
+# is refreshed with "compile" first if it is missing or out of date.
+
+import argparse
+import glob
+import os
+import subprocess
+import sys
+
+BUILD_DIR = "build"
+OBJECTS_DIR = os.path.join(BUILD_DIR, "texturize.p")
+PLUGIN_BINARY = os.path.join(BUILD_DIR, "texturize")
+HARNESS_SOURCE = os.path.join("scripts", "perftest_harness.c")
+HARNESS_BINARY = os.path.join(BUILD_DIR, "perftest")
+PACKAGES = ["gimp-3.0", "gimpui-3.0", "gtk+-3.0"]
+
+def pkg_config(option):
+    return subprocess.check_output(["pkg-config", option] + PACKAGES,
+                                   text=True).split()
+
+def newest(paths):
+    return max(os.path.getmtime(path) for path in paths)
+
+def plugin_sources():
+    return glob.glob("src/*.c") + glob.glob("src/*.cpp") \
+        + glob.glob("src/*.h") + ["meson.build"]
+
+def build_plugin_if_necessary():
+    if os.path.exists(PLUGIN_BINARY) \
+            and os.path.getmtime(PLUGIN_BINARY) >= newest(plugin_sources()):
+        return
+    print("The plugin build is missing or out of date, running 'compile'...",
+          flush=True)
+    subprocess.call([os.path.join("scripts", "compile")])
+    if not os.path.exists(PLUGIN_BINARY) \
+            or os.path.getmtime(PLUGIN_BINARY) < newest(plugin_sources()):
+        sys.exit("Could not build the plugin.")
+
+def build_harness():
+    # Everything but main.c, which holds the GIMP entry point.
+    objects = [path for path in glob.glob(os.path.join(OBJECTS_DIR, "*.o"))
+               if not os.path.basename(path).startswith("src_main.")]
+    if not objects:
+        sys.exit("No object files found in " + OBJECTS_DIR + ".")
+    if os.path.exists(HARNESS_BINARY) \
+            and os.path.getmtime(HARNESS_BINARY) >= newest(
+                objects + [HARNESS_SOURCE, os.path.join("src", "texturize.h")]):
+        return
+    print("Building the test harness...", flush=True)
+    harness_object = HARNESS_BINARY + ".o"
+    subprocess.check_call(
+        ["gcc", "-O2", "-c", HARNESS_SOURCE, "-o", harness_object, "-Isrc"]
+        + pkg_config("--cflags"))
+    # g++ because some of the plugin is C++.
+    subprocess.check_call(
+        ["g++", harness_object] + objects + ["-o", HARNESS_BINARY]
+        + pkg_config("--libs") + ["-lm"])
+
+def format_table(rows):
+    widths = [max(len(row[k]) for row in rows) for k in range(len(rows[0]))]
+    lines = []
+    for row in rows:
+        cells = [row[0].ljust(widths[0])] \
+            + [row[k].rjust(widths[k]) for k in range(1, len(row))]
+        lines.append("  ".join(cells))
+    return "\n".join(lines)
+
+def main():
+    # Work from the root of the repository, wherever we were called from.
+    os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+
+    parser = argparse.ArgumentParser(
+        description="Times parts of the Texturize plugin outside of GIMP.")
+    parser.add_argument("parts", nargs="*", metavar="PART",
+                        help="parts to run (default: all, see --list)")
+    parser.add_argument("--list", action="store_true",
+                        help="list the available parts and exit")
+    parser.add_argument("--repeat", type=int, default=3,
+                        help="number of runs of each part (default: 3)")
+    parser.add_argument("--patch-size", type=int, default=128,
+                        help="size of the source patch (default: 128)")
+    parser.add_argument("--image-size", type=int, default=512,
+                        help="size of the generated image (default: 512)")
+    parser.add_argument("--overlap", type=int, default=100,
+                        help="overlap, as in the plugin's dialog (default: 100)")
+    args = parser.parse_args()
+
+    build_plugin_if_necessary()
+    build_harness()
+
+    available = subprocess.check_output([HARNESS_BINARY, "--list"],
+                                        text=True).split()
+    if args.list:
+        print("\n".join(available))
+        return
+    unknown = [part for part in args.parts if part not in available]
+    if unknown:
+        sys.exit("Unknown part(s): " + ", ".join(unknown)
+                 + ". Available: " + ", ".join(available) + ".")
+    parts = args.parts or available
+
+    print("Patch %dx%d, image %dx%d, overlap %d, %d run(s) of each part."
+          % (args.patch_size, args.patch_size, args.image_size,
+             args.image_size, args.overlap, args.repeat))
+
+    rows = [["Part", "Best (s)", "Mean (s)", "Checksum"]]
+    for part in parts:
+        timings = []
+        checksums = set()
+        for run in range(args.repeat):
+            print("Running %s (%d/%d)..." % (part, run + 1, args.repeat),
+                  end=" ", flush=True)
+            output = subprocess.check_output(
+                [HARNESS_BINARY, part, str(args.patch_size),
+                 str(args.image_size), str(args.overlap)], text=True).split()
+            print(output[0] + " s")
+            timings.append(float(output[0]))
+            checksums.add(output[1])
+        # The checksum should not change from one run to the next.
+        checksum = checksums.pop() if len(checksums) == 1 else "UNSTABLE"
+        rows.append([part, "%.3f" % min(timings),
+                     "%.3f" % (sum(timings) / len(timings)), checksum])
+
+    print("\nTimings:")
+    print(format_table(rows))
+
+if __name__ == "__main__":
+    main()
