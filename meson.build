@@ -2,6 +2,7 @@ project(
   'texturize',
   ['c', 'cpp'],
   meson_version: '>= 0.51.0',
+  default_options: ['buildtype=release'],
 )
 
 i18n = import('i18n')
