@@ -242,7 +242,7 @@ void cut_graph (int* patch_posn,
           weight = edge_weight (channels,
                                image + ((y_i * width_i + x_i) * channels),
                                patch + ((y_p * width_p + x_p) * channels),
-                               image + ((y_i * width_i + (modulo (x_i, width_i) - 1)) * channels),
+                               image + ((y_i * width_i + modulo (x_i - 1, width_i)) * channels),
                                patch + ((y_p * width_p + (x_p - 1)) * channels));
           graph->add_edge (node_sommet_courant,
                             node_of_pixel[(x_p - 1) * height_p + y_p],

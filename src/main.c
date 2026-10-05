@@ -134,7 +134,10 @@ texturize_run (GimpProcedure        *procedure,
         PLUG_IN_NAME_CAPITALIZED);
     gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), NULL);
 
-    if (!gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(dialog))) {
+    gboolean run = gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+
+    if (!run) {
       return gimp_procedure_new_return_values(procedure, GIMP_PDB_CANCEL, NULL);
     }
   }
