@@ -254,7 +254,12 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   g_free(coupe_v_here);
   g_free(coupe_v_north);
   g_free(patch);
-  g_free(filled);
+  g_free(image);
+  // filled was allocated with malloc, one block per column.
+  for (int x_i = 0; x_i < rect_image.width; x_i++) {
+    free(filled[x_i]);
+  }
+  free(filled);
 
   return new_image;
 }
