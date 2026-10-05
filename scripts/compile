@@ -4,10 +4,7 @@ import os
 
 BUILD_DIR = "build"
 
-# No longer supported
-PLUGINS_DIR_2 = os.path.expanduser("~/.config/GIMP/2.10/plug-ins")
-
-PLUGINS_DIR_3 = os.path.expanduser("~/.config/GIMP/3.0/plug-ins")
+PLUGINS_DIR_3 = os.path.expanduser("~/.config/GIMP/3.2/plug-ins")
 
 def main():
     if not os.path.exists(BUILD_DIR):
