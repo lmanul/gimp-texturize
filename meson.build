@@ -13,6 +13,9 @@ gimp_dep = dependency('gimp-3.0')
 gtk_dep = dependency('gtk+-3.0')
 glib_dep = dependency('glib-2.0')
 gimpui_dep = dependency('gimpui-3.0')
+# Used to search for the best patch position on several threads. Without it,
+# the plugin still works, on a single thread.
+openmp_dep = dependency('openmp', required: false)
 
 prefix = get_option('prefix')
 # Once we bump meson version to 0.58, we will be able to use positional argument
@@ -80,6 +83,7 @@ executable(
     gimp_dep,
     gtk_dep,
     gimpui_dep,
+    openmp_dep,
   ],
   include_directories: configure_include_dir,
   install: true,

@@ -90,43 +90,63 @@ void offset_optimal(gint    *resultat,
                     gint     x_patch_posn_min, gint y_patch_posn_min, gint x_patch_posn_max, gint y_patch_posn_max,
                     gint     channels, guchar *filled,
                     gboolean tileable) {
-  gint x_i, y_i;
-  float best_difference = INFINITY, tmp_difference;
+  float best_difference = INFINITY;
+  gint best_x = 0, best_y = 0;
 
-  if (tileable) {
+  // The candidate positions are independent of each other, so they are shared
+  // between threads. Each thread keeps its own best position, and they are
+  // compared at the end.
+  #pragma omp parallel
+  {
+    float thread_difference = INFINITY, tmp_difference;
+    gint thread_x = 0, thread_y = 0;
+    gint x_i, y_i;
+
+    #pragma omp for collapse(2) schedule(static) nowait
     for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
       for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
 
-        tmp_difference = difference (
-          width_i, height_i, width_p, height_p, image, patch,
-          x_i, y_i,
-          MAX (0, x_i), MAX (0, y_i),
-          x_i + width_p, y_i + height_p,
-          channels, filled);
+        if (tileable) {
+          tmp_difference = difference (
+            width_i, height_i, width_p, height_p, image, patch,
+            x_i, y_i,
+            MAX (0, x_i), MAX (0, y_i),
+            x_i + width_p, y_i + height_p,
+            channels, filled);
+        } else {
+          tmp_difference = difference (
+            width_i, height_i, width_p, height_p, image, patch,
+            x_i, y_i,
+            MAX (0,x_i), MAX (0,y_i),
+            MIN (x_i + width_p, width_i), MIN (y_i + height_p, height_i),
+            channels, filled);
+        }
 
-        if (tmp_difference < best_difference) {
-          best_difference = tmp_difference;
-          resultat[0] = x_i; resultat[1] = y_i;
+        if (tmp_difference < thread_difference) {
+          thread_difference = tmp_difference;
+          thread_x = x_i; thread_y = y_i;
         }
       }
     }
-  } else {
-    for (x_i = x_patch_posn_min; x_i < x_patch_posn_max; x_i++) {
-      for (y_i = y_patch_posn_min; y_i < y_patch_posn_max; y_i++) {
 
-        tmp_difference = difference (
-          width_i, height_i, width_p, height_p, image, patch,
-          x_i, y_i,
-          MAX (0,x_i), MAX (0,y_i),
-          MIN (x_i + width_p, width_i), MIN (y_i + height_p, height_i),
-          channels, filled);
-
-        if (tmp_difference < best_difference) {
-          best_difference = tmp_difference;
-          resultat[0] = x_i; resultat[1] = y_i;
-        }
+    // When several positions are equally good, keep the first one in the
+    // order of the loops above, whichever thread found it. This way the
+    // result doesn't depend on the number of threads.
+    #pragma omp critical
+    {
+      if (thread_difference < best_difference
+          || (thread_difference == best_difference
+              && thread_difference < INFINITY
+              && (thread_x < best_x
+                  || (thread_x == best_x && thread_y < best_y)))) {
+        best_difference = thread_difference;
+        best_x = thread_x; best_y = thread_y;
       }
     }
+  }
+
+  if (best_difference < INFINITY) {
+    resultat[0] = best_x; resultat[1] = best_y;
   }
   return;
 }

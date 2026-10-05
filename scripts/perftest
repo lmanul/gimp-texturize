@@ -56,9 +56,10 @@ def build_harness():
     subprocess.check_call(
         ["gcc", "-O2", "-c", HARNESS_SOURCE, "-o", harness_object, "-Isrc"]
         + pkg_config("--cflags"))
-    # g++ because some of the plugin is C++.
+    # g++ because some of the plugin is C++, -fopenmp because the plugin uses
+    # OpenMP.
     subprocess.check_call(
-        ["g++", harness_object] + objects + ["-o", HARNESS_BINARY]
+        ["g++", "-fopenmp", harness_object] + objects + ["-o", HARNESS_BINARY]
         + pkg_config("--libs") + ["-lm"])
 
 def format_table(rows):
