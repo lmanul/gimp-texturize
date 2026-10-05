@@ -134,6 +134,21 @@ texturize_run (GimpProcedure        *procedure,
         PLUG_IN_NAME_CAPITALIZED);
     gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), NULL);
 
+#ifndef _OPENMP
+    /* Built without OpenMP: tell the user why the plug-in is slow. */
+    GtkWidget *warning = gimp_procedure_dialog_get_label(
+        GIMP_PROCEDURE_DIALOG(dialog), "openmp-warning",
+        "Warning: this copy of Texturize was built without OpenMP, so it only "
+        "uses one processor core and will be slow. To make it faster, install "
+        "OpenMP (libgomp with GCC, libomp with Clang) and rebuild the plug-in.",
+        FALSE, FALSE);
+    gtk_label_set_line_wrap(GTK_LABEL(warning), TRUE);
+    gtk_label_set_max_width_chars(GTK_LABEL(warning), 50);
+    gtk_label_set_xalign(GTK_LABEL(warning), 0.0);
+    gimp_procedure_dialog_fill(GIMP_PROCEDURE_DIALOG(dialog), "openmp-warning",
+        NULL);
+#endif
+
     gboolean run = gimp_procedure_dialog_run(GIMP_PROCEDURE_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 
