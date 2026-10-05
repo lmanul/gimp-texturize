@@ -18,7 +18,7 @@ float difference(gint width_i, gint height_i, gint width_p, gint height_p,
                  guchar * image, guchar * patch,
                  gint posn_x, gint posn_y,
                  gint x_min, gint y_min, gint x_max, gint y_max,
-                 gint channels, guchar ** filled) {
+                 gint channels, guchar *filled) {
 
   gint    somme = 0, zone=0;
   gint    x_i, y_i, k;
@@ -28,7 +28,7 @@ float difference(gint width_i, gint height_i, gint width_p, gint height_p,
   gint x_i_start, x_p_start;
   gint xcount, ycount;
   gint iy, ix;
-  guchar *image_ptr_x, *patch_ptr_x;
+  guchar *image_ptr_x, *patch_ptr_x, *filled_ptr_x;
   gint image_add_y, patch_add_y;
 
   // source image edges is looping
@@ -46,6 +46,7 @@ float difference(gint width_i, gint height_i, gint width_p, gint height_p,
   patch_add_y = width_p * channels;
   image_ptr_x = image + y_i * image_add_y;
   patch_ptr_x = patch + y_p * patch_add_y;
+  filled_ptr_x = filled + y_i * width_i;
 
   for (iy = 0; iy < ycount; iy++) {
 
@@ -55,7 +56,7 @@ float difference(gint width_i, gint height_i, gint width_p, gint height_p,
     patch_ptr = patch_ptr_x + x_p * channels;
 
     for (ix = 0; ix < xcount; ix++) {
-      if (filled[x_i][y_i]) {
+      if (filled_ptr_x[x_i]) {
         for (k = 0 ; k < channels; k++) {
           somme += abs (*image_ptr - *patch_ptr);
           image_ptr++;
@@ -73,8 +74,9 @@ float difference(gint width_i, gint height_i, gint width_p, gint height_p,
 
     image_ptr_x += image_add_y;
     patch_ptr_x += patch_add_y;
+    filled_ptr_x += width_i;
 
-    if (++y_i >= height_i) { y_i = 0; image_ptr_x = image; }
+    if (++y_i >= height_i) { y_i = 0; image_ptr_x = image; filled_ptr_x = filled; }
     if (++y_p >= height_p) { y_p = 0; patch_ptr_x = patch; }
   }
 
@@ -86,7 +88,7 @@ void offset_optimal(gint    *resultat,
                     guchar  *image, guchar *patch,
                     gint     width_p, gint height_p, gint width_i, gint height_i,
                     gint     x_patch_posn_min, gint y_patch_posn_min, gint x_patch_posn_max, gint y_patch_posn_max,
-                    gint     channels, guchar **filled,
+                    gint     channels, guchar *filled,
                     gboolean tileable) {
   gint x_i, y_i;
   float best_difference = INFINITY, tmp_difference;

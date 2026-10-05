@@ -11,24 +11,6 @@
 #include "main.h"
 #include "texturize.h"
 
-// Allocates enough memory for a 2-dimensional table of guchars and
-// initializes all elements to zero.
-guchar** init_guchar_tab_2d (gint x, gint y) {
-  guchar** tab;
-  tab = (guchar**) malloc (x * sizeof (guchar*));
-
-  for (gint i = 0; i < x; i++) {
-    tab[i] = (guchar*) malloc (y * sizeof (guchar));
-  }
-
-  for (gint i = 0; i < x; i++) {
-    for (gint j = 0; j < y; j++) {
-      tab[i][j] = 0;
-    }
-  }
-  return tab;
-}
-
 void debug_print_guchar_buffer(gpointer buffer, int width, int height) {
   for (int row = 0; row < height; row++) {
     for (int col = 0; col < width; col++) {
@@ -41,7 +23,7 @@ void the_big_loop(
     guchar* image, guchar* patch,
     int width_i, int height_i, int width_p, int height_p,
     GeglRectangle rect_image, GeglRectangle rect_patch,
-    guchar** filled,
+    guchar *filled,
     gboolean tileable,
     guchar* coupe_h_here, guchar* coupe_h_west,
     guchar* coupe_v_here, guchar* coupe_v_north,
@@ -162,8 +144,9 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   x_off_max = CLAMP(20, x_off_min/3, width_p -1);  // We know that x_off_min/5 < width_p -1
   y_off_max = CLAMP(20, y_off_min/3, height_p - 1);  // We know that y_off_min/5 < height_p-1
 
-  // Keeps track of which pixels have been filled.
-  guchar** filled = init_guchar_tab_2d(rect_image.width, rect_image.height);
+  // Keeps track of which pixels have been filled. Stored row by row: the pixel
+  // (x,y) is at filled[y * width_i + x].
+  guchar *filled = g_new0(guchar, rect_image.width * rect_image.height);
   // 0 iff the pixel isn't filled
   // 1 if the pixel is filled and without any cuts
   // 3 if there is an upwards cut
@@ -212,10 +195,8 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   }
 
   // And declare we have already filled in the corresponding pixels.
-  for (int x_i = 0; x_i < width_p; x_i++) {
-    for (int y_i = 0; y_i < height_p; y_i++) {
-      filled[x_i][y_i] = 1;
-    }
+  for (int y_i = 0; y_i < height_p; y_i++) {
+    memset(filled + y_i * width_i, 1, width_p);
   }
 
   coupe_h_here  = g_new(guchar, rect_image.width * rect_image.height * channels);
@@ -255,11 +236,7 @@ GimpImage* render(GimpDrawable *drawable, gint width_i, gint height_i,
   g_free(coupe_v_north);
   g_free(patch);
   g_free(image);
-  // filled was allocated with malloc, one block per column.
-  for (int x_i = 0; x_i < rect_image.width; x_i++) {
-    free(filled[x_i]);
-  }
-  free(filled);
+  g_free(filled);
 
   return new_image;
 }

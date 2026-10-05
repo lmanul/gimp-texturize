@@ -74,7 +74,7 @@ inline void paste_patch_pixel_to_image(int width_i, int height_i, int width_p, i
 void cut_graph (int* patch_posn,
                 int width_i, int height_i, int width_p, int height_p,
                 int channels,
-                guchar  **filled,
+                guchar *filled,
                 guchar   *image, guchar * patch,
                 guchar   *coupe_h_here, guchar * coupe_h_west,
                 guchar   *coupe_v_here, guchar * coupe_v_north,
@@ -135,7 +135,7 @@ void cut_graph (int* patch_posn,
 //     for (real_y_i = y_inf; real_y_i < y_sup; real_y_i++) {
 //       x_i = modulo (real_x_i, width_i);
 //       y_i = modulo (real_y_i, height_i);
-//       r = filled[x_i][y_i];
+//       r = filled[y_i * width_i + x_i];
 //       if (r) {
 //         nb_sommets++;
 // We'll uncomment this when we start taking previous cuts into account again.
@@ -160,7 +160,7 @@ void cut_graph (int* patch_posn,
       y_i = modulo (real_y_i, height_i);
 
       // If the pixel in the image isn't filled, do nothing and go to the next pixel.
-      if (filled[x_i][y_i]) {
+      if (filled[y_i * width_i + x_i]) {
         node_of_pixel[x_p * height_p + y_p] = graph->add_node ();
         if (first_node == NULL) first_node = node_of_pixel[x_p * height_p + y_p];
       }
@@ -215,7 +215,7 @@ void cut_graph (int* patch_posn,
 
       // If the pixel in the image hasn't been filled, we do nothing and skip
       // to the next one.
-      if (!filled[x_i][y_i]) {
+      if (!filled[y_i * width_i + x_i]) {
         continue;
       } else {
         // Create the nodes and edges.
@@ -223,8 +223,8 @@ void cut_graph (int* patch_posn,
 
         // If the neighbord exists in the patch and if the pixel to the North
         // is filled in the image, create a link to it.
-        if ((!make_tileable && y_p != 0 && y_i != 0 && filled[x_i][y_i - 1])
-          || (make_tileable && y_p != 0 && filled[x_i][modulo (y_i - 1, height_i)])) {
+        if ((!make_tileable && y_p != 0 && y_i != 0 && filled[(y_i - 1) * width_i + x_i])
+          || (make_tileable && y_p != 0 && filled[modulo (y_i - 1, height_i) * width_i + x_i])) {
           weight = edge_weight (channels,
                                image + ((y_i * width_i + x_i) * channels),
                                patch + ((y_p * width_p + x_p) * channels),
@@ -237,8 +237,8 @@ void cut_graph (int* patch_posn,
 
         // If the West neighbor exists in the patch and if the West pixel is
         // filled in the image, we create a link to it.
-        if ((!make_tileable && x_p != 0 && x_i != 0 && filled[x_i - 1][y_i])
-          || (make_tileable && x_p != 0 && filled[modulo (x_i - 1, width_i)][y_i])) {
+        if ((!make_tileable && x_p != 0 && x_i != 0 && filled[y_i * width_i + x_i - 1])
+          || (make_tileable && x_p != 0 && filled[y_i * width_i + modulo (x_i - 1, width_i)])) {
           weight = edge_weight (channels,
                                image + ((y_i * width_i + x_i) * channels),
                                patch + ((y_p * width_p + x_p) * channels),
@@ -259,15 +259,15 @@ void cut_graph (int* patch_posn,
 
         // If one of my neighbords exists and isn't filled, link me to the sink.
         if (((!make_tileable)
-              && (  (y_p != 0            && y_i != 0            && !filled[x_i][y_i - 1])      // North
-                 || (y_p != height_p - 1 && y_i != height_i - 1 && !filled[x_i][y_i + 1])      // South
-                 || (x_p != width_p - 1  && x_i != width_i - 1  && !filled[x_i + 1][y_i])      // East
-                 || (x_p != 0            && x_i != 0            && !filled[x_i - 1][y_i])))    // West
+              && (  (y_p != 0            && y_i != 0            && !filled[(y_i - 1) * width_i + x_i])      // North
+                 || (y_p != height_p - 1 && y_i != height_i - 1 && !filled[(y_i + 1) * width_i + x_i])      // South
+                 || (x_p != width_p - 1  && x_i != width_i - 1  && !filled[y_i * width_i + x_i + 1])      // East
+                 || (x_p != 0            && x_i != 0            && !filled[y_i * width_i + x_i - 1])))    // West
             || ((make_tileable)
-              && (  (y_p != 0            && !filled[x_i][modulo (y_i - 1, height_i)])          // North
-                 || (y_p != height_p - 1 && !filled[x_i][modulo (y_i + 1, height_i)])          // South
-                 || (x_p != width_p - 1  && !filled[modulo (x_i + 1, width_i)][y_i])           // East
-                 || (x_p != 0            && !filled[modulo (x_i - 1, width_i)][y_i])))) {      // West
+              && (  (y_p != 0            && !filled[modulo (y_i - 1, height_i) * width_i + x_i])          // North
+                 || (y_p != height_p - 1 && !filled[modulo (y_i + 1, height_i) * width_i + x_i])          // South
+                 || (x_p != width_p - 1  && !filled[y_i * width_i + modulo (x_i + 1, width_i)])           // East
+                 || (x_p != 0            && !filled[y_i * width_i + modulo (x_i - 1, width_i)])))) {      // West
           graph->add_tweights (node_sommet_courant, 0, MAX_CAPACITY);
 	}
       }
@@ -295,18 +295,18 @@ void cut_graph (int* patch_posn,
     for (real_y_i = y_inf; real_y_i < y_sup; real_y_i++) {
       y_p = real_y_i - patch_posn[1];
       y_i = modulo (real_y_i, height_i);
-      r = filled[x_i][y_i];
+      r = filled[y_i * width_i + x_i];
       if (r) {
         if (graph->what_segment(node_of_pixel[x_p * height_p + y_p]) == Graph::SINK) {
           paste_patch_pixel_to_image (width_i, height_i, width_p, height_p, x_i, y_i, x_p, y_p,
                                       channels, image, patch); //,
                                       //coupe_h_here, coupe_v_here);
 	}
-      } else { // (!filled[x_i][y_i])
+      } else { // (!filled[y_i * width_i + x_i])
         paste_patch_pixel_to_image (width_i, height_i, width_p, height_p, x_i, y_i, x_p, y_p,
                                     channels, image, patch); //,
 	//coupe_h_here, coupe_v_here);
-        filled[x_i][y_i] = FILLED;
+        filled[y_i * width_i + x_i] = FILLED;
       }
     }
   }

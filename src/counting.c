@@ -7,25 +7,23 @@
 #include "texturize.h"
 
 // Counts the number of pixels that are already filled.
-int count_filled_pixels(guchar **filled, int width_i, int height_i) {
-  int x_i, y_i;
+int count_filled_pixels(guchar *filled, int width_i, int height_i) {
+  int k;
   int somme = 0;
 
-  for (x_i = 0; x_i < width_i; x_i++) {
-    for (y_i = 0; y_i < height_i; y_i++) {
-      if (filled[x_i][y_i]) somme++;
-    }
+  for (k = 0; k < width_i * height_i; k++) {
+    if (filled[k]) somme++;
   }
   return somme;
 }
 
 // Finds the next pixel that needs to be filled.
-int* pixel_to_fill(guchar **filled, int width_i, int height_i, int *resultat) {
+int* pixel_to_fill(guchar *filled, int width_i, int height_i, int *resultat) {
   int x_i, y_i;
 
   for (y_i = 0; y_i < height_i; y_i++) {
     for (x_i = 0; x_i < width_i; x_i++) {
-      if (!filled[x_i][y_i]) {
+      if (!filled[y_i * width_i + x_i]) {
         resultat[0] = x_i;
         resultat[1] = y_i;
         return resultat;
